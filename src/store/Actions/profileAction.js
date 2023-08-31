@@ -16,7 +16,7 @@ import {
       });
   
       const response = await axios.post(
-        `${API_URLS.backend}/create-profile`,
+        `${API_URLS}/create-profile`,
         formData,
         config
       );

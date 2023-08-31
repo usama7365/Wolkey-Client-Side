@@ -37,7 +37,7 @@ export const userSignupAction =
       };
 
       const { data } = await axios.post(
-        `${API_URLS.backend}/signUp`,
+        `${API_URLS}/signUp`,
         { displayName, email, password },
         config
       );
@@ -94,7 +94,7 @@ export const userLoginAction =
         },
       };
       const res = await axios.post(
-        `${API_URLS.backend}/login`,
+        `${API_URLS}/login`,
         { email, password },
         config
       );
@@ -145,7 +145,7 @@ export const verifyEmailAction = (token) => {
       dispatch({
         type: VERIFY_EMAIL_REQUEST,
       });
-      const response = await axios.get(`${API_URLS.backend}/verify/${token}`);
+      const response = await axios.get(`${API_URLS}/verify/${token}`);
       console.log(response.data.message, "actionResponse");
 
       if (response.status === 200) {
@@ -185,7 +185,7 @@ export const forgetPasswordAction = (email) => async (dispatch) => {
     };
 
     const response = await axios.post(
-      `${API_URLS.backend}/auth/forgot-password`,
+      `${API_URLS}/auth/forgot-password`,
       { email },
       config
     );
@@ -245,7 +245,7 @@ export const resetPasswordAction =
       };
 
       const res = await axios.post(
-        `${API_URLS.backend}/reset/reset-password/${token}`,
+        `${API_URLS}/reset/reset-password/${token}`,
         { newPassword },
         config
       );

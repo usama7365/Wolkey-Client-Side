@@ -20,7 +20,7 @@ const Profile = () => {
           "Content-Type": "application/json",
         },
       };
-      axios.get(`${API_URLS.backend}/view-profile`, config)
+      axios.get(`${API_URLS}/view-profile`, config)
       .then((response) => {
         console.log(response , "viewProfile");
       })
