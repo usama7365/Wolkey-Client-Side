@@ -19,8 +19,6 @@ import {
 import axios from "axios";
 import { API_URLS } from "../../apiConfig";
 import { toast } from "react-toastify";
-import { useRouter } from 'next/router';
-
 
 export const userSignupAction =
   ({ displayName, email, password }) =>
