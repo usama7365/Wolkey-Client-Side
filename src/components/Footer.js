@@ -25,31 +25,31 @@ function Footer({ children }) {
               </p>
               <ul className="list-unstyled">
                 <li>
-                  <Link href="/about">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/about">
+                    
                       About us
-                    </a>
+                    
                   </Link>
                 </li>
                 <li>
-                  <Link href="/security">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/security">
+                    
                       Security and information
-                    </a>
+                    
                   </Link>
                 </li>
                 <li>
-                  <Link href="/advertising">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/advertising">
+                    
                       Advertising possibilities
-                    </a>
+                    
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/contact">
+                    
                       Contact Us
-                    </a>
+                    
                   </Link>
                 </li>
               </ul>
@@ -63,24 +63,24 @@ function Footer({ children }) {
               </p>
               <ul className="list-unstyled">
                 <li>
-                  <Link href="/get-in-touch">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/get-in-touch">
+                    
                       Get in touch
-                    </a>
+                    
                   </Link>
                 </li>
                 <li>
-                  <Link href="/customer-service">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/customer-service">
+                    
                       Customer service
-                    </a>
+                    
                   </Link>
                 </li>
                 <li>
-                  <Link href="/report">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/report">
+                    
                       Report
-                    </a>
+                    
                   </Link>
                 </li>
               </ul>
@@ -94,24 +94,24 @@ function Footer({ children }) {
               </p>
               <ul className="list-unstyled">
                 <li>
-                  <Link href="/privacy-statement">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/privacy-statement">
+                    
                       Privacy statement
-                    </a>
+                    
                   </Link>
                 </li>
                 <li>
-                  <Link href="/cookie-statement">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/cookie-statement">
+                    
                       Cookie statement
-                    </a>
+                    
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms-and-conditions">
-                    <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                  <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/terms-and-conditions">
+                    
                       Terms and Conditions
-                    </a>
+                    
                   </Link>
                 </li>
               </ul>
@@ -126,45 +126,45 @@ function Footer({ children }) {
                 </p>
                 <ul className="list-unstyled">
                   <li>
-                    <Link href="/course-syllabus">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/course-syllabus">
+                      
                         Course syllabus
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/lecture-recordings">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/lecture-recordings">
+                      
                         Lecture recordings
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/discussion-forum">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/discussion-forum">
+                      
                         Discussion forum
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/assignment-submissions">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/assignment-submissions">
+                      
                         Assignment submissions
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/grading-rubric">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/grading-rubric">
+                      
                         Grading rubric
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/online-textbook">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/online-textbook">
+                      
                         Online textbook
-                      </a>
+                      
                     </Link>
                   </li>
                 </ul>
@@ -172,45 +172,45 @@ function Footer({ children }) {
               <Col md={5} className="mt-3 mt-md-0">
                 <ul className="list-unstyled" style={{ borderBottom: "none" }}>
                   <li>
-                    <Link href="/office-hours-schedule">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/office-hours-schedule">
+                      
                         Office hours schedule
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/course-calendar">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/course-calendar">
+                      
                         Course calendar
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/student-progress-report">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/student-progress-report">
+                      
                         Student progress report
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/peer-review-assignments">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/peer-review-assignments">
+                      
                         Peer review assignments
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/group-project-collaboration">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/group-project-collaboration">
+                      
                         Group project collaboration space
-                      </a>
+                      
                     </Link>
                   </li>
                   <li>
-                    <Link href="/videos">
-                      <a style={{ color: "#FFFFFF", textDecoration: "none" }}>
+                    <Link style={{ color: "#FFFFFF", textDecoration: "none" }}  href="/videos">
+                      
                         Videos
-                      </a>
+                      
                     </Link>
                   </li>
                   {/* Add more links as needed */}
