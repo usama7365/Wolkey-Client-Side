@@ -26,7 +26,7 @@ const Login = () => {
 
   const response = useSelector((state) => state.userLogin.userInfo);
   console.log(response , "loginToken")
-  localStorage.setItem('token', response);
+  
   
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const Login = () => {
     setRememberMe(!rememberMe);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (email === "" || password === "") {
       toast.error("All inputs must be filled", {
         position: "top-right",
@@ -69,7 +69,7 @@ const Login = () => {
     } else {
       setLoading(true);
       try {
-        dispatch(
+      await  dispatch(
           userLoginAction({
             email: email,
             password: password,

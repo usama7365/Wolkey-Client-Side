@@ -212,7 +212,7 @@ const Profile = () => {
               <p className="text-center">
                 Experienced teacher providing tailored, flexible education to
                 children from home to home. Strong focus on creating engaging
-                lesson plans to suit each child's learning style and needs.
+                lesson plans to suit each of child learning style and needs.
                 Personalized approach to empower children to reach their full
                 potential.
               </p>

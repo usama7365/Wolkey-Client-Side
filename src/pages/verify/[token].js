@@ -18,7 +18,7 @@ const VerificationPage = () => {
     if (token) {
       dispatch(verifyEmailAction(token));
     }
-  }, [router.query.token]);
+  }, [router.query.token , dispatch , res]);
   
   const theme = {
     font: {
