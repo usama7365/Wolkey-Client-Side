@@ -45,9 +45,9 @@ export const userSignupAction =
         payload: data,
       });
 
-      toast.success(data.message + " " + "Please verify your Account", {
+      toast.success(data.message, {
         position: "top-right",
-        autoClose: 1000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -57,8 +57,6 @@ export const userSignupAction =
       });
 
       localStorage.setItem("userInfo", JSON.stringify(data.userInfo));
-
-      router.push('/login')
     } catch (error) {
       dispatch({
         type: USER_SIGNUP_FAIL,
@@ -112,8 +110,6 @@ export const userLoginAction =
           progress: undefined,
           theme: "light",
         });
-
-       
       }
     
     } catch (error) {
@@ -187,6 +183,8 @@ export const forgetPasswordAction = (email) => async (dispatch) => {
       { email },
       config
     );
+
+    console.log(response , "resetResponse")
 
     if (response.data.message) {
       dispatch({

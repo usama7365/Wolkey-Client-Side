@@ -25,9 +25,15 @@ const Login = () => {
   const [resetPasswordLoading, setResetPasswordLoading] = useState(false); // Added loading state for password reset
 
   const response = useSelector((state) => state.userLogin.userInfo);
-  console.log(response, "responseee");
+  console.log(response , "loginToken")
+  localStorage.setItem('token', response);
+  
 
-
+  useEffect(() => {
+    if (response) {
+      router.push("/profileform");
+    }
+  }, [response]);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -103,7 +109,6 @@ const Login = () => {
       setResetPasswordLoading(true); // Set loading state to true for password reset
       try {
         await dispatch(forgetPasswordAction(email));
-        router.push("/profileform");
         setResetPasswordLoading(false); // Set loading state back to false after password reset attempt
         handleTogglePasswordResetModal(); // Close the password reset modal after successful reset
       } catch (error) {
@@ -168,7 +173,7 @@ const Login = () => {
           </Form.Group>
           <div className="d-flex justify-content-between">
             <a
-              className="cursor-pointer" style={{cursor:"pointer"}}
+              className="cursor-pointer"
               onClick={handleTogglePasswordResetModal}
             >
               Forgot your Password

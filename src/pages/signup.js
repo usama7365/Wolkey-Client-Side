@@ -102,17 +102,7 @@ const Signup = () => {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        // Handle error here
-        toast.error("Signup failed. Please try again later.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        
       }
     }
   };

@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BsCheck } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
-import { useRouter } from "next/router";
+import Link from "next/link";
+import Spinner from "react-bootstrap/Spinner"; // Import Spinner component
+import { useRouter } from "next/router"; // Import useRouter
 
 const Banner = () => {
   const maindiv = {
@@ -25,11 +26,11 @@ const Banner = () => {
     border: "none",
   };
 
-  const [loggingIn, setLoggingIn] = useState(false);
+  const [loggingIn, setLoggingIn] = useState(false); // State to track login spinner
   const router = useRouter();
 
   const handleLoginRedirect = () => {
-    setLoggingIn(true);
+    setLoggingIn(true); // Show spinner while redirecting to login page
     setTimeout(() => {
       router.push("/login");
     }, 1000);
@@ -37,14 +38,14 @@ const Banner = () => {
 
   return (
     <div
-      className="flex-column d-flex flex-md-row align-items-md-center px-lg-5"
+      className=" flex-column d-flex flex-md-row align-items-md-center px-lg-5 "
       style={maindiv}
     >
-      <div className="left-side px-3 mt-5 px-lg-5" style={side}>
-        <h4>I am a teacher</h4>
+      <div className="left-side px-3 mt-5 px-lg-5  " style={side}>
+        <h4>I'm a teacher</h4>
         <b style={icn}>FREE</b>
         <p className="mt-3">
-          Your registration for an account on &quot;WEBSITE NAME&quot; is arranged within
+          Your registration for an account on “WEBSITE NAME” is arranged within
           a few moments and your information will be treated discretely.
         </p>
         <div className="lh-lg">
@@ -57,7 +58,7 @@ const Banner = () => {
           <span>Visitors can contact you for free and quickly.</span> <br />
           <BsCheck style={icn} />
           <span>
-            The largest home to home teachers site in the &quot;COUNTRY NAME&quot;.
+            The largest home to home teachers site in the "COUNTRY NAME".
           </span>{" "}
           <br />
           <BsCheck style={icn} />
@@ -69,7 +70,7 @@ const Banner = () => {
           className="mt-3"
           active
           onClick={handleLoginRedirect}
-          disabled={loggingIn}
+          disabled={loggingIn} // Disable the button while logging in
         >
           {loggingIn ? (
             <Spinner animation="border" size="sm" />
@@ -78,11 +79,12 @@ const Banner = () => {
           )}
         </Button>
       </div>
-      <div className="right-side px-3 mt-5" style={side}>
+
+      <div className="right-side px-3 mt-5   " style={side}>
         <h4>I’m an agency that has multiple teachers</h4>
         <b style={icn}>FREE</b>
         <p className="mt-3">
-          Your registration for an account on &quot;Company name&quot; is arranged within
+          Your registration for an account on “Company name” is arranged within
           a few moments and your information will be treated discretely.
         </p>
         <div className="lh-lg">
@@ -95,7 +97,7 @@ const Banner = () => {
           <span>Visitors can contact you for free and quickly.</span> <br />
           <BsCheck style={icn} />
           <span>
-            The largest home to home teachers site in the &quot;COUNTRY NAME&quot;.
+            The largest home to home teachers site in the "COUNTRY NAME".
           </span>{" "}
           <br />
           <BsCheck style={icn} />

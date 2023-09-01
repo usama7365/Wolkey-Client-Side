@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -13,12 +13,28 @@ import { useRouter } from "next/router";
 
 
 const ProfileForm = () => {
-  const response = useSelector((state) => state.userLogin.userInfo);
-  console.log(response, "profilee");
+  
+ 
 
   const profile = useSelector((state) => state.createProfile);
   console.log(profile, "profileState");
- 
+
+  const token = useSelector((state)=>state.userLogin)
+  console.log(token , "profiletoken")
+
+  const [response, setResponse] = useState(null);
+
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        setResponse(storedToken);
+      }
+    }
+  }, []);
+
+  console.log(response, "profilee");
 const router = useRouter()
 
 
@@ -193,7 +209,7 @@ const router = useRouter()
         },
       };
       await dispatch(profileFormAction(formData, config));
-      router.push("/profile")
+      router.push("/viewProfile")
     } catch (error) {
       console.log("Error submitting form:", error);
     }
@@ -366,7 +382,6 @@ const router = useRouter()
     <Form.Label>Languages</Form.Label>
     <Form.Control
       type="text"
-      value={language}
       onChange={(e) => setLanguage(e.target.value)}
       placeholder="Enter a language"
     />

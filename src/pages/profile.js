@@ -5,14 +5,14 @@ import axios from "axios";
 import { API_URLS } from "../apiConfig";
 
 const Profile = () => {
-  const [fetchedFormData, setFetchedFormData] = useState(null);
+  const [formData, setFormData] = useState(null);
   const response = useSelector((state) => state.userLogin.userInfo);
   console.log(response, "profilee");
 
-  const dispatch = useDispatch();
+  
 
   useEffect(() => {
-    try {
+    if (response) {
       const token = response;
       const config = {
         headers: {
@@ -20,52 +20,53 @@ const Profile = () => {
           "Content-Type": "application/json",
         },
       };
-      axios.get(`${API_URLS}/view-profile`, config)
-      .then((response) => {
-        console.log(response , "viewProfile");
-      })
-      .catch((error) => {
-        console.log("Error fetching form:", error);
-        console.log("Error details:", error.response); // Log the full error object
-      });
-    
-    } catch (error) {
-      console.log("Error fetching form:", error);
+      axios
+        .get(`${API_URLS}/view-profile`, config)
+        .then((response) => {
+          console.log(response, "viewProfile");
+          setFormData(response.data);
+        })
+        .catch((error) => {
+          console.log("Error fetching form:", error);
+          console.log("Error details:", error.response); // Log the full error object
+        });
     }
   }, [response]);
 
   const theme = {
     img: {
-      width: "250px",
-      margin: "10px",
+      width: "25%",
+      Padding: "10px",
     },
     btn: {
-      marginBottom: "10px",
       borderRadius: "10px",
       width: "35%",
+      marginTop: "10px",
     },
     main: {
       width: "100%",
       height: "auto",
-      padding: "20px",
+     
     },
     left: {
       width: "20%",
+      paddingLeft:"30px"
     },
     right: {
       width: "80%",
+     
+      paddingRight:"20px"
     },
     lucky: {
-      // border: "1px solid red",
-      marginBottom: "10px",
-      padding: "10px",
+      
+     
+      padding: "2%",
     },
     price: {
       padding: "4%",
     },
     width: {
       width: "80%",
-      padding: "10px",
     },
     pri: {
       width: "70%",
@@ -73,17 +74,11 @@ const Profile = () => {
     font: {
       fontSize: "19px",
     },
+    img2:{
+      width:"100%",
+      marginBottom:"10px"
+    }
   };
-
-  const profile = [
-    {
-      img1: "/images/blackjacket.webp",
-      img2: "/images/blackjacket.webp",
-      img3: "/images/blackjacket.webp",
-      img4: "/images/blackjacket.webp",
-      img5: "/images/blackjacket.webp",
-    },
-  ];
 
   const characteristic = {
     education: "American",
@@ -136,55 +131,70 @@ const Profile = () => {
         </div>
 
         <div className="d-flex col-9" style={theme.right}>
-          <div style={theme.img}>
-            {profile.map((pro, index) => (
-              <div className="d-flex flex-column" key={index}>
-                <img src={pro.img1} alt={`Image ${index}`} />
-                <img src={pro.img2} alt={`Image ${index}`} />
-                <img src={pro.img3} alt={`Image ${index}`} />
-                <img src={pro.img4} alt={`Image ${index}`} />
-                <img src={pro.img5} alt={`Image ${index}`} />
-              </div>
-            ))}
-          </div>
+        <div style={theme.img}>
+  {/* {formData &&
+    formData.selectedFileNames.map((imageUrl, index) => (
+      <img
+        key={index}
+        src={imageUrl}
+        alt={`Image ${index}`}
+        style={{ marginBottom: '10px' }} // Adding some space between images
+      />
+    ))} */}
+     <img style={theme.img2} src="\images\bpolo.webp"></img>
+          <img style={theme.img2} src="\images\bpolo.webp"></img>
+          <img style={theme.img2} src="\images\bpolo.webp"></img>
+</div>
+
           <div style={theme.width}>
             <div style={theme.lucky} className="d-flex flex-column">
-              <div>
-                <h4>Page in progress</h4>
-                <p>Now Available</p>
-              </div>
+            {formData && (
+    <div>
+      <h4>{formData.name}</h4>
+      <p>Now Available</p>
+    </div>
+  )}
               <Button style={theme.btn}>Show Number</Button>
               <Button style={theme.btn}>Send Message</Button>
             </div>
             <div style={theme.lucky} className="text-nowrap">
-              <h3>Characteristic</h3>
-              <div className="d-flex justify-content-between py-3">
-                <div className="col-6 ">
-                  <h6 className="d-flex justify-content-between">
-                    Education <span>{characteristic.education}</span>{" "}
+              {
+                formData &&(
+                  <>
+                  <h3>Characteristic</h3>
+              <div className="d-flex justify-content-between py-3  ">
+                <div className="col-5">
+                  <h6 className="d-flex justify-content-between ">
+                    Education <span>{formData.education}</span>{" "}
+                  </h6>
+                  <h6 className="d-flex justify-content-between  ">
+                    Age{" "}
+                    <div className="d-flex justify-content-start  w-25">
+                      <span>{formData.age}</span>
+                    </div>{" "}
                   </h6>
                   <h6 className="d-flex justify-content-between">
-                    Age <span>{characteristic.age}</span>{" "}
+                    Experience <span>{formData.Experience}</span>{" "}
                   </h6>
                   <h6 className="d-flex justify-content-between">
-                    Experience <span>{characteristic.experience}</span>{" "}
-                  </h6>
-                  <h6 className="d-flex justify-content-between">
-                    Nationality <span>{characteristic.nation}</span>{" "}
+                    Nationality <span>{formData.Nationality}</span>{" "}
                   </h6>
                 </div>
                 <div className="col-5">
                   <h6 className="d-flex justify-content-between">
-                    Personality <span>{characteristic.person}</span>{" "}
+                    Personality <span>person</span>{" "}
                   </h6>
                   <h6 className="d-flex justify-content-between">
-                    Teaching style <span>{characteristic.style}</span>{" "}
+                    Teaching style <span>{formData.TeachingStyle}</span>{" "}
                   </h6>
                   <h6 className="d-flex justify-content-between">
-                    Availability <span>{characteristic.avalaible}</span>{" "}
+                    Availability <span>{formData.availabilityStatus}</span>{" "}
                   </h6>
                 </div>
               </div>
+                  </>
+                )
+              }
             </div>
             <div style={theme.lucky}>
               <h3>Prices</h3>
@@ -202,7 +212,7 @@ const Profile = () => {
               <p className="text-center">
                 Experienced teacher providing tailored, flexible education to
                 children from home to home. Strong focus on creating engaging
-                lesson plans to suit each of child learning style and needs.
+                lesson plans to suit each child's learning style and needs.
                 Personalized approach to empower children to reach their full
                 potential.
               </p>

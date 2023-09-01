@@ -109,7 +109,7 @@ const ResetPage = () => {
             onClick={handleResetPassword}
             active
           >
-            {loading ? <Spinner animation="border" role="status" /> : "Save"}
+            {loading ? <Spinner animation="border" role="status" /> : "Signup"}
           </Button>
         </form>
       </div>

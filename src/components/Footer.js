@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import Link from "next/link"
 
 function Footer({children}) {
   return (
@@ -25,36 +24,36 @@ function Footer({children}) {
             </p>
             <ul className="list-unstyled">
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   About us
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Security and information
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Advertising possibilities
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Contact Us
-                </Link>
+                </a>
               </li>
             </ul>
           </Col>
@@ -67,28 +66,28 @@ function Footer({children}) {
             </p>
             <ul className="list-unstyled">
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Get in touch
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Customer service
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Report
-                </Link>
+                </a>
               </li>
             </ul>
           </Col>
@@ -101,28 +100,28 @@ function Footer({children}) {
             </p>
             <ul className="list-unstyled">
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Privacy statement
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Cookie statement
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   Terms and Conditions
-                </Link>
+                </a>
               </li>
             </ul>
           </Col>
@@ -140,104 +139,104 @@ function Footer({children}) {
               </p>
               <ul className="list-unstyled">
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Course syllabus
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Lecture recordings
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Discussion forum
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Assignment submissions
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Grading rubric
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Online textbook
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </Col>
             <Col md={5} className="mt-3 mt-md-0">
               <ul className="list-unstyled" style={{ borderBottom: "none" }}>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Office hours schedule
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Course calendar
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Student progress report
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Peer review assignments
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Group project collaboration space
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     style={{ color: "#FFFFFF", textDecoration: "none" }}
                     href="/"
                   >
                     Videos
-                  </Link>
+                  </a>
                 </li>
                 {/* Add more links as needed */}
               </ul>
