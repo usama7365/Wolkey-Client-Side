@@ -1,3 +1,12 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["next/core-web-vitals"],
+  
+    "rules": {
+      // Disable all ESLint warnings
+      "no-console": "off",
+      "no-unused-vars": "off"
+      // Add more custom rules here
+    }
+  
+  
 }
