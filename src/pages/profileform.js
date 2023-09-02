@@ -14,7 +14,7 @@ const ProfileForm = () => {
   const profile = useSelector((state) => state.createProfile);
   console.log(profile, "profileState");
 
-  const response = useSelector((state) => state.userLogin.userInfo.token);
+  const response = useSelector((state) => state.userLogin.userInfo);
   console.log(response, "profiletoken");
 
   const router = useRouter();
@@ -175,7 +175,12 @@ const ProfileForm = () => {
   const handleProfile = async (e) => {
     e.preventDefault();
     try {
-      const token = response; 
+      const token = response ? response.token : null; // Check if response exists
+      if (!token) {
+        console.error("Token is missing."); // Log an error if token is missing
+        return;
+      }
+      
       console.log(token, "tokennn");
       const config = {
         headers: {
@@ -184,9 +189,9 @@ const ProfileForm = () => {
         },
       };
       await dispatch(profileFormAction(formData, config));
-      router.push("/viewProfile")
+      router.push("/viewProfile");
     } catch (error) {
-      console.log("Error submitting form:", error);
+      console.error("Error submitting form:", error);
     }
   };
 
