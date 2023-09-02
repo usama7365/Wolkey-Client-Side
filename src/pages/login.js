@@ -20,23 +20,24 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  // const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false); // Added loading state
   const [resetPasswordLoading, setResetPasswordLoading] = useState(false); // Added loading state for password reset
 
+ 
+  const dispatch = useDispatch();
+  const router = useRouter();
   const response = useSelector((state) => state.userLogin.userInfo);
   console.log(response , "loginToken")
-  
   
 
   useEffect(() => {
     if (response) {
       router.push("/profileform");
     }
-  }, [response]);
+  }, [response , router]);
 
-  const dispatch = useDispatch();
-  const router = useRouter();
+
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -50,11 +51,11 @@ const Login = () => {
     setShowPasswordResetModal(!showPasswordResetModal);
   };
 
-  const handleRememberMe = () => {
-    setRememberMe(!rememberMe);
-  };
+  // const handleRememberMe = () => {
+  //   setRememberMe(!rememberMe);
+  // };
 
-  const handleLogin = async () => {
+  const handleLogin =async () => {
     if (email === "" || password === "") {
       toast.error("All inputs must be filled", {
         position: "top-right",
@@ -69,12 +70,12 @@ const Login = () => {
     } else {
       setLoading(true);
       try {
-      await  dispatch(
+        const response= await dispatch(
           userLoginAction({
             email: email,
             password: password,
           })
-        );
+        )
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -113,7 +114,6 @@ const Login = () => {
         handleTogglePasswordResetModal(); // Close the password reset modal after successful reset
       } catch (error) {
         setResetPasswordLoading(false); // Set loading state back to false if password reset fails
-
         toast.error("Password reset failed. Please try again.", {
           position: "top-right",
           autoClose: 3000,
@@ -168,7 +168,7 @@ const Login = () => {
           </Form>
           <Form.Group as={Row} className="mb-3" controlId="formHorizontalCheck">
             <Col>
-              <Form.Check label="Remember me" onChange={handleRememberMe} />
+              <Form.Check label="Remember me"  />
             </Col>
           </Form.Group>
           <div className="d-flex justify-content-between">
@@ -188,7 +188,7 @@ const Login = () => {
               variant="primary"
               className="mt-3 px-5"
               active
-              disabled={!rememberMe || loading}
+              // disabled={!rememberMe || loading}
               onClick={handleLogin}
             >
               {loading ? <Spinner animation="border" role="status" /> : "Login"}

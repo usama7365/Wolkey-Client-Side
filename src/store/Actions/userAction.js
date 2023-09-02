@@ -42,12 +42,12 @@ export const userSignupAction =
 
       dispatch({
         type: USER_SIGNUP_SUCCESS,
-        payload: data,
+        payload: data, 
       });
 
-      toast.success(data.message, {
+      toast.success(data.message + " " + "Please verify your Account", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -56,7 +56,7 @@ export const userSignupAction =
         theme: "light",
       });
 
-      localStorage.setItem("userInfo", JSON.stringify(data.userInfo));
+      // localStorage.setItem("userInfo", JSON.stringify(data.userInfo));
     } catch (error) {
       dispatch({
         type: USER_SIGNUP_FAIL,
@@ -95,9 +95,10 @@ export const userLoginAction =
         config
       );
       console.log("API Response Data:", res);
+      localStorage.setItem("auth-user",JSON.stringify(res.data))
       dispatch({
         type: USER_LOGIN_SUCCESS,
-        payload:res.data.token
+        payload:res.data
       });
       if(res.data.token){
         toast.success("You have Login Successfully", {

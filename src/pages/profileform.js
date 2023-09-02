@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -10,35 +10,14 @@ import { profileFormAction } from "../store/Actions/profileAction";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
-
-
 const ProfileForm = () => {
-  
- 
-
   const profile = useSelector((state) => state.createProfile);
   console.log(profile, "profileState");
 
-  const token = useSelector((state)=>state.userLogin)
-  console.log(token , "profiletoken")
+  const response = useSelector((state) => state.userLogin.userInfo.token);
+  console.log(response, "profiletoken");
 
-  const [response, setResponse] = useState(null);
-
-  
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedToken = localStorage.getItem("token");
-      if (storedToken) {
-        setResponse(storedToken);
-      }
-    }
-  }, []);
-
-  console.log(response, "profilee");
-const router = useRouter()
-
-
-  
+  const router = useRouter();
 
   const theme = {
     icn: {
@@ -95,8 +74,6 @@ const router = useRouter()
     availabilityStatus: "",
   });
 
-
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -121,7 +98,6 @@ const router = useRouter()
       }));
     }
   };
-  
 
   const handleLanguageClick = () => {
     if (language.trim() !== "") {
@@ -198,9 +174,8 @@ const router = useRouter()
 
   const handleProfile = async (e) => {
     e.preventDefault();
-
     try {
-      const token = response;
+      const token = response; 
       console.log(token, "tokennn");
       const config = {
         headers: {
@@ -214,6 +189,8 @@ const router = useRouter()
       console.log("Error submitting form:", error);
     }
   };
+
+
   return (
     <div className="container mt-2 py-5">
       <h2 className="mb-3">Personal Information Form</h2>
@@ -378,42 +355,41 @@ const router = useRouter()
             </Form.Group>
           </Col>
           <Col>
-  <Form.Group style={theme.main} className="position-relative mt-2">
-    <Form.Label>Languages</Form.Label>
-    <Form.Control
-      type="text"
-      onChange={(e) => setLanguage(e.target.value)}
-      placeholder="Enter a language"
-    />
-    <FcPlus
-      style={{
-        ...theme.icn,
-        top: "70%",
-        transform: "translateY(-50%)",
-      }}
-      className="position-absolute"
-      onClick={handleLanguageClick}
-    />
-  </Form.Group>
-  {languages.length > 0 && (
-    <div className="mt-2">
-      <ul>
-        {languages.map((lang, index) => (
-          <li key={index}>
-            {lang}
-            <span
-              style={{ cursor: "pointer" }}
-              onClick={() => handleDeleteLanguage(index)}
-            >
-              <RxCross2 style={theme.font} />
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
-</Col>
-
+            <Form.Group style={theme.main} className="position-relative mt-2">
+              <Form.Label>Languages</Form.Label>
+              <Form.Control
+                type="text"
+                onChange={(e) => setLanguage(e.target.value)}
+                placeholder="Enter a language"
+              />
+              <FcPlus
+                style={{
+                  ...theme.icn,
+                  top: "70%",
+                  transform: "translateY(-50%)",
+                }}
+                className="position-absolute"
+                onClick={handleLanguageClick}
+              />
+            </Form.Group>
+            {languages.length > 0 && (
+              <div className="mt-2">
+                <ul>
+                  {languages.map((lang, index) => (
+                    <li key={index}>
+                      {lang}
+                      <span
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleDeleteLanguage(index)}
+                      >
+                        <RxCross2 style={theme.font} />
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </Col>
         </Row>
 
         <Form.Group controlId="aboutUs">

@@ -1,9 +1,44 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaLocationDot } from "react-icons/fa6";
 import { BsEnvelopeFill , BsFillTelephoneFill } from "react-icons/bs";
+import { useSelector , useDispatch } from "react-redux";
+import {viewProfileAction , resetProfileAction} from "../store/Actions/profileAction"
 
 const Profile2 = () => {
+  const response = useSelector((state) => state?.userLogin?.auth?.token);
+  const profileData=useSelector((state)=>state.viewProfile.userInfo)
+  const isLoading = profileData === null;
+
+  const [formData, setFormData] = useState(null); 
+  console.log(profileData ,"vieww")
+
+  console.log(response, "profileetoken");
+
+  const dispatch=useDispatch()
+  
+useEffect(()=>{
+   const token = response
+    console.log(token, "tokennn");
+  dispatch(
+    viewProfileAction(token)
+  )
+
+  return () => {
+    dispatch(resetProfileAction());
+  };
+}, [response, dispatch]);
+
+useEffect(() => {
+  // Update profileData when formData changes
+  if (profileData) {
+    setFormData(profileData);
+  }
+}, [profileData]);
+ 
+if (!profileData) {
+  return <p>Loading...</p>;
+}
   const theme = {
     img: {
       width: "85%",
@@ -40,9 +75,14 @@ const Profile2 = () => {
 
   return (
     <div className="px-2 py-2">
-      <h6>
-        Mia | <span>Now Available</span>{" "}
+
+{formData &&(
+  <h6>
+        {formData.name} | <span>Now Available</span>{" "}
       </h6>
+)}
+
+      
       <p>
         <FaLocationDot /> <span>Amsterdem</span>{" "}
       </p>
@@ -123,7 +163,7 @@ const Profile2 = () => {
           <p className="">
             Experienced teacher providing tailored, flexible education to
             children from home to home. Strong focus on creating engaging lesson
-            plans to suit each of child learning style and needs. Personalized
+            plans to suit each childs learning style and needs. Personalized
             approach to empower children to reach their full potential.
           </p>
         </div>

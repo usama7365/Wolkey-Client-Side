@@ -7,19 +7,28 @@ import {
   resetPasswordReducer,
   verifyEmailReducer,
 } from "../store/Reducers/userReducer"; 
-import {profileFormReducer} from "../store/Reducers/profileReducer"
+import {profileFormReducer , viewProfileReducer , resetProfileReducer} from "../store/Reducers/profileReducer"
+
+
+const initialState = {
+ 
+};
 
 const reducer = combineReducers({
   userSignup: userSignupReducer,
-  userLogin: userLoginReducer,
+  userLogin: userLoginReducer, 
   forgetPassword: forgotPasswordReducer,
   resetPassword: resetPasswordReducer,
   verifyEmail:verifyEmailReducer,
-  createProfile:profileFormReducer
+  createProfile:profileFormReducer,
+  viewProfile:viewProfileReducer,
+  profile: resetProfileReducer,
+
 });
 
 const middleware = [thunk];
-const initialState = {};
+
+
 
 const store = createStore(
   reducer,

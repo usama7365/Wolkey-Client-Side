@@ -33,8 +33,20 @@ export const userSignupReducer = (state = {}, action) => {
   }
 };
 
+const loggedIn= () => {
+  if (typeof window !== 'undefined') {
+  const data = localStorage.getItem("auth-user");
+  if (data) {
+      return JSON.parse(data);
+  }
+  return undefined;
+}
+};
 
-export const userLoginReducer = (state = {}, action) => {
+const initialState=loggedIn();
+
+
+export const userLoginReducer = (state = {auth:initialState}, action) => {
   switch (action.type) {
     case USER_LOGIN_REQUEST:
       return { loading: true };

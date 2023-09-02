@@ -42,10 +42,10 @@ const Banner = () => {
       style={maindiv}
     >
       <div className="left-side px-3 mt-5 px-lg-5  " style={side}>
-        <h4>I am a teacher</h4>
+        <h4>I m a teacher</h4>
         <b style={icn}>FREE</b>
         <p className="mt-3">
-          Your registration for an account on  &ldquo;WEBSITE NAME&rdquo;  is arranged within
+          Your registration for an account on &quo;WEBSITE NAME&quo; is arranged within
           a few moments and your information will be treated discretely.
         </p>
         <div className="lh-lg">
@@ -58,7 +58,7 @@ const Banner = () => {
           <span>Visitors can contact you for free and quickly.</span> <br />
           <BsCheck style={icn} />
           <span>
-            The largest home to home teachers site in the  &ldquo;COUNTRY NAME&rdquo; .
+            The largest home to home teachers site in the &quo;COUNTRY NAME&quo;.
           </span>{" "}
           <br />
           <BsCheck style={icn} />
@@ -81,10 +81,10 @@ const Banner = () => {
       </div>
 
       <div className="right-side px-3 mt-5   " style={side}>
-        <h4>I am an agency that has multiple teachers</h4>
+        <h4>I m an agency that has multiple teachers</h4>
         <b style={icn}>FREE</b>
         <p className="mt-3">
-          Your registration for an account on  &ldquo;COMPANY NAME&rdquo;  is arranged within
+          Your registration for an account on &quo;Company name&quo; is arranged within
           a few moments and your information will be treated discretely.
         </p>
         <div className="lh-lg">
@@ -94,10 +94,10 @@ const Banner = () => {
           <span>An extensive advertisement for all your information.</span>{" "}
           <br />
           <BsCheck style={icn} />
-          <span>Visitors can contact you for free and quickly.</span> <br/>
+          <span>Visitors can contact you for free and quickly.</span> <br />
           <BsCheck style={icn} />
           <span>
-            The largest home to home teachers site in the &ldquo;COUNTRY NAME&rdquo;
+            The largest home to home teachers site in the &quo;COUNTRY NAME&quo;.
           </span>{" "}
           <br />
           <BsCheck style={icn} />
