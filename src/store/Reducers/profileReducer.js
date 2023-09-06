@@ -24,6 +24,7 @@ import {
           ...state,
           loading: false,
           success: true,
+          profileId:_id,
         };
       case PROFILE_FORM_FAIL:
         return {
@@ -36,8 +37,13 @@ import {
     }
   };
 
+  const initialState = {
+    userInfo: null,
+    // ...other state properties
+  };
 
-export const viewProfileReducer = (state = {}, action) => {
+
+export const viewProfileReducer = (state =initialState, action) => {
   switch (action.type) {
     case 'VIEW_PROFILE_REQUEST':
       return { ...state, loading: true };
@@ -53,17 +59,19 @@ export const viewProfileReducer = (state = {}, action) => {
 // profileReducer.js
 
 
-const initialState = {
+const initialState2 = {
   userInfo: null, // Initial state or you can set it to null
   // other profile-related state properties
 };
 
-export const resetProfileReducer = (state = initialState, action) => {
+export const resetProfileReducer = (state = initialState2, action) => {
   switch (action.type) {
     case RESET_PROFILE:
       return {
         ...state,
         userInfo: null, // Reset the profile data
+        loading: false, // Reset loading to false
+        error: null,   // Reset error to null
         // Reset other profile-related state properties if needed
       };
     // Handle other action types as well
@@ -71,6 +79,7 @@ export const resetProfileReducer = (state = initialState, action) => {
       return state;
   }
 };
+
 
 
 

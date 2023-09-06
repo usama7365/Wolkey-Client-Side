@@ -1,0 +1,131 @@
+
+.parent{
+  
+    height: auto;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 40px 20px;
+    margin-bottom: 30px;
+    
+
+}
+.city{
+    width: 18%;
+}
+.top{
+    display: flex;
+    flex-direction: column;
+    padding:10px;
+    margin-bottom: 0px;
+    background-color: #EEF4FA;
+}
+.images{
+    width: 270px;
+    padding: 0px 10px;
+    display: flex;
+    flex-direction: column;
+    
+    object-fit: contain;
+}
+.images img , .images video{
+    width: 100%;
+   height: auto;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+.images video{
+    height: 250px;
+}
+.right{
+    width: 53%;
+    padding: 0 10px;
+    
+   
+}
+.first{
+    height: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 20px;
+    
+}
+.first button{
+    width: 170px;
+    padding: 6px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+}
+.btn1{
+    background-color: #31A551;
+    color: white;
+   
+}
+.first span{
+    font-size: 17px;
+}
+.icn{
+    display: flex;
+    margin-top: 10px;
+}
+.icn p {
+    color: #31A551;
+    margin-left: 10px;
+}
+.icn span{
+    color: black;
+}
+.second{
+   
+    padding: 10px 20px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border: 1px solid ;
+    margin-bottom: 20px;
+}
+.second h6{
+    
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    padding-right: 20px;
+}
+.third{
+    padding: 10px 20px;
+    border: 1px solid ;
+    margin-bottom: 20px;
+}
+.forth{
+    padding: 10px 20px;
+    text-align: start;
+    border: 1px solid ;
+    margin-bottom: 20px;
+}
+.fifth{
+    border: 1px solid ;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+}
+.fifth i{
+    color: "rgb(245, 93, 2)"
+}
+.last{
+   
+    display: flex;
+    align-items: center;
+    height: 6%;
+    white-space: nowrap;
+
+}
+.last button{
+    width: 170px;
+    padding: 8px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: none;
+    margin-left: 2%;
+}

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BsCheck } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
-import Link from "next/link";
 import Spinner from "react-bootstrap/Spinner"; // Import Spinner component
 import { useRouter } from "next/router"; // Import useRouter
 
@@ -26,11 +25,11 @@ const Banner = () => {
     border: "none",
   };
 
-  const [loggingIn, setLoggingIn] = useState(false); // State to track login spinner
+  const [loggingIn, setLoggingIn] = useState(false); 
   const router = useRouter();
 
   const handleLoginRedirect = () => {
-    setLoggingIn(true); // Show spinner while redirecting to login page
+    setLoggingIn(true);
     setTimeout(() => {
       router.push("/login");
     }, 1000);

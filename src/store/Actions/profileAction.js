@@ -11,17 +11,57 @@ import {
 import axios from "axios";
 import { API_URLS } from "../../apiConfig";
 import { toast } from "react-toastify";
-import store from "../store"
-export const profileFormAction = (formData, config) => async (dispatch) => {
+export const profileFormAction = (formData, token) => async (dispatch) => {
   console.log(formData, "formm");
+  console.log(token , "actionToken")
+
+  const formDataObject = new FormData(); // Rename the variable to avoid conflict
+
+  formDataObject.append("name", formData.name);
+  formDataObject.append("title", formData.title);
+  formDataObject.append("city", formData.city);
+  formDataObject.append("gender", formData.gender);
+  formDataObject.append("dateOfBirth", formData.dateOfBirth);
+  formDataObject.append("aboutUs", formData.aboutUs);
+  formDataObject.append("phoneNumber", formData.phoneNumber);
+  formDataObject.append("age", formData.age);
+  formDataObject.append("subjectName", JSON.stringify(formData.subjectName));
+  formDataObject.append("serviceNames", JSON.stringify(formData.serviceNames));
+  formDataObject.append("Nationality", formData.Nationality);
+  formDataObject.append("education", formData.education);
+  formDataObject.append("specialityDegree", formData.specialityDegree);
+  formDataObject.append("Experience", formData.Experience);
+  formDataObject.append("TeachingStyle", formData.TeachingStyle);
+  formDataObject.append("languages", JSON.stringify(formData.languages));
+  formDataObject.append("day", formData.day);
+  formDataObject.append("time", formData.time);
+  formDataObject.append("cost", formData.cost);
+  formDataObject.append("availabilityDays", JSON.stringify(formData.availabilityDays));
+  formDataObject.append("availabilityMins", formData.availabilityMins);
+  formDataObject.append("availabilityStatus", formData.availabilityStatus);
+
+  for (let i = 0; i < formData.selectedFileNames.length; i++) {
+    console.log(formData.selectedFileNames[i], "selected file")
+    formDataObject.append("selectedFileNames", formData.selectedFileNames[i]);
+  }
+  if (formData && formData.selectedVideoFile) {
+    formDataObject.append("selectedVideoFile", formData.selectedVideoFile);
+  }
+  console.log(formDataObject, "formDataa");
+  
   try {
     dispatch({
       type: PROFILE_FORM_REQUEST,
     });
-    console.log("object obj jhdukahkdhakhjd");
+    const config = {
+      headers: {
+        "x-auth-token": `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
     const response = await axios.post(
       `${API_URLS}/create-profile`,
-      formData,
+      formDataObject,
       config
     );
     console.log(response, "response from backend");
@@ -51,32 +91,38 @@ export const profileFormAction = (formData, config) => async (dispatch) => {
   }
 };
 
+
 export const viewProfileAction = (token) => async (dispatch) => {
   console.log(token , "tokenInaction")
-
-  const config = {
-    headers: {
-      "x-auth-token": `Bearer ${token}`, 
-      "Content-Type": "application/json",
-    },
-  };
-  
-
-  console.log(config, "viewProfiletoken");
  
   try {
 
     dispatch({
       type: VIEW_PROFILE_REQUEST,
     });
-    const response = await axios.post(
-      `${API_URLS}/view-profile`,{userId:store.getState()._id},config)
+    const config = {
+      headers: {
+        "x-auth-token": `Bearer ${token}`, 
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      `${API_URLS}/view-profile`,config)
    
     console.log(response, "viewProfileResponse");
-    dispatch({
-      type: VIEW_PROFILE_SUCCESS,
-      payload: response.data, // Assuming the response contains data
-    });
+    if (response.status === 200) {
+      // Dispatch VIEW_PROFILE_SUCCESS with the data from the response
+      dispatch({
+        type: VIEW_PROFILE_SUCCESS,
+        payload: response.data, // Assuming the response contains data
+      });
+    } else {
+      // Dispatch VIEW_PROFILE_FAIL with an error message
+      dispatch({
+        type: VIEW_PROFILE_FAIL,
+        payload: "Failed to fetch profile data.",
+      });
+    }
   } catch (error) {
     console.log(error, "viewProfileError");
     dispatch({

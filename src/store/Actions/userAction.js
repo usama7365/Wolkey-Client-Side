@@ -40,12 +40,14 @@ export const userSignupAction =
         config
       );
 
+      // localStorage.setItem("auth-user", JSON.stringify(res.data));
+
       dispatch({
         type: USER_SIGNUP_SUCCESS,
         payload: data, 
       });
 
-      toast.success(data.message + " " + "Please verify your Account", {
+      toast.success(data.message , {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: false,

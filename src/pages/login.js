@@ -20,22 +20,25 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
-  // const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false); // Added loading state
   const [resetPasswordLoading, setResetPasswordLoading] = useState(false); // Added loading state for password reset
 
  
   const dispatch = useDispatch();
   const router = useRouter();
-  const response = useSelector((state) => state.userLogin.userInfo);
+  const response = useSelector((state) => state?.userLogin?.userInfo);
+
   console.log(response , "loginToken")
   
 
   useEffect(() => {
     if (response) {
-      router.push("/profileform");
+      setTimeout(() => {
+        router.push("/profileform");
+      }, 1000); 
     }
-  }, [response , router]);
+  }, [response, router]);
 
 
 
@@ -51,15 +54,13 @@ const Login = () => {
     setShowPasswordResetModal(!showPasswordResetModal);
   };
 
-  // const handleRememberMe = () => {
-  //   setRememberMe(!rememberMe);
-  // };
+ 
 
   const handleLogin =async () => {
     if (email === "" || password === "") {
       toast.error("All inputs must be filled", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -82,7 +83,7 @@ const Login = () => {
         // Handle error here
         toast.error("Login failed. Please try again.", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -116,7 +117,7 @@ const Login = () => {
         setResetPasswordLoading(false); // Set loading state back to false if password reset fails
         toast.error("Password reset failed. Please try again.", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -188,7 +189,7 @@ const Login = () => {
               variant="primary"
               className="mt-3 px-5"
               active
-              // disabled={!rememberMe || loading}
+             
               onClick={handleLogin}
             >
               {loading ? <Spinner animation="border" role="status" /> : "Login"}

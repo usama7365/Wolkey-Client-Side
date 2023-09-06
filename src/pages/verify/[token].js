@@ -1,10 +1,10 @@
 import React, { useEffect} from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { verifyEmailAction } from "../../store/Actions/userAction";
 import { FcCheckmark, FcCancel } from "react-icons/fc";
 import Button from "react-bootstrap/Button";
-import Link from "next/link";
 
 const VerificationPage = () => {
   const router = useRouter();

@@ -6,16 +6,33 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { FcPlus } from "react-icons/fc";
 import { RxCross2 } from "react-icons/rx";
-import { profileFormAction } from "../store/Actions/profileAction";
+import { profileFormAction, viewProfileAction } from "../store/Actions/profileAction";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import { Card } from "react-bootstrap";
+import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {  Spinner } from "react-bootstrap"; 
+
+// import ProtectedProfileRoute from '../components/ProtectedProfileRoute';
 
 const ProfileForm = () => {
   const profile = useSelector((state) => state.createProfile);
+  const [response, setResponse] = useState(null); 
   console.log(profile, "profileState");
-
-  const response = useSelector((state) => state.userLogin.userInfo);
-  console.log(response, "profiletoken");
+  useEffect(() => {
+    // Check if localStorage is available (client-side)
+    if (typeof window !== "undefined") {
+      const storedResponse = localStorage.getItem("auth-user");
+      if (storedResponse) {
+        // Parse the stored response as JSON
+        const parsedResponse = JSON.parse(storedResponse);
+        setResponse(parsedResponse);
+      }
+    }
+  }, []);
+  console.log(response, "tokk");
 
   const router = useRouter();
 
@@ -33,6 +50,38 @@ const ProfileForm = () => {
       paddingLeft: "10px",
       cursor: "pointer",
     },
+    card: {
+      height: "170px",
+      margin: "auto",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      fontSize: "11px",
+      border: "1px solid grey",
+      borderRadius: "10px",
+      backgroundColor: "rgb(234 , 234 , 234 )",
+      marginTop:"30px"
+    },
+    img: {
+      width: "120px",
+      height: "130px",
+    },
+    info: {
+      height: "130px",
+      paddingLeft: "10px",
+    },
+    btn: {
+      backgroundColor: "#31A551",
+      fontSize: "11px",
+    },
+    title: {
+      fontSize: "11px",
+    },
+    btn2:{
+      backgroundColor: "rgb(245, 93, 2)",
+      border: "none",
+      marginTop:"15px"
+    }
   };
 
   const [subjectName, setSubjectName] = useState([]);
@@ -44,6 +93,8 @@ const ProfileForm = () => {
   const [serviceName, setServiceName] = useState("");
   const [language, setLanguage] = useState("");
   const [languages, setLanguages] = useState([]);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -58,7 +109,7 @@ const ProfileForm = () => {
     age: 0,
     subjectName: [""],
     serviceNames: [""],
-    selectedFileNames: [""],
+    selectedFileNames: [],
     selectedVideoFile: null,
     Nationality: "",
     education: "",
@@ -73,6 +124,12 @@ const ProfileForm = () => {
     availabilityMins: "",
     availabilityStatus: "",
   });
+  
+ 
+
+  console.log(formData.age, "age");
+  console.log(formData.Nationality, "nation");
+  console.log(formData.education, "edu");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -122,12 +179,14 @@ const ProfileForm = () => {
 
   const handleFileChange = (e) => {
     const files = e.target.files;
+    console.log(e.target.files)
     const fileNames = [];
 
     if (selectedFileNames.length + files.length <= 5) {
       for (let i = 0; i < files.length; i++) {
-        fileNames.push(files[i].name);
+        fileNames.push(files[i]);
       }
+      console.log(fileNames , "filenamesss");
       setSelectedFileNames((prevFileNames) => [...prevFileNames, ...fileNames]);
       setFormData((prevData) => ({
         ...prevData,
@@ -136,15 +195,13 @@ const ProfileForm = () => {
     } else {
       alert("You can select a maximum of five photos.");
     }
-
-    e.target.value = null;
   };
 
   const handleVideoFileChange = (e) => {
     const file = e.target.files[0];
     setFormData((prevData) => ({
       ...prevData,
-      selectedVideoFile: file.name,
+      selectedVideoFile: file,
     }));
   };
 
@@ -172,32 +229,54 @@ const ProfileForm = () => {
     setServiceNames(updatedServiceNames);
   };
 
-  const handleProfile = async (e) => {
-    e.preventDefault();
-    try {
-      const token = response ? response.token : null; // Check if response exists
-      if (!token) {
-        console.error("Token is missing."); // Log an error if token is missing
-        return;
-      }
-      
-      console.log(token, "tokennn");
-      const config = {
-        headers: {
-          "x-auth-token": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      };
-      await dispatch(profileFormAction(formData, config));
-      router.push("/viewProfile");
-    } catch (error) {
-      console.error("Error submitting form:", error);
+  const handleDayChange = (e) => {
+    const value = e.target.value;
+    if (selectedDays.includes(value)) {
+      setSelectedDays(selectedDays.filter((day) => day !== value));
+    } else {
+      setSelectedDays([...selectedDays, value]);
     }
   };
 
+  const truncateText = (text, maxLength) => {
+    const words = text.split(" ");
+    if (words.length <= maxLength) {
+      return text;
+    } else {
+      const truncatedText = words.slice(0, maxLength).join(" ");
+      return `${truncatedText} . . . . .`;
+    }
+  };
+
+  const handleProfile = async (e) => {
+    e.preventDefault();
+    if(!formData){
+      alert("okk")
+    }
+    setIsSubmitting(true); // Set form submission status to true
+    try {
+      const token = response ? response.token : null;
+      if (!token) {
+        console.error("Token is missing.");
+        return;
+      }
+      console.log(token, "tokennn");
+
+      await dispatch(profileFormAction(formData, token));
+      router.push("/viewProfile");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false); // Reset form submission status when done
+    }
+  };
 
   return (
-    <div className="container mt-2 py-5">
+    // <ProtectedProfileRoute>
+    <>
+    <ToastContainer/>
+
+    <div className="container  mt-2 py-5">
       <h2 className="mb-3">Personal Information Form</h2>
       <Form onSubmit={handleSubmit}>
         <Row className="mb-3 mt-2 d-block d-md-flex">
@@ -494,19 +573,13 @@ const ProfileForm = () => {
         <h4>Availability</h4>
         <Row className="mb-4  mt-2 d-block d-md-flex">
           <Col>
-            <Form.Select
-              onChange={handleChange}
-              className="mb-2"
-              name="availabilityDays"
-              aria-label="Default select example"
-            >
-              <option>Availability Days</option>
-              <option>1/Day</option>
-              <option>3/Days</option>
-              <option>7/Days</option>
-              <option>15/Days</option>
-              <option>30/Days</option>
-            </Form.Select>
+          <div>
+    
+          <DropdownMultiselect
+        options={["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" , "Sunday"]}
+        name="countries"
+      />
+    </div>
           </Col>
           <Col>
             <Form.Select
@@ -563,7 +636,7 @@ const ProfileForm = () => {
               aria-label="Default select example"
             >
               <option>Minutes</option>
-              <option>15 minutes</option>
+              <option>15 minutes  </option>
               <option>30 minutes</option>
               <option>45 minutes</option>
               <option>60 minutes</option>
@@ -590,14 +663,14 @@ const ProfileForm = () => {
               className=" mt-2"
             >
               <Form.Label>Upload Photos</Form.Label>
-              <Form.Control type="file" multiple onChange={handleFileChange} />
+              <Form.Control type="file" multiple name="selectedFileNames" onChange={handleFileChange} />
               {selectedFileNames.length > 0 && (
                 <div className="mt-2">
                   <strong>Selected Photos:</strong>
                   <ul>
                     {selectedFileNames.map((fileName, index) => (
                       <li key={index}>
-                        {fileName}{" "}
+                        {fileName.name}{" "}
                         <span
                           style={{ cursor: "pointer" }}
                           onClick={() => {
@@ -639,15 +712,55 @@ const ProfileForm = () => {
           </Col>
         </Row>
         <Button
-          onClick={handleProfile}
-          type="submit"
-          className="mt-3"
-          variant="primary"
-        >
-          Submit
-        </Button>
+            type="submit"
+            style={theme.btn2}
+            variant="primary"
+            disabled={isSubmitting}
+            onClick={handleProfile}
+            // Disable the button while submitting
+          >
+            {isSubmitting ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                Loading...
+              </>
+            ) : (
+              "Submit"
+            )}
+          </Button>
       </Form>
+      <hr />
+      <div style={theme.card} className="py-2 px-2 col-5 d-none d-lg-flex">
+        <Card.Img
+          src="https://mdbootstrap.com/img/new/standard/nature/111.webp"
+          alt="Card Image"
+          style={theme.img}
+        />
+        <Card.Body style={theme.info}>
+          <Card.Title style={theme.title}>{formData.name}</Card.Title>
+          <Card.Title className="mt-1" style={theme.title}>
+            {formData.title}
+          </Card.Title>
+          <Card.Text className="mt-2">{truncateText(formData.aboutUs, 22)}</Card.Text>
+          <div className="d-flex justify-content-end">
+            {formData.phoneNumber !== 0 && (
+              <Button className="mt-1" style={theme.btn}>
+                Call Now
+              </Button>
+            )}
+          </div>
+        </Card.Body>
+      </div>
     </div>
+    </>
+
+    // </ProtectedProfileRoute>
   );
 };
 
