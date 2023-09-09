@@ -53,10 +53,8 @@ const Profile2 = () => {
 
   const theme = {
     img: {
-     
+    
       position: "relative",
-      backgroundColor:"red",
-      
     },
 
     main: {
@@ -75,25 +73,30 @@ const Profile2 = () => {
       borderRadius: "10px",
       color: "white",
     },
-    video:{
-      width:"200px",
-      height:"100px"
-      
+    video: {
+      width: "100%",
+      backgroundColor: "yellow",
+      marginBottom: "10px",
+      height: "300px", // Adjust the height as per your preference
     },
-    pic:{
-      width:"60%",
-      objectFit:"contain !important",
-      display:"flex",
-      justifyContent:"center",
-      border:"1px solid "
+  
+    photo: {
+      width: "45%",
+      height:"200px",
+      display:"flex"
     },
-    photo:{
-      border:"1px solid ",
+    pic: {
+      height:"auto",
       width:"100%",
       display:"flex",
-      justifyContent:"Space-between",
-        //  flexWrap:"wrap",
-      height:"auto"
+      flexWrap:"wrap",
+      justifyContent:"space-around",
+      marginBottom:"10px"
+    },
+    image:{
+      width:"100%",
+      marginBottom:"10px"
+    
     }
   };
 
@@ -109,48 +112,36 @@ const Profile2 = () => {
         <FaLocationDot /> <span>Amsterdem</span>{" "}
       </p>
 
-    
-          <div style={theme.img}>
-            <div>
-              {profileData.selectedVideoFile && (
-                <video width="100%" height='240' controls >
-                  <source
-                  
-                    src={`data:video/mp4;base64,${Buffer.from(
-                      profileData.selectedVideoFile.data
-                    ).toString("base64")}`}
-                    type="video/mp4"
-                  />
-                  Your browser does not support the video tag.
-                </video>
-              )}
+      <div style={theme.img}>
+        <div style={theme.video}>
+          {profileData.selectedVideoFile && (
+            <video style={theme.vid} controls>
+              <source
+                src={`data:video/mp4;base64,${Buffer.from(
+                  profileData.selectedVideoFile.data
+                ).toString("base64")}`}
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          )}
+        </div>
 
-              <div style={theme.photo}>
-              {Array.isArray(profileData.selectedFileNames) &&
-                profileData.selectedFileNames.map((image, index) => (
-                  <div
-                    className="mb-2"
-                    key={index}
-                    style={{display:"flex", justifyContent:"center"}}
-                   
-                  >
-                    <img
-                      src={`data:image/jpeg;base64,${Buffer.from(
-                        image.data
-                      ).toString("base64")}`}
-                      alt={`Image ${index}`}
-                      style={theme.pic}
-                      
-                      
-                    />
-                  </div>
-                ))}
+        <div style={theme.pic}>
+          {Array.isArray(profileData.selectedFileNames) &&
+            profileData.selectedFileNames.map((image, index) => (
+              <div style={theme.photo} key={index}>
+                <img
+                style={theme.image}
+                  src={`data:image/jpeg;base64,${Buffer.from(
+                    image.data
+                  ).toString("base64")}`}
+                  alt={`Image ${index}`}
+                />
               </div>
-            </div>
-          </div>
-       
-
-      
+            ))}
+        </div>
+      </div>
 
       <div style={{ position: "fixed", bottom: 0, width: "100%" }}>
         <div className="bg-white w-100">

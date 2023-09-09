@@ -6,20 +6,25 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { FcPlus } from "react-icons/fc";
 import { RxCross2 } from "react-icons/rx";
-import { profileFormAction, viewProfileAction } from "../store/Actions/profileAction";
+import {
+  profileFormAction,
+  viewProfileAction,
+} from "../store/Actions/profileAction";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { Card } from "react-bootstrap";
+import { Card, InputGroup } from "react-bootstrap";
 import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {  Spinner } from "react-bootstrap"; 
+import { Spinner } from "react-bootstrap";
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
 
 // import ProtectedProfileRoute from '../components/ProtectedProfileRoute';
 
 const ProfileForm = () => {
   const profile = useSelector((state) => state.createProfile);
-  const [response, setResponse] = useState(null); 
+  const [response, setResponse] = useState(null);
   console.log(profile, "profileState");
   useEffect(() => {
     // Check if localStorage is available (client-side)
@@ -60,7 +65,7 @@ const ProfileForm = () => {
       border: "1px solid grey",
       borderRadius: "10px",
       backgroundColor: "rgb(234 , 234 , 234 )",
-      marginTop:"30px"
+      marginTop: "30px",
     },
     img: {
       width: "120px",
@@ -77,11 +82,14 @@ const ProfileForm = () => {
     title: {
       fontSize: "11px",
     },
-    btn2:{
+    btn2: {
       backgroundColor: "rgb(245, 93, 2)",
       border: "none",
-      marginTop:"15px"
-    }
+      marginTop: "15px",
+    },
+    time: {
+      fontSize: "50px",
+    },
   };
 
   const [subjectName, setSubjectName] = useState([]);
@@ -93,8 +101,17 @@ const ProfileForm = () => {
   const [serviceName, setServiceName] = useState("");
   const [language, setLanguage] = useState("");
   const [languages, setLanguages] = useState([]);
-  const [selectedDays, setSelectedDays] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [selectedTimes, setSelectedTimes] = useState([]);
+  const [prices, setPrices] = useState({
+    "15_minutes": null,
+    "30_minutes": null,
+    "45_minutes": null,
+    "1_hour": null,
+    "1_hour_30_minutes": null,
+    "2_hours": null,
+  });
 
   const dispatch = useDispatch();
 
@@ -107,8 +124,8 @@ const ProfileForm = () => {
     aboutUs: "",
     phoneNumber: 0,
     age: 0,
-    subjectName: [""],
-    serviceNames: [""],
+    subjectName: [],
+    serviceNames: [],
     selectedFileNames: [],
     selectedVideoFile: null,
     Nationality: "",
@@ -116,20 +133,14 @@ const ProfileForm = () => {
     specialityDegree: "",
     Experience: "",
     TeachingStyle: "",
-    languages: [""],
-    day: "",
-    time: "",
-    cost: 0,
-    availabilityDays: "",
-    availabilityMins: "",
-    availabilityStatus: "",
+    languages: [],
   });
-  
- 
 
   console.log(formData.age, "age");
   console.log(formData.Nationality, "nation");
   console.log(formData.education, "edu");
+  console.log(selectedTimes, "time");
+  console.log(prices, "costt");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -179,14 +190,14 @@ const ProfileForm = () => {
 
   const handleFileChange = (e) => {
     const files = e.target.files;
-    console.log(e.target.files)
+    console.log(e.target.files);
     const fileNames = [];
 
     if (selectedFileNames.length + files.length <= 5) {
       for (let i = 0; i < files.length; i++) {
         fileNames.push(files[i]);
       }
-      console.log(fileNames , "filenamesss");
+      console.log(fileNames, "filenamesss");
       setSelectedFileNames((prevFileNames) => [...prevFileNames, ...fileNames]);
       setFormData((prevData) => ({
         ...prevData,
@@ -203,10 +214,6 @@ const ProfileForm = () => {
       ...prevData,
       selectedVideoFile: file,
     }));
-  };
-
-  const handleVideoTitleChange = (e) => {
-    setVideoTitle(e.target.value);
   };
 
   const handleServiceNameChange = (e) => {
@@ -229,13 +236,60 @@ const ProfileForm = () => {
     setServiceNames(updatedServiceNames);
   };
 
-  const handleDayChange = (e) => {
-    const value = e.target.value;
-    if (selectedDays.includes(value)) {
-      setSelectedDays(selectedDays.filter((day) => day !== value));
+  const handleCheckboxChange = (e) => {
+    const day = e.target.value;
+    if (selectedDays.includes(day)) {
+      // If the day is already selected, remove it
+      setSelectedDays(selectedDays.filter((d) => d !== day));
+      // Remove the selected time for this day
+      const updatedTimes = { ...selectedTimes };
+      delete updatedTimes[day];
+      setSelectedTimes(updatedTimes);
+
+      // Update formData
+      setFormData((prevData) => ({
+        ...prevData,
+        availabilityDays: selectedDays.filter((d) => d !== day).join(", "), // Join selected days as a comma-separated string
+      }));
     } else {
-      setSelectedDays([...selectedDays, value]);
+      // If the day is not selected, add it
+      setSelectedDays([...selectedDays, day]);
     }
+  };
+
+  const handleTimeChange = (day, time) => {
+    // setSelectedTimes({ ...selectedTimes, [day]: time    });
+
+    // Convert the time to AM/PM format
+    const timeParts = time.split(":");
+    const hour = parseInt(timeParts[0], 10);
+    const minute = timeParts[1];
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const ampmHour = hour > 12 ? hour - 12 : hour;
+
+    setSelectedTimes({ ...selectedTimes, [day]: time });
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [day.toLowerCase()]: time, // Store the time in 24-hour format
+      [`${day.toLowerCase()}AMPM`]: `${ampmHour}:${minute} ${ampm}`, // Store the time in AM/PM format
+      selectedTimes: selectedTimes, // Add this line to update selectedTimes in formData
+    }));
+  };
+
+  const handlePriceChange = (e, duration) => {
+    const { value } = e.target;
+    setPrices((prevPrices) => ({
+      ...prevPrices,
+      [duration]: value,
+    }));
+    setFormData((prevData) => ({
+      ...prevData,
+      prices: {
+        ...prevData.prices,
+        [duration]: value,
+      },
+    }));
   };
 
   const truncateText = (text, maxLength) => {
@@ -250,8 +304,8 @@ const ProfileForm = () => {
 
   const handleProfile = async (e) => {
     e.preventDefault();
-    if(!formData){
-      alert("okk")
+    if (!formData) {
+      alert("okk");
     }
     setIsSubmitting(true); // Set form submission status to true
     try {
@@ -274,410 +328,254 @@ const ProfileForm = () => {
   return (
     // <ProtectedProfileRoute>
     <>
-    <ToastContainer/>
+      <ToastContainer />
 
-    <div className="container  mt-2 py-5">
-      <h2 className="mb-3">Personal Information Form</h2>
-      <Form onSubmit={handleSubmit}>
-        <Row className="mb-3 mt-2 d-block d-md-flex">
-          <Col>
-            <Form.Group controlId="firstName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group controlId="phoneNumber">
-              <Form.Label className="text-nowrap">Phone Number</Form.Label>
-              <Form.Control
-                type="number"
-                name="phoneNumber"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group controlId="age">
-              <Form.Label>Age</Form.Label>
-              <Form.Control
-                type="number"
-                name="age"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3  mt-2 d-block d-md-flex">
-          <Col>
-            <Form.Group controlId="dateOfBirth">
-              <Form.Label>Date of Birth</Form.Label>
-              <Form.Control
-                type="date"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group>
-              <Form.Label>Nationality</Form.Label>
-              <Form.Control
-                name="Nationality"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group controlId="country">
-              <Form.Label>City</Form.Label>
-              <Form.Control
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-        </Row>
+      <div className="container  mt-2 py-5">
+        <h2 className="mb-3">Personal Information Form</h2>
+        <Form onSubmit={handleSubmit}>
+          <Row className="mb-3 mt-2 d-block d-md-flex">
+            <Col>
+              <Form.Group controlId="firstName">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="phoneNumber">
+                <Form.Label className="text-nowrap">Phone Number</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="phoneNumber"
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="age">
+                <Form.Label>Age</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="age"
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row className="mb-3  mt-2 d-block d-md-flex">
+            <Col>
+              <Form.Group controlId="dateOfBirth">
+                <Form.Label>Date of Birth</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>Nationality</Form.Label>
+                <Form.Control
+                  name="Nationality"
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="country">
+                <Form.Label>City</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-        <Form.Group controlId="gender" className="py-3">
-          <Form.Check
-            inline
-            label="Male"
-            type="radio"
-            name="gender"
-            value="male"
-            onChange={handleChange}
-            required
-          />
-          <Form.Check
-            inline
-            label="Female"
-            type="radio"
-            name="gender"
-            value="female"
-            onChange={handleChange}
-            required
-          />
-          <Form.Check
-            inline
-            label="Other"
-            type="radio"
-            name="gender"
-            value="other"
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
-        <Row className="mb-3  mt-2 d-block d-md-flex">
-          <Col>
-            <Form.Group>
-              <Form.Label>Education</Form.Label>
-              <Form.Control
-                type="text"
-                onChange={handleChange}
-                name="education"
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group>
-              <Form.Label>Degree</Form.Label>
-              <Form.Control
-                type="text"
-                onChange={handleChange}
-                name="specialityDegree"
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group>
-              <Form.Label>Experience</Form.Label>
-              <Form.Control
-                type="text"
-                name="Experience"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3  mt-2 d-block d-md-flex">
-          <Col>
-            <Form.Group>
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type="text"
-                name="title"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group>
-              <Form.Label>Teaching Style</Form.Label>
-              <Form.Control
-                type="text"
-                name="TeachingStyle"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group style={theme.main} className="position-relative mt-2">
-              <Form.Label>Languages</Form.Label>
-              <Form.Control
-                type="text"
-                onChange={(e) => setLanguage(e.target.value)}
-                placeholder="Enter a language"
-              />
-              <FcPlus
-                style={{
-                  ...theme.icn,
-                  top: "70%",
-                  transform: "translateY(-50%)",
-                }}
-                className="position-absolute"
-                onClick={handleLanguageClick}
-              />
-            </Form.Group>
-            {languages.length > 0 && (
-              <div className="mt-2">
-                <ul>
-                  {languages.map((lang, index) => (
-                    <li key={index}>
-                      {lang}
-                      <span
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleDeleteLanguage(index)}
-                      >
-                        <RxCross2 style={theme.font} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </Col>
-        </Row>
-
-        <Form.Group controlId="aboutUs">
-          <Form.Label>About Us</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={4}
-            value={formData.aboutUs}
-            onChange={handleChange}
-            name="aboutUs"
-            placeholder="Tell us about yourself..."
-          />
-        </Form.Group>
-
-        <Row className="mb-3  mt-2 d-block d-md-flex">
-          <Col>
-            <Form.Group
-              controlId="inputField"
-              style={theme.main}
-              className="mt-2"
-            >
-              <Form.Label>Enter Subject Name</Form.Label>
-              <Form.Control
-                type="text"
-                onChange={handleSubjectChange}
-                placeholder="Subject's names"
-                name="subjectName"
-              />
-              <FcPlus
-                style={theme.icn}
-                className="position-absolute"
-                onClick={handleSubjectClick}
-              />
-            </Form.Group>
-            {subjectName && (
-              <div className="mt-2">
-                <ul>
-                  {subjectName.map((subj, index) => (
-                    <li key={index}>
-                      {subj}{" "}
-                      <span
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          const updatedSubjectName = subjectName.filter(
-                            (_, i) => i !== index
-                          );
-                          setSubjectName(updatedSubjectName);
-                          console.log(updatedSubjectName);
-                        }}
-                      >
-                        <RxCross2 style={theme.font} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </Col>
-          <Col>
-            <Form.Group
-              controlId="inputService"
-              style={theme.main}
-              className="mt-2"
-            >
-              <Form.Label>Enter Service Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={serviceName}
-                onChange={handleServiceNameChange}
-                placeholder="Service's name"
-              />
-              <FcPlus
-                style={theme.icn}
-                className="position-absolute"
-                onClick={handleServiceClick}
-              />
-            </Form.Group>
-            {serviceNames.length > 0 && (
-              <div className="mt-2">
-                <ul className="">
-                  {serviceNames.map((name, index) => (
-                    <li key={index} className="">
-                      {name}
-                      <span
-                        className="ml-2 cursor-pointer"
-                        onClick={() => handleDeleteService(index)}
-                      >
-                        <RxCross2 style={theme.font} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </Col>
-        </Row>
-        <h4>Availability</h4>
-        <Row className="mb-4  mt-2 d-block d-md-flex">
-          <Col>
-          <div>
-    
-          <DropdownMultiselect
-        options={["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" , "Sunday"]}
-        name="countries"
-      />
-    </div>
-          </Col>
-          <Col>
-            <Form.Select
+          <Form.Group controlId="gender" className="py-3">
+            <Form.Check
+              inline
+              label="Male"
+              type="radio"
+              name="gender"
+              value="male"
               onChange={handleChange}
-              className="mb-2"
-              name="availabilityMins"
-              aria-label="Default select example"
-            >
-              <option>Availability Minutes</option>
-              <option>15 minutes</option>
-              <option>30 minutes</option>
-              <option>45 minutes</option>
-              <option>60 minutes</option>
-            </Form.Select>
-          </Col>
-          <Col>
-            <Form.Select
+              required
+            />
+            <Form.Check
+              inline
+              label="Female"
+              type="radio"
+              name="gender"
+              value="female"
               onChange={handleChange}
-              className="mb-2"
-              name="availabilityStatus"
-              aria-label="Default select example"
-            >
-              <option>Availability Status</option>
-              <option>Full time</option>
-              <option>Part time</option>
-              <option>Contract</option>
-              <option>Busy</option>
-              <option>Not Available</option>
-            </Form.Select>
-          </Col>
-        </Row>
-        <h4>Pricing</h4>
-        <Row className="mb-3  mt-2 d-block d-md-flex">
-          <Col>
-            <Form.Select
+              required
+            />
+            <Form.Check
+              inline
+              label="Other"
+              type="radio"
+              name="gender"
+              value="other"
               onChange={handleChange}
-              className="mb-2"
-              name="day"
-              aria-label="Default select example"
-            >
-              <option>Days</option>
-              <option>1/Day</option>
-              <option>3/Days</option>
-              <option>7/Days</option>
-              <option>15/Days</option>
-              <option>30/Days</option>
-            </Form.Select>
-          </Col>
-          <Col>
-            <Form.Select
-              onChange={handleChange}
-              className="mb-2"
-              name="time"
-              aria-label="Default select example"
-            >
-              <option>Minutes</option>
-              <option>15 minutes  </option>
-              <option>30 minutes</option>
-              <option>45 minutes</option>
-              <option>60 minutes</option>
-            </Form.Select>
-          </Col>
-          <Col>
-            <Form.Group>
-              <Form.Control
-                type="text"
-                placeholder="Enter your price"
-                onChange={handleChange}
-                required
-                name="cost"
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-
-        <Row className=" mt-2 d-block d-md-flex">
-          <Col>
-            <Form.Group
-              controlId="fileUpload"
-              style={theme.main}
-              className=" mt-2"
-            >
-              <Form.Label>Upload Photos</Form.Label>
-              <Form.Control type="file" multiple name="selectedFileNames" onChange={handleFileChange} />
-              {selectedFileNames.length > 0 && (
+              required
+            />
+          </Form.Group>
+          <Row className="mb-3  mt-2 d-block d-md-flex">
+            <Col>
+              <Form.Group>
+                <Form.Label>Education</Form.Label>
+                <Form.Control
+                  type="text"
+                  onChange={handleChange}
+                  name="education"
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>Degree</Form.Label>
+                <Form.Control
+                  type="text"
+                  onChange={handleChange}
+                  name="specialityDegree"
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>Experience</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="Experience"
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row className="mb-3  mt-2 d-block d-md-flex">
+            <Col>
+              <Form.Group>
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="title"
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>Teaching Style</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="TeachingStyle"
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group style={theme.main} className="position-relative mt-2">
+                <Form.Label>Languages</Form.Label>
+                <Form.Control
+                  type="text"
+                  onChange={(e) => setLanguage(e.target.value)}
+                  placeholder="Enter a language"
+                />
+                <FcPlus
+                  style={{
+                    ...theme.icn,
+                    top: "70%",
+                    transform: "translateY(-50%)",
+                  }}
+                  className="position-absolute"
+                  onClick={handleLanguageClick}
+                />
+              </Form.Group>
+              {languages.length > 0 && (
                 <div className="mt-2">
-                  <strong>Selected Photos:</strong>
                   <ul>
-                    {selectedFileNames.map((fileName, index) => (
+                    {languages.map((lang, index) => (
                       <li key={index}>
-                        {fileName.name}{" "}
+                        {lang}
+                        <span
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleDeleteLanguage(index)}
+                        >
+                          <RxCross2 style={theme.font} />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </Col>
+          </Row>
+
+          <Form.Group controlId="aboutUs">
+            <Form.Label>About Us</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={4}
+              value={formData.aboutUs}
+              onChange={handleChange}
+              name="aboutUs"
+              placeholder="Tell us about yourself..."
+            />
+          </Form.Group>
+
+          <Row className="mb-3  mt-2 d-block d-md-flex">
+            <Col>
+              <Form.Group
+                controlId="inputField"
+                style={theme.main}
+                className="mt-2"
+              >
+                <Form.Label>Enter Subject Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  onChange={handleSubjectChange}
+                  placeholder="Subject's names"
+                  name="subjectName"
+                />
+                <FcPlus
+                  style={theme.icn}
+                  className="position-absolute"
+                  onClick={handleSubjectClick}
+                />
+              </Form.Group>
+              {subjectName && (
+                <div className="mt-2">
+                  <ul>
+                    {subjectName.map((subj, index) => (
+                      <li key={index}>
+                        {subj}{" "}
                         <span
                           style={{ cursor: "pointer" }}
                           onClick={() => {
-                            const updatedFileNames = selectedFileNames.filter(
+                            const updatedSubjectName = subjectName.filter(
                               (_, i) => i !== index
                             );
-                            setSelectedFileNames(updatedFileNames);
+                            setSubjectName(updatedSubjectName);
+                            console.log(updatedSubjectName);
                           }}
                         >
                           <RxCross2 style={theme.font} />
@@ -687,31 +585,250 @@ const ProfileForm = () => {
                   </ul>
                 </div>
               )}
-            </Form.Group>
-          </Col>
-
-          <Col>
-            <Form.Group
-              controlId="videoUpload"
-              style={theme.main}
-              className="mt-2"
-            >
-              <Form.Label>Upload Video</Form.Label>
-              <Form.Control
-                type="file"
-                accept="video/*"
-                onChange={handleVideoFileChange}
-              />
-
-              {selectedVideoFile && (
+            </Col>
+            <Col>
+              <Form.Group
+                controlId="inputService"
+                style={theme.main}
+                className="mt-2"
+              >
+                <Form.Label>Enter Service Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={serviceName}
+                  onChange={handleServiceNameChange}
+                  placeholder="Service's name"
+                />
+                <FcPlus
+                  style={theme.icn}
+                  className="position-absolute"
+                  onClick={handleServiceClick}
+                />
+              </Form.Group>
+              {serviceNames.length > 0 && (
                 <div className="mt-2">
-                  <strong>Selected Video:</strong> {selectedVideoFile.name}
+                  <ul className="">
+                    {serviceNames.map((name, index) => (
+                      <li key={index} className="">
+                        {name}
+                        <span
+                          className="ml-2 cursor-pointer"
+                          onClick={() => handleDeleteService(index)}
+                        >
+                          <RxCross2 style={theme.font} />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
-            </Form.Group>
-          </Col>
-        </Row>
-        <Button
+            </Col>
+          </Row>
+          <h4>Availability</h4>
+          <Row className="mb-4  mt-2 d-block d-md-flex">
+            <Col>
+              <div>
+                <Form className="mt-3 d-lg-flex justify-content-lg-between">
+                  {[
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                  ].map((day) => (
+                    <div key={day}>
+                      <Form.Check
+                        type="checkbox"
+                        label={day}
+                        value={day}
+                        checked={selectedDays.includes(day)}
+                        onChange={handleCheckboxChange}
+                      />
+
+                      {selectedDays.includes(day) && (
+                        <Row>
+                          <Col>
+                            <Form.Group
+                              className="mt-2"
+                              controlId={`time-${day}`}
+                            >
+                              <Form.Control
+                                type="time"
+                                value={selectedTimes[day] || "12:00"}
+                                onChange={(e) =>
+                                  handleTimeChange(day, e.target.value)
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                      )}
+                    </div>
+                  ))}
+                </Form>
+                {/* <p>Selected Days: {selectedDays.join(", ")}</p> */}
+                <p className="mt-3">Selected Times:</p>
+                <ul>
+                  {Object.entries(selectedTimes).map(([day, time]) => (
+                    <li key={day}>
+                      {day} : {formData[`${day.toLowerCase()}AMPM`]}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Col>
+          </Row>
+
+          <h4>Pricing</h4>
+          <Row className="mb-3 mt-2 d-block d-md-flex">
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label>15 minutes</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>€</InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    name="prices"
+                    onChange={(e) => handlePriceChange(e, "15_minutes")}
+                    value={prices["15_minutes"]}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label>30 minutes</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>€</InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    onChange={(e) => handlePriceChange(e, "30_minutes")}
+                    value={prices["30_minutes"]}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label>45 minutes</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>€</InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    onChange={(e) => handlePriceChange(e, "45_minutes")}
+                    value={prices["45_minutes"]}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="d-block d-md-flex">
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label>1 hour</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>€</InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    onChange={(e) => handlePriceChange(e, "1_hour")}
+                    value={prices["1_hour"]}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label>1 hour and 30 minutes</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>€</InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    onChange={(e) => handlePriceChange(e, "1_hour_30_minutes")}
+                    value={prices["1_hour_30_minutes"]}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label>2 hours</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>€</InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    onChange={(e) => handlePriceChange(e, "2_hours")}
+                    value={prices["2_hours"]}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className=" mt-2 d-block d-md-flex">
+            <Col>
+              <Form.Group
+                controlId="fileUpload"
+                style={theme.main}
+                className=" mt-2"
+              >
+                <Form.Label>Upload Photos</Form.Label>
+                <Form.Control
+                  type="file"
+                  multiple
+                  name="selectedFileNames"
+                  onChange={handleFileChange}
+                />
+                {selectedFileNames.length > 0 && (
+                  <div className="mt-2">
+                    <strong>Selected Photos:</strong>
+                    <ul>
+                      {selectedFileNames.map((fileName, index) => (
+                        <li key={index}>
+                          {fileName.name}{" "}
+                          <span
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              const updatedFileNames = selectedFileNames.filter(
+                                (_, i) => i !== index
+                              );
+                              setSelectedFileNames(updatedFileNames);
+                            }}
+                          >
+                            <RxCross2 style={theme.font} />
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </Form.Group>
+            </Col>
+
+            <Col>
+              <Form.Group
+                controlId="videoUpload"
+                style={theme.main}
+                className="mt-2"
+              >
+                <Form.Label>Upload Video</Form.Label>
+                <Form.Control
+                  type="file"
+                  accept="video/*"
+                  onChange={handleVideoFileChange}
+                />
+
+                {selectedVideoFile && (
+                  <div className="mt-2">
+                    <strong>Selected Video:</strong> {selectedVideoFile.name}
+                  </div>
+                )}
+              </Form.Group>
+            </Col>
+          </Row>
+          <Button
             type="submit"
             style={theme.btn2}
             variant="primary"
@@ -734,30 +851,32 @@ const ProfileForm = () => {
               "Submit"
             )}
           </Button>
-      </Form>
-      <hr />
-      <div style={theme.card} className="py-2 px-2 col-5 d-none d-lg-flex">
-        <Card.Img
-          src="https://mdbootstrap.com/img/new/standard/nature/111.webp"
-          alt="Card Image"
-          style={theme.img}
-        />
-        <Card.Body style={theme.info}>
-          <Card.Title style={theme.title}>{formData.name}</Card.Title>
-          <Card.Title className="mt-1" style={theme.title}>
-            {formData.title}
-          </Card.Title>
-          <Card.Text className="mt-2">{truncateText(formData.aboutUs, 22)}</Card.Text>
-          <div className="d-flex justify-content-end">
-            {formData.phoneNumber !== 0 && (
-              <Button className="mt-1" style={theme.btn}>
-                Call Now
-              </Button>
-            )}
-          </div>
-        </Card.Body>
+        </Form>
+        <hr />
+        <div style={theme.card} className="py-2 px-2 col-5 d-none d-lg-flex">
+          <Card.Img
+            src="https://mdbootstrap.com/img/new/standard/nature/111.webp"
+            alt="Card Image"
+            style={theme.img}
+          />
+          <Card.Body style={theme.info}>
+            <Card.Title style={theme.title}>{formData.name}</Card.Title>
+            <Card.Title className="mt-1" style={theme.title}>
+              {formData.title}
+            </Card.Title>
+            <Card.Text className="mt-2">
+              {truncateText(formData.aboutUs, 22)}
+            </Card.Text>
+            <div className="d-flex justify-content-end">
+              {formData.phoneNumber !== 0 && (
+                <Button className="mt-1" style={theme.btn}>
+                  Call Now
+                </Button>
+              )}
+            </div>
+          </Card.Body>
+        </div>
       </div>
-    </div>
     </>
 
     // </ProtectedProfileRoute>

@@ -11,6 +11,9 @@ import {
 import axios from "axios";
 import { API_URLS } from "../../apiConfig";
 import { toast } from "react-toastify";
+
+
+
 export const profileFormAction = (formData, token) => async (dispatch) => {
   console.log(formData, "formm");
   console.log(token , "actionToken")
@@ -34,11 +37,12 @@ export const profileFormAction = (formData, token) => async (dispatch) => {
   formDataObject.append("TeachingStyle", formData.TeachingStyle);
   formDataObject.append("languages", JSON.stringify(formData.languages));
   formDataObject.append("day", formData.day);
-  formDataObject.append("time", formData.time);
-  formDataObject.append("cost", formData.cost);
-  formDataObject.append("availabilityDays", JSON.stringify(formData.availabilityDays));
-  formDataObject.append("availabilityMins", formData.availabilityMins);
-  formDataObject.append("availabilityStatus", formData.availabilityStatus);
+  formDataObject.append("selectedTimes",JSON.stringify(formData.selectedTimes));
+
+// Assuming formData.prices is an array of price values
+formDataObject.append("prices", JSON.stringify(formData.prices));
+
+
 
   for (let i = 0; i < formData.selectedFileNames.length; i++) {
     console.log(formData.selectedFileNames[i], "selected file")
@@ -141,7 +145,3 @@ export const viewProfileAction = (token) => async (dispatch) => {
 export const resetProfileAction = () => ({
   type: RESET_PROFILE,
 });
-
-
-
-
