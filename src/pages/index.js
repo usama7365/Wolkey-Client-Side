@@ -1,8 +1,10 @@
 import React from 'react';
-import Banner from '../pages/banner';
+
+
+import Dashboard from './home';
 
 function HomePage() {
-  return <Banner/>;
+  return <Dashboard/>;
 }
 
 export default HomePage;

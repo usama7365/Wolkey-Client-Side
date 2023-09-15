@@ -11,7 +11,7 @@ const GreenNav = ({ children }) => {
     color: "#FFFFFF",
     fontWeight: "600",
     fontSize: "15px",
-    fontFamily: "Raleway",
+  
   }; 
 
   const btnStyle = {

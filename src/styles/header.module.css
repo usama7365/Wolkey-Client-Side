@@ -1,0 +1,23 @@
+.main {
+    background-color: aqua;
+    width: 100%;
+    display: flex;
+   
+    justify-content: space-between !important;
+    padding: 10px; 
+    /* Add padding to create space around the elements */
+  }
+  
+  .right {
+    white-space: nowrap;
+    display: flex;
+    gap: 10px;
+    background-color: blue; /* Add gap to create space between child elements */
+  }
+  
+  .mid {
+    background-color: yellow;
+    display: flex;
+    gap: 10px; /* Add gap to create space between child elements */
+  }
+  

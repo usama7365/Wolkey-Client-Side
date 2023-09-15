@@ -8,7 +8,9 @@ const SearchNav = () => {
 
 const theme={
   success:{
-    backgroundColor:"#31A551"
+    backgroundColor:"#31A551",
+    border:"none"
+  
   } , 
   row:{
     width:"30%"
@@ -60,7 +62,7 @@ const theme={
               placeholder="Search Mockups, Logos, Design Templates..."
               aria-label="Search"
             />
-            <Button style={theme.success}>
+            <Button className='d-flex align-items-center' style={theme.success}>
               <BsSearch />
             </Button>
           </InputGroup>

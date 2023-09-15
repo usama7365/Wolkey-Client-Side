@@ -5,6 +5,9 @@ import {
     PROFILE_FORM_FAIL,
     VIEW_PROFILE_SUCCESS,
     VIEW_PROFILE_FAIL,
+    CREATE_AGENCY_PROFILE_FAIL,
+    CREATE_AGENCY_PROFILE_REQUEST,
+    CREATE_AGENCY_PROFILE_SUCCESS,
     RESET_PROFILE
   } from '../Constants/profileConstants'; // Constants file
   
@@ -24,7 +27,7 @@ import {
           ...state,
           loading: false,
           success: true,
-          profileId:_id,
+          profileId:action.payload
         };
       case PROFILE_FORM_FAIL:
         return {
@@ -56,29 +59,23 @@ export const viewProfileReducer = (state =initialState, action) => {
   }
 };
 
-// profileReducer.js
-
-
-const initialState2 = {
-  userInfo: null, // Initial state or you can set it to null
-  // other profile-related state properties
-};
-
-export const resetProfileReducer = (state = initialState2, action) => {
+export const agencyProfileReducer = (state={}, action) => {
   switch (action.type) {
-    case RESET_PROFILE:
-      return {
-        ...state,
-        userInfo: null, // Reset the profile data
-        loading: false, // Reset loading to false
-        error: null,   // Reset error to null
-        // Reset other profile-related state properties if needed
-      };
-    // Handle other action types as well
+    case ' CREATE_AGENCY_PROFILE_FAIL':
+      return { ...state, loading: true };
+    case ' CREATE_AGENCY_PROFILE_REQUEST':
+      return { ...state, loading: false, userInfo: action.payload, error: null };
+    case ' CREATE_AGENCY_PROFILE_SUCCESS':
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
 };
+
+
+
+
+
 
 
 

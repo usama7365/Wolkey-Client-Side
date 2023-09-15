@@ -6,8 +6,9 @@ import {
   forgotPasswordReducer,
   resetPasswordReducer,
   verifyEmailReducer,
+ 
 } from "../store/Reducers/userReducer"; 
-import {profileFormReducer , viewProfileReducer , resetProfileReducer} from "../store/Reducers/profileReducer"
+import {profileFormReducer , viewProfileReducer ,  agencyProfileReducer} from "../store/Reducers/profileReducer"
 
 
 const initialState = {
@@ -22,7 +23,7 @@ const reducer = combineReducers({
   verifyEmail:verifyEmailReducer,
   createProfile:profileFormReducer,
   viewProfile:viewProfileReducer,
-  profile: resetProfileReducer,
+  agencyProfile:agencyProfileReducer
 
 });
 

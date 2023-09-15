@@ -14,7 +14,6 @@ import { token } from "morgan";
 import { FcCheckmark } from "react-icons/fc";
 import { API_URLS } from "../apiConfig";
 const Profile = () => {
-
   const bg = {
     backgroundColor: "rgb(245, 93, 2)",
     border: "none",
@@ -25,8 +24,6 @@ const Profile = () => {
   const toggleImages = () => {
     setShowAllImages(!showAllImages);
   };
-
-  
 
   const profileData = useSelector((state) => state.viewProfile.userInfo);
   const isLoading = profileData === null;
@@ -58,7 +55,6 @@ const Profile = () => {
   }, [dispatch, token]);
 
   if (isLoading) {
-
     return (
       <div
         className="d-flex justify-content-center align-items-center"
@@ -70,9 +66,8 @@ const Profile = () => {
   }
 
   const imagesToDisplay = showAllImages
-  ? profileData.selectedFileNames
-  : profileData.selectedFileNames.slice(0, 4);
-
+    ? profileData.selectedImageFiles || []
+    : (profileData.selectedImageFiles  || []).slice(0, 4);
 
   return (
     <>
@@ -114,25 +109,24 @@ const Profile = () => {
         <div className={styles.images}>
           <div className="d-flex flex-wrap">
             <div>
-              {profileData.selectedVideoFile && (
-                <video controls>
-                  <source
-                    src={`data:video/mp4;base64,${Buffer.from(
-                      profileData.selectedVideoFile.data
-                    ).toString("base64")}`}
-                    type="video/mp4"
-                  />
-                  Your browser does not support the video tag.
-                </video>
-              )}
+              {Array.isArray(profileData.selectedVideoFile) &&
+                profileData.selectedVideoFile.map((videoPath, index) => (
+                  <div key={index}>
+                    <video controls>
+                      <source
+                        src={`${API_URLS}${videoPath}`}
+                        alt={`Video ${index}`}
+                        type="video/mp4"
+                      />
+                    </video>
+                  </div>
+                ))}
 
-              {Array.isArray(profileData.selectedFileNames) &&
-                imagesToDisplay.map((image, index) => (
+              {Array.isArray(profileData.selectedImageFiles) &&
+                profileData.selectedImageFiles.map((imagePath, index) => (
                   <div className="mb-2" key={index}>
                     <img
-                      src={`data:image/jpeg;base64,${Buffer.from(
-                        image.data
-                      ).toString("base64")}`}
+                      src={`${API_URLS}${imagePath}`}
                       alt={`Image ${index}`}
                       style={{
                         objectFit: "contain",
@@ -143,14 +137,14 @@ const Profile = () => {
             </div>
           </div>
 
-          {profileData.selectedFileNames.length > 4 && (
-            <div className="d-flex justify-content-center">
-              <Button style={bg} onClick={toggleImages}>
-                {showAllImages ? "Show Less Images" : "Show More Images"}
-              </Button>
-            </div>
-          )}
-
+          {profileData.selectedImageFiles &&
+            profileData.selectedImageFiles.length > 4 && (
+              <div className="d-flex justify-content-center">
+                <Button style={bg} onClick={toggleImages}>
+                  {showAllImages ? "Show Less Images" : "Show More Images"}
+                </Button>
+              </div>
+            )}
         </div>
 
         <div className={styles.right}>

@@ -21,8 +21,9 @@ import { API_URLS } from "../../apiConfig";
 import { toast } from "react-toastify";
 
 export const userSignupAction =
-  ({ displayName, email, password }) =>
+  ({ displayName, email, password , role }) =>
   async (dispatch) => {
+    console.log(role , "roleee")
     try {
       dispatch({
         type: USER_SIGNUP_REQUEST,
@@ -36,7 +37,7 @@ export const userSignupAction =
 
       const { data } = await axios.post(
         `${API_URLS}/signUp`,
-        { displayName, email, password },
+        { displayName, email, password, role },
         config
       );
 

@@ -1,0 +1,34 @@
+/* sideNavbar.module.css */
+
+.side-navbar {
+  position: fixed; /* Position the sidebar relative to the viewport */
+  top: 0; /* Position it at the top of the viewport */
+  left: -100px; /* Initial position when closed (out of view) */
+  width: 100px; /* Width when open */
+  height: 100%; /* Take the full height of the viewport */
+  overflow-x: hidden;
+  transition: left 0.3s; /* Add transition for smooth animation */
+  background-color:#F55D02;
+  color: white;
+}
+
+
+.side-navbar.open {
+  left: 0; /* Position it at the left edge of the viewport when open */
+}
+
+.toggle-icon {
+  cursor: pointer;
+  padding: 10px; 
+  display: flex;
+ 
+  align-items: center;
+}
+
+.nav-link {
+  padding: 10px; /* Add padding to the nav links */
+  color: white; /* Set text color */
+  text-decoration: none; /* Remove underlines from links */
+}
+
+/* Define other styles as needed for your sidebar */

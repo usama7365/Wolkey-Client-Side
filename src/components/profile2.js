@@ -4,19 +4,33 @@ import { FaLocationDot } from "react-icons/fa6";
 import { Spinner } from "react-bootstrap";
 import { BsEnvelopeFill, BsFillTelephoneFill } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
+import Button from "react-bootstrap/Button";
+import { ImBooks } from "react-icons/im";
+import { FcCheckmark } from "react-icons/fc";
 import {
   viewProfileAction,
   resetProfileAction,
 } from "../store/Actions/profileAction";
 
 const Profile2 = () => {
-  // const response = useSelector((state) => state?.userLogin?.auth?.token);
-
+  const bg = {
+    backgroundColor: "rgb(245, 93, 2)",
+    border: "none",
+    marginBottom: "20px",
+  };
+ 
   const profileData = useSelector((state) => state.viewProfile.userInfo);
   const isLoading = profileData === null;
 
-  // const [formData, setFormData] = useState(null);
   console.log(profileData, "vieww");
+  const [showAllImages, setShowAllImages] = useState(false);
+  const toggleImages = () => {
+    setShowAllImages(!showAllImages);
+  };
+
+const imagesToDisplay = showAllImages
+  ? profileData?.selectedImageFiles  || [] 
+  : (profileData?.selectedImageFiles  || []).slice(0, 4);
 
   const dispatch = useDispatch();
 
@@ -24,13 +38,11 @@ const Profile2 = () => {
     const authUserString = localStorage.getItem("auth-user");
     console.log(authUserString, "tokennn");
     if (authUserString) {
-      // You can parse the data if it's JSON
       const authUser = JSON.parse(authUserString);
       const token = authUser ? authUser.token : null;
       console.log(token, "tok");
       const fetchData = async () => {
         if (token) {
-          // Dispatch the action to fetch profile data
           await dispatch(viewProfileAction(token));
         }
       };
@@ -40,7 +52,6 @@ const Profile2 = () => {
   }, [dispatch]);
 
   if (isLoading) {
-    // Display the loading spinner in the center of the screen
     return (
       <div
         className="d-flex justify-content-center align-items-center"
@@ -53,7 +64,6 @@ const Profile2 = () => {
 
   const theme = {
     img: {
-    
       position: "relative",
     },
 
@@ -75,29 +85,35 @@ const Profile2 = () => {
     },
     video: {
       width: "100%",
-      backgroundColor: "yellow",
+
       marginBottom: "10px",
-      height: "300px", // Adjust the height as per your preference
     },
-  
+    vid: {
+      height: "250px",
+      width: "100%",
+      outline: "none",
+    },
+
     photo: {
       width: "45%",
-      height:"200px",
-      display:"flex"
+      height: "200px",
+      display: "flex",
     },
     pic: {
-      height:"auto",
-      width:"100%",
-      display:"flex",
-      flexWrap:"wrap",
-      justifyContent:"space-around",
-      marginBottom:"10px"
+      height: "auto",
+      width: "100%",
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-around",
+      marginBottom: "10px",
     },
-    image:{
-      width:"100%",
-      marginBottom:"10px"
-    
-    }
+    image: {
+      width: "100%",
+      marginBottom: "10px",
+    },
+    icn: {
+      color: " #31A551",
+    },
   };
 
   return (
@@ -112,36 +128,54 @@ const Profile2 = () => {
         <FaLocationDot /> <span>Amsterdem</span>{" "}
       </p>
 
+      <div className="d-flex">
+        <p>
+          <FaLocationDot style={theme.icn} /> <span>{profileData.city}</span>{" "}
+        </p>
+
+        <p>
+          <ImBooks style={theme.icn} className="m-1" />{" "}
+          <span>{profileData.specialityDegree}</span>{" "}
+        </p>
+      </div>
+
       <div style={theme.img}>
-        <div style={theme.video}>
-          {profileData.selectedVideoFile && (
-            <video style={theme.vid} controls>
-              <source
-                src={`data:video/mp4;base64,${Buffer.from(
-                  profileData.selectedVideoFile.data
-                ).toString("base64")}`}
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
-          )}
-        </div>
+      <div style={theme.video}>
+  {Array.isArray(profileData.selectedvideoFile) &&
+    profileData.selectedvideoFile.map((videoPath, index) => (
+      <video style={theme.vid} key={index} controls>
+        <source
+          src={`${API_URLS}${videoPath}`}
+          alt={`video ${index}`}
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+    ))}
+</div>
+
 
         <div style={theme.pic}>
           {Array.isArray(profileData.selectedFileNames) &&
-            profileData.selectedFileNames.map((image, index) => (
+            profileData.selectedFileNames.map((imagePath, index) => (
               <div style={theme.photo} key={index}>
                 <img
                 style={theme.image}
-                  src={`data:image/jpeg;base64,${Buffer.from(
-                    image.data
-                  ).toString("base64")}`}
-                  alt={`Image ${index}`}
+                src={`${API_URLS}${imagePath}`}
+                alt={`Image ${index}`}
                 />
               </div>
             ))}
         </div>
       </div>
+
+      {profileData.selectedImageFiles.length > 4 && (
+        <div className="d-flex justify-content-center">
+          <Button style={bg} onClick={toggleImages}>
+            {showAllImages ? "Show Less Images" : "Show More Images"}
+          </Button>
+        </div>
+      )}
 
       <div style={{ position: "fixed", bottom: 0, width: "100%" }}>
         <div className="bg-white w-100">
@@ -171,110 +205,141 @@ const Profile2 = () => {
       <div className="py-2 px-3" style={theme.main}>
         <h4>Characteristic</h4>
         <div>
-          <h6 className="d-flex justify-content-between w-75">
+          <h6 className="d-flex justify-content-between w-100">
             {" "}
-            Education <span>American</span>{" "}
+            Education <span>{profileData.education}</span>{" "}
           </h6>
-          <h6 className="d-flex justify-content-between w-75">
+          <h6 className="d-flex justify-content-between w-100">
             {" "}
-            Education <span>American</span>{" "}
+            Age <span>{profileData.age}</span>{" "}
           </h6>
-          <h6 className="d-flex justify-content-between w-75">
+          <h6 className="d-flex justify-content-between w-100">
             {" "}
-            Education <span>American</span>{" "}
+            Experience <span>{profileData.Experience}</span>{" "}
           </h6>
-          <h6 className="d-flex justify-content-between w-75">
+          <h6 className="d-flex justify-content-between w-100">
             {" "}
-            Education <span>American</span>{" "}
+            Nationality <span>{profileData.Nationality}</span>{" "}
           </h6>
-          <h6 className="d-flex justify-content-between w-75">
+          <h6 className="d-flex justify-content-between w-100">
             {" "}
-            Education <span>American</span>{" "}
+            Personality <span>person</span>{" "}
           </h6>
-          <h6 className="d-flex justify-content-between w-75">
+          <h6 className="d-flex justify-content-between w-100">
             {" "}
-            Education <span>American</span>{" "}
+            Teaching Style <span>{profileData.TeachingStyle}</span>{" "}
           </h6>
-          <h6 className="d-flex justify-content-between w-75">
+          <h6 className="d-flex justify-content-between w-100">
             {" "}
-            Education <span>American</span>{" "}
+            Availability <span>Busy</span>{" "}
           </h6>
         </div>
       </div>
 
       <div className="py-2 px-3" style={theme.main}>
         <h4>Prices</h4>
-        <div>
-          <h6 className="d-flex justify-content-between w-75">
-            {" "}
-            1 hours/day <span>100$</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            {" "}
-            2 hours/day <span>150$</span>{" "}
-          </h6>
+        <div className="d-flex justify-content-between  ">
+          {profileData.prices.map((pricesString, index) => {
+            try {
+              const pricesArray = JSON.parse(pricesString);
+              return (
+                <div key={index} className=" w-100">
+                  {Object.entries(pricesArray).map(([time, cost]) => (
+                    <div
+                      key={time}
+                      className="d-flex justify-content-between col-12  mb-3"
+                    >
+                      <p
+                        style={{
+                          fontWeight: 700,
+                          fontSize: "13px",
+                          color: "#4E4C4C",
+                        }}
+                      >
+                        {time}
+                      </p>
+                      <p>{cost}$</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            } catch (error) {
+              // Handle parsing error if needed
+              return null;
+            }
+          })}
         </div>
       </div>
 
       <div className="py-2 px-3" style={theme.main}>
         <h4>About me</h4>
         <div>
-          <p className="">
-            Experienced teacher providing tailored, flexible education to
-            children from home to home. Strong focus on creating engaging lesson
-            plans to suit each childs learning style and needs. Personalized
-            approach to empower children to reach their full potential.
-          </p>
+          <p>{profileData.aboutUs}</p>
         </div>
       </div>
       <div className="py-2 px-3" style={theme.main}>
-        <h4>Characteristic</h4>
-        <div>
-          <h6 className="d-flex justify-content-between w-75">
-            {" "}
-            Education <span>American</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            {" "}
-            Education <span>American</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            {" "}
-            Education <span>American</span>{" "}
-          </h6>
-          <h6> Education </h6>
-          <h6> Education </h6>
-          <h6> Education </h6>
-          <h6> Education </h6>
-          <h6> Education </h6>
-          <h6> Education </h6>
+        <h4>Services</h4>
+        <div className="d-flex flex-wrap">
+          {profileData.serviceNames.map((serviceString, index) => {
+            try {
+              const serviceArray = JSON.parse(serviceString);
+              return (
+                <React.Fragment key={index}>
+                  {serviceArray.map((serviceName, innerIndex) => (
+                    <div
+                      className="mb-2"
+                      key={innerIndex}
+                      style={{ flexBasis: "50%" }}
+                    >
+                      <p
+                        className="mb-2"
+                        style={{
+                          fontWeight: 700,
+                          fontSize: "13px",
+                          color: "#4E4C4C",
+                        }}
+                      >
+                        <span style={{ color: "#B80909" }}>
+                          <FcCheckmark style={{ color: "#B80909" }} />
+                        </span>{" "}
+                        {serviceName}
+                      </p>
+                    </div>
+                  ))}
+                </React.Fragment>
+              );
+            } catch (error) {
+              console.log(error, "ser");
+              return null;
+            }
+          })}
         </div>
       </div>
 
       <div className="py-2 px-3" style={theme.main}>
-        <h4>Characteristic</h4>
+        <h4>Availability</h4>
         <div>
-          <h6 className="d-flex justify-content-between w-75">
-            Monday <span>American</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            Tuesday <span>American</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            Wednesday <span>American</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            Thursday <span>American</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            Friday <span>American</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            Saturday <span>American</span>{" "}
-          </h6>
-          <h6 className="d-flex justify-content-between w-75">
-            Sunday <span>American</span>{" "}
-          </h6>
+          {profileData.selectedTimes.map((timesString, index) => {
+            try {
+              const timesObject = JSON.parse(timesString);
+              return (
+                <div key={index} className="mb-2 w-100">
+                  {Object.entries(timesObject).map(([day, time]) => (
+                    <div
+                      key={day}
+                      className="mb-2 d-flex justify-content-between"
+                    >
+                      <p className="mb-2">{day}</p>
+                      <p>{time}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            } catch (error) {
+              // Handle parsing error if needed
+              return null;
+            }
+          })}
         </div>
       </div>
     </div>

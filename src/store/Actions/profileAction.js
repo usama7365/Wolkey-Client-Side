@@ -5,15 +5,15 @@ import {
   VIEW_PROFILE_REQUEST,
   VIEW_PROFILE_SUCCESS,
   VIEW_PROFILE_FAIL,
+  CREATE_AGENCY_PROFILE_FAIL,
+  CREATE_AGENCY_PROFILE_REQUEST,
+  CREATE_AGENCY_PROFILE_SUCCESS,
   RESET_PROFILE
 } from "../Constants/profileConstants";
 
 import axios from "axios";
 import { API_URLS } from "../../apiConfig";
 import { toast } from "react-toastify";
-
-
-
 export const profileFormAction = (formData, token) => async (dispatch) => {
   console.log(formData, "formm");
   console.log(token , "actionToken")
@@ -38,15 +38,12 @@ export const profileFormAction = (formData, token) => async (dispatch) => {
   formDataObject.append("languages", JSON.stringify(formData.languages));
   formDataObject.append("day", formData.day);
   formDataObject.append("selectedTimes",JSON.stringify(formData.selectedTimes));
-
-// Assuming formData.prices is an array of price values
-formDataObject.append("prices", JSON.stringify(formData.prices));
+  formDataObject.append("prices", JSON.stringify(formData.prices));
 
 
-
-  for (let i = 0; i < formData.selectedFileNames.length; i++) {
-    console.log(formData.selectedFileNames[i], "selected file")
-    formDataObject.append("selectedFileNames", formData.selectedFileNames[i]);
+  for (let i = 0; i < formData.selectedImageFiles.length; i++) {
+    console.log(formData.selectedImageFiles[i], "selected file")
+    formDataObject.append("selectedImageFiles", formData.selectedImageFiles[i]);
   }
   if (formData && formData.selectedVideoFile) {
     formDataObject.append("selectedVideoFile", formData.selectedVideoFile);
@@ -139,9 +136,51 @@ export const viewProfileAction = (token) => async (dispatch) => {
   }
 };
 
-// profileActions.js
+export const agencyProfileAction = (agencyData, token) => async (dispatch) => {
+  console.log(token);
+  console.log(agencyData);
+  console.log(agencyData, token, "action");
+
+  try {
+    dispatch({
+      type: CREATE_AGENCY_PROFILE_REQUEST,
+    });
+
+    const config = {
+      headers: {
+        "x-auth-token": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    // Corrected axios.post call
+    const response = await axios.post(
+      `${API_URLS}/createOrUpdateAgencyProfile`,
+      agencyData, // Move agencyData to this position
+      config // Move config to this position
+    );
+
+    dispatch({
+      type: CREATE_AGENCY_PROFILE_SUCCESS,
+      payload: response.data, // Use response.data to get the response body
+    });
+
+    console.log(response.data, "agencyProfileApi");
+  } catch (error) {
+    console.log(error, "agencyProfileError");
+    dispatch({
+      type: CREATE_AGENCY_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 
 
-export const resetProfileAction = () => ({
-  type: RESET_PROFILE,
-});
+
+
+
+
+

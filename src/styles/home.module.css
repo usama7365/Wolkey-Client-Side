@@ -1,0 +1,61 @@
+.profile{
+    border: 1px solid silver;
+    padding: 8px 12px;
+    margin-top: 8px;
+    border-radius: 10px;
+    display: flex;
+    font-size: 12px;
+}
+.profile h6{
+    font-size: 14px;
+    border-right: 1px solid silver;  
+    padding-right: 5px;
+}
+.profile h5{
+    font-size: 14px;
+    padding-left:5px ; 
+}
+.profile button{
+    background-color:#31A551;
+    border: none;
+    border-radius: 10px;
+    font-size: 12px;
+}
+.view{
+    display: flex;
+    margin-top: 12px;
+
+}
+.view p{
+    background-color: #9DB5CD;
+    padding: "10px 15px";
+    margin: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    width: 30px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.trend{
+    background-color: #31A551;
+    color: white;
+    border: none;
+    padding: 15px 5px;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.video p{
+    font-size: 13.5px;
+}
+
+@media screen and (min-width: 922px) {
+    .profile{
+        font-size: 14px;
+    }
+    .video p{
+        font-size: 15px;
+    }
+  }

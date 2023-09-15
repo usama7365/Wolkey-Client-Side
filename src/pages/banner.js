@@ -4,6 +4,7 @@ import { BsCheck } from "react-icons/bs";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner"; // Import Spinner component
 import { useRouter } from "next/router"; // Import useRouter
+import Link from "next/link";
 
 const Banner = () => {
   const maindiv = {
@@ -23,6 +24,8 @@ const Banner = () => {
   const bg = {
     backgroundColor: "rgb(245, 93, 2)",
     border: "none",
+    height:"40px",
+    marginTop:'20px'
   };
 
   const [loggingIn, setLoggingIn] = useState(false); 
@@ -65,17 +68,12 @@ const Banner = () => {
         </div>
         <Button
           style={bg}
-          variant="primary"
-          className="mt-3"
-          active
-          onClick={handleLoginRedirect}
-          disabled={loggingIn} // Disable the button while logging in
+          
         >
-          {loggingIn ? (
-            <Spinner animation="border" size="sm" />
-          ) : (
-            "Register as a teacher"
-          )}
+          <Link href="/teacherSignup" passHref>
+              <p>Register as a teacher</p>
+            </Link>
+         
         </Button>
       </div>
 
@@ -102,8 +100,14 @@ const Banner = () => {
           <BsCheck style={icn} />
           <span>100%</span> <br />
         </div>
-        <Button style={bg} variant="primary" className="mt-3" active>
-          Register as an agency
+        <Button
+          style={bg}
+          
+        >
+          <Link href="/agencySignup" passHref>
+              <p>Register as a agency</p>
+            </Link>
+         
         </Button>
       </div>
     </div>

@@ -3,6 +3,8 @@ import Profile from "../components/profile";
 import Profile2 from "../components/profile2";
 // import ProtectedProfileRoute from "../components/ProtectedProfileRoute";
 import Filter from "../components/filter";
+import ProtectedRoute from "../components/ProtectedRoute";
+
 // import { useDispatch, useSelector } from "react-redux";
 // import {viewProfileAction} from "../store/Actions/profileAction"
 
@@ -21,12 +23,15 @@ const ViewProfile = () => {
   }, []);
 
   return (
+    <ProtectedRoute>
 
     <div>
       <Filter/>
+      
         {windowWidth < 650 ? <Profile2 /> : <Profile />}
      
     </div>
+    </ProtectedRoute>
     
   );
 };

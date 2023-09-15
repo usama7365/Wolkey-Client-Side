@@ -10,8 +10,9 @@ import Link from "next/link";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from 'react-bootstrap/Spinner';
+import { BsCheck } from "react-icons/bs";
 
-const Signup = () => {
+const TeacherSignup = () => {
   const [loading, setLoading] = useState(false);
 
   const msg = useSelector((state) => state.userSignup);
@@ -23,6 +24,9 @@ const Signup = () => {
   const bg = {
     backgroundColor: "rgb(245, 93, 2)",
     border: "none",
+  };
+  const icn = {
+    color: "rgb(245, 93, 2)",
   };
 
   const dispatch = useDispatch();
@@ -97,6 +101,7 @@ const Signup = () => {
             displayName: displayName,
             email: email,
             password: password,
+            role: 'teacher'
           })
         );
         setLoading(false);
@@ -158,17 +163,29 @@ const Signup = () => {
             </Button>
           </div>
         </div>
-        <div className="d-flex justify-content-center flex-column px-3 align-items-center mt-4 col-sm-12 col-md-5 align-self-start align-items-md-start">
-          <h3>Register as an adviser</h3>
-          <p className="text-center text-md-start">
-            Create an account as a teacher or teacher association and bring
-            yourself to the attention of thousands of “Company name”
-            visitors every day.
-          </p>
-          
-            <Button style={bg} variant="primary" className="mt-3" active>
-              Register as a agency
-            </Button>
+        <div className=" col-12 col-md-6 justify-content-center flex-column px-3 align-items-center mt-4  align-self-start align-items-md-start">
+        <h4>I m a teacher</h4>
+        <b style={icn}>FREE</b>
+        <p className="mt-3">
+          Your registration for an account on &quo;WEBSITE NAME&quo; is arranged within
+          a few moments and your information will be treated discretely.
+        </p>
+        <div className="lh-lg">
+          <BsCheck style={icn} />
+          <span>More than 2.4 million visitors every month.</span> <br />
+          <BsCheck style={icn} />
+          <span>An extensive advertisement for all your information.</span>{" "}
+          <br />
+          <BsCheck style={icn} />
+          <span>Visitors can contact you for free and quickly.</span> <br />
+          <BsCheck style={icn} />
+          <span>
+            The largest home to home teachers site in the &quo;COUNTRY NAME&quo;.
+          </span>{" "}
+          <br />
+          <BsCheck style={icn} />
+          <span>100%</span> <br />
+        </div>
          
         </div>
       </div>
@@ -176,4 +193,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default TeacherSignup;

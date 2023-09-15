@@ -27,19 +27,7 @@ const Login = () => {
  
   const dispatch = useDispatch();
   const router = useRouter();
-  const response = useSelector((state) => state?.userLogin?.userInfo);
-
-  console.log(response , "loginToken")
-  
-
-  useEffect(() => {
-    if (response) {
-      setTimeout(() => {
-        router.push("/profileform");
-      }, 1000); 
-    }
-  }, [response, router]);
-
+  const [response, setResponse] = useState(null);
 
 
   const handleEmail = (e) => {
@@ -71,29 +59,38 @@ const Login = () => {
     } else {
       setLoading(true);
       try {
-        const response= await dispatch(
+        const loginResponse= await dispatch(
           userLoginAction({
             email: email,
             password: password,
           })
         )
         setLoading(false);
+
+        if (typeof window !== "undefined") {
+          const storedResponse = localStorage.getItem("auth-user");
+          if (storedResponse) {
+            const parsedResponse = JSON.parse(storedResponse);
+            setResponse(parsedResponse);  
+            
+            if (parsedResponse.role === "teacher") {
+              router.push("/profileform");
+            }else if ( parsedResponse.role === "agency") {
+              router.push("/agencyProfile");
+          }
+        }
+      }
+    
+       
+       
       } catch (error) {
         setLoading(false);
         // Handle error here
-        toast.error("Login failed. Please try again.", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+       
       }
     }
   };
+
 
   const handleResetPassword = async () => {
     if (email === "") {
@@ -135,7 +132,9 @@ const Login = () => {
     },
     bg: {
       backgroundColor: "rgb(245, 93, 2)",
-      border: "none",
+    border: "none",
+    height:"40px",
+    
     },
   };
 
@@ -179,7 +178,7 @@ const Login = () => {
             >
               Forgot your Password
             </a>
-            <Link href="/signup" passHref>
+            <Link href="/banner" passHref>
               <p>Create Account</p>
             </Link>
           </div>
@@ -189,6 +188,7 @@ const Login = () => {
               variant="primary"
               className="mt-3 px-5"
               active
+           
              
               onClick={handleLogin}
             >
@@ -196,18 +196,45 @@ const Login = () => {
             </Button>
           </div>
         </div>
-        <div className="d-flex  justify-content-center  flex-column px-3 align-items-center mt-4 col-sm-12 col-md-5 align-self-start align-items-md-start">
+        <div className="col-12 col-md-6 ">
+        <div className="d-flex  justify-content-center  flex-column px-3 align-items-center mt-4  align-self-start align-items-md-start">
           <h3>Register as an adviser</h3>
           <p className="text-center text-md-start">
             Create an account as a teacher or teacher association and bring
             yourself to the attention of thousands of “Company name” visitors
             every day.
           </p>
-          <Button style={theme.bg} variant="primary" className="mt-3" active>
-            Register as a agency
-          </Button>
+          <Button
+          style={theme.bg}
+          
+        >
+          <Link href="/advisorSignup" passHref>
+              <p>Register as a adviser</p>
+            </Link>
+         
+        </Button>
         </div>
+        <div className="d-flex  justify-content-center  flex-column px-3 align-items-center mt-4  align-self-start align-items-md-start">
+          <h3>Register as an Agency </h3>
+          <p className="text-center text-md-start">
+            Create an account as a teacher or teacher association and bring
+            yourself to the attention of thousands of “Company name” visitors
+            every day.
+          </p>
+          <Button
+          style={theme.bg}
+          
+        >
+          <Link href="/banner" passHref>
+              <p>Register as a agency</p>
+            </Link>
+         
+        </Button>
+        </div>
+        </div>
+        
       </div>
+      
 
       <Modal
         show={showPasswordResetModal}

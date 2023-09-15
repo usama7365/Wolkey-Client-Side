@@ -5,10 +5,10 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { FcPlus } from "react-icons/fc";
-import { RxCross2 } from "react-icons/rx";
+import { RxCross2 ,RxDashboard } from "react-icons/rx";
+
 import {
   profileFormAction,
-  viewProfileAction,
 } from "../store/Actions/profileAction";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
@@ -17,10 +17,11 @@ import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Spinner } from "react-bootstrap";
-import TimePicker from "react-time-picker";
+// import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
+import ProtectedRoute from "../components/ProtectedRoute";
+import SideNavbar from "../components/sideNavbar"
 
-// import ProtectedProfileRoute from '../components/ProtectedProfileRoute';
 
 const ProfileForm = () => {
   const profile = useSelector((state) => state.createProfile);
@@ -90,20 +91,29 @@ const ProfileForm = () => {
     time: {
       fontSize: "50px",
     },
+    bar:{
+      backgroundColor:"#EEF4FA",
+      fontSize:"14px",
+      cursor:"pointer",
+      height:"100vh"
+
+    }
   };
 
   const [subjectName, setSubjectName] = useState([]);
-  const [selectedFileNames, setSelectedFileNames] = useState([]);
+  const [selectedImageFiles, setSelectedImageFiles] = useState([]);
   const [subject, setSubject] = useState("");
   const [selectedVideoFile, setSelectedVideoFile] = useState(null);
-  const [videoTitle, setVideoTitle] = useState("");
   const [serviceNames, setServiceNames] = useState([]);
   const [serviceName, setServiceName] = useState("");
-  const [language, setLanguage] = useState("");
-  const [languages, setLanguages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
   const [selectedTimes, setSelectedTimes] = useState([]);
+  const [languages, setLanguages] = useState([]);
+
+
+
+ 
   const [prices, setPrices] = useState({
     "15_minutes": null,
     "30_minutes": null,
@@ -126,14 +136,15 @@ const ProfileForm = () => {
     age: 0,
     subjectName: [],
     serviceNames: [],
-    selectedFileNames: [],
-    selectedVideoFile: null,
+     selectedImageFiles: [],
+    selectedVideoFile: [],
     Nationality: "",
     education: "",
     specialityDegree: "",
     Experience: "",
     TeachingStyle: "",
     languages: [],
+   
   });
 
   console.log(formData.age, "age");
@@ -141,6 +152,7 @@ const ProfileForm = () => {
   console.log(formData.education, "edu");
   console.log(selectedTimes, "time");
   console.log(prices, "costt");
+  console.log(languages, "lan");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -167,22 +179,6 @@ const ProfileForm = () => {
     }
   };
 
-  const handleLanguageClick = () => {
-    if (language.trim() !== "") {
-      setLanguages([...languages, language]);
-      setLanguage("");
-      setFormData((prevData) => ({
-        ...prevData,
-        languages: [...prevData.languages, language],
-      }));
-    }
-  };
-
-  const handleDeleteLanguage = (index) => {
-    const updatedLanguages = languages.filter((_, i) => i !== index);
-    setLanguages(updatedLanguages);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
@@ -192,21 +188,21 @@ const ProfileForm = () => {
     const files = e.target.files;
     console.log(e.target.files);
     const fileNames = [];
-
-    if (selectedFileNames.length + files.length <= 5) {
-      for (let i = 0; i < files.length; i++) {
-        fileNames.push(files[i]);
-      }
-      console.log(fileNames, "filenamesss");
-      setSelectedFileNames((prevFileNames) => [...prevFileNames, ...fileNames]);
-      setFormData((prevData) => ({
-        ...prevData,
-        selectedFileNames: [...prevData.selectedFileNames, ...fileNames],
-      }));
-    } else {
-      alert("You can select a maximum of five photos.");
+  
+    for (let i = 0; i < files.length; i++) {
+      fileNames.push(files[i]);
     }
+  
+    console.log(fileNames, "filenamesss");
+  
+    setFormData((prevData) => ({
+      ...prevData,
+      selectedImageFiles: [...prevData.selectedImageFiles, ...fileNames],
+    }));
+  
+    setSelectedImageFiles((prevFileNames) => [...prevFileNames, ...fileNames]);
   };
+  
 
   const handleVideoFileChange = (e) => {
     const file = e.target.files[0];
@@ -215,6 +211,7 @@ const ProfileForm = () => {
       selectedVideoFile: file,
     }));
   };
+  
 
   const handleServiceNameChange = (e) => {
     setServiceName(e.target.value);
@@ -302,6 +299,16 @@ const ProfileForm = () => {
     }
   };
 
+  const handleLanguagesChange = (languages) => {
+    setLanguages(languages);
+    setFormData((prevData) => ({
+      ...prevData,
+      languages: languages,
+    }));
+  };
+
+
+
   const handleProfile = async (e) => {
     e.preventDefault();
     if (!formData) {
@@ -326,17 +333,38 @@ const ProfileForm = () => {
   };
 
   return (
-    // <ProtectedProfileRoute>
+   
     <>
+    
+    <ProtectedRoute>
       <ToastContainer />
+      <div className="col-12 d-flex justify-content-around">
+      <div style={theme.bar} className=" d-none d-lg-block col-2  px-3 py-2 ">
+       <div>
+       <p className="d-flex align-items-center"> <RxDashboard/> <span className="px-1">Dashboard</span> </p>
+       <h5>Management</h5>
+       <p>Advertisement</p>
+       <p>Photos</p>
+       <p>Reviews</p>
+       <p>Videos</p>
+       <h5>Account</h5>
+       <p>Settings</p>
+       <p>Messages</p>
+       <p>Notifications</p>
+       <p>Invoice</p>
+       <p>Balance expenses</p>
+       <p>Log out</p>
+       </div>
+      </div>
 
-      <div className="container  mt-2 py-5">
+      <div className="col-9   mt-2 py-5">
+      
         <h2 className="mb-3">Personal Information Form</h2>
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3 mt-2 d-block d-md-flex">
             <Col>
               <Form.Group controlId="firstName">
-                <Form.Label>Name</Form.Label>
+                <Form.Label className="h6">Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -347,7 +375,7 @@ const ProfileForm = () => {
             </Col>
             <Col>
               <Form.Group controlId="phoneNumber">
-                <Form.Label className="text-nowrap">Phone Number</Form.Label>
+                <Form.Label className="text-nowrap h6">Phone Number</Form.Label>
                 <Form.Control
                   type="number"
                   name="phoneNumber"
@@ -358,7 +386,7 @@ const ProfileForm = () => {
             </Col>
             <Col>
               <Form.Group controlId="age">
-                <Form.Label>Age</Form.Label>
+                <Form.Label className="h6">Age</Form.Label>
                 <Form.Control
                   type="number"
                   name="age"
@@ -371,7 +399,7 @@ const ProfileForm = () => {
           <Row className="mb-3  mt-2 d-block d-md-flex">
             <Col>
               <Form.Group controlId="dateOfBirth">
-                <Form.Label>Date of Birth</Form.Label>
+                <Form.Label className="h6">Date of Birth</Form.Label>
                 <Form.Control
                   type="date"
                   name="dateOfBirth"
@@ -383,7 +411,7 @@ const ProfileForm = () => {
             </Col>
             <Col>
               <Form.Group>
-                <Form.Label>Nationality</Form.Label>
+                <Form.Label className="h6">Nationality</Form.Label>
                 <Form.Control
                   name="Nationality"
                   onChange={handleChange}
@@ -393,7 +421,7 @@ const ProfileForm = () => {
             </Col>
             <Col>
               <Form.Group controlId="country">
-                <Form.Label>City</Form.Label>
+                <Form.Label className="h6">City</Form.Label>
                 <Form.Control
                   type="text"
                   name="city"
@@ -437,7 +465,7 @@ const ProfileForm = () => {
           <Row className="mb-3  mt-2 d-block d-md-flex">
             <Col>
               <Form.Group>
-                <Form.Label>Education</Form.Label>
+                <Form.Label className="h6">Education</Form.Label>
                 <Form.Control
                   type="text"
                   onChange={handleChange}
@@ -448,7 +476,7 @@ const ProfileForm = () => {
             </Col>
             <Col>
               <Form.Group>
-                <Form.Label>Degree</Form.Label>
+                <Form.Label className="h6">Degree</Form.Label>
                 <Form.Control
                   type="text"
                   onChange={handleChange}
@@ -459,7 +487,7 @@ const ProfileForm = () => {
             </Col>
             <Col>
               <Form.Group>
-                <Form.Label>Experience</Form.Label>
+                <Form.Label className="h6">Experience</Form.Label>
                 <Form.Control
                   type="text"
                   name="Experience"
@@ -472,7 +500,7 @@ const ProfileForm = () => {
           <Row className="mb-3  mt-2 d-block d-md-flex">
             <Col>
               <Form.Group>
-                <Form.Label>Title</Form.Label>
+                <Form.Label className="h6">Title</Form.Label>
                 <Form.Control
                   type="text"
                   name="title"
@@ -483,7 +511,7 @@ const ProfileForm = () => {
             </Col>
             <Col>
               <Form.Group>
-                <Form.Label>Teaching Style</Form.Label>
+                <Form.Label className="h6">Teaching Style</Form.Label>
                 <Form.Control
                   type="text"
                   name="TeachingStyle"
@@ -493,45 +521,29 @@ const ProfileForm = () => {
               </Form.Group>
             </Col>
             <Col>
-              <Form.Group style={theme.main} className="position-relative mt-2">
-                <Form.Label>Languages</Form.Label>
-                <Form.Control
-                  type="text"
-                  onChange={(e) => setLanguage(e.target.value)}
-                  placeholder="Enter a language"
-                />
-                <FcPlus
-                  style={{
-                    ...theme.icn,
-                    top: "70%",
-                    transform: "translateY(-50%)",
-                  }}
-                  className="position-absolute"
-                  onClick={handleLanguageClick}
-                />
-              </Form.Group>
-              {languages.length > 0 && (
-                <div className="mt-2">
-                  <ul>
-                    {languages.map((lang, index) => (
-                      <li key={index}>
-                        {lang}
-                        <span
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleDeleteLanguage(index)}
-                        >
-                          <RxCross2 style={theme.font} />
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <Form.Label className="h6">Languages</Form.Label>
+              <DropdownMultiselect
+                options={[
+                  "English",
+                  "German",
+                  "Spanish",
+                  "French",
+                  "Chinese",
+                  "Russian",
+                  "Japanese",
+                  "Arabic",
+                  "Dutch",
+                  "Italian",
+                ]}
+                name="languages"
+                selected={languages}
+                handleOnChange={handleLanguagesChange}
+              />
             </Col>
           </Row>
 
           <Form.Group controlId="aboutUs">
-            <Form.Label>About Us</Form.Label>
+            <Form.Label className="h6">About Us</Form.Label>
             <Form.Control
               as="textarea"
               rows={4}
@@ -549,7 +561,7 @@ const ProfileForm = () => {
                 style={theme.main}
                 className="mt-2"
               >
-                <Form.Label>Enter Subject Name</Form.Label>
+                <Form.Label className="h6">Enter Subject Name</Form.Label>
                 <Form.Control
                   type="text"
                   onChange={handleSubjectChange}
@@ -592,7 +604,7 @@ const ProfileForm = () => {
                 style={theme.main}
                 className="mt-2"
               >
-                <Form.Label>Enter Service Name</Form.Label>
+                <Form.Label className="h6">Enter Service Name</Form.Label>
                 <Form.Control
                   type="text"
                   value={serviceName}
@@ -668,6 +680,9 @@ const ProfileForm = () => {
                     </div>
                   ))}
                 </Form>
+                    
+                
+               
                 {/* <p>Selected Days: {selectedDays.join(", ")}</p> */}
                 <p className="mt-3">Selected Times:</p>
                 <ul>
@@ -685,7 +700,7 @@ const ProfileForm = () => {
           <Row className="mb-3 mt-2 d-block d-md-flex">
             <Col md={4}>
               <Form.Group>
-                <Form.Label>15 minutes</Form.Label>
+                <Form.Label className="h6">15 minutes</Form.Label>
                 <InputGroup>
                   <InputGroup.Text>€</InputGroup.Text>
                   <Form.Control
@@ -699,7 +714,7 @@ const ProfileForm = () => {
             </Col>
             <Col md={4}>
               <Form.Group>
-                <Form.Label>30 minutes</Form.Label>
+                <Form.Label className="h6">30 minutes</Form.Label>
                 <InputGroup>
                   <InputGroup.Text>€</InputGroup.Text>
                   <Form.Control
@@ -712,7 +727,7 @@ const ProfileForm = () => {
             </Col>
             <Col md={4}>
               <Form.Group>
-                <Form.Label>45 minutes</Form.Label>
+                <Form.Label className="h6">45 minutes</Form.Label>
                 <InputGroup>
                   <InputGroup.Text>€</InputGroup.Text>
                   <Form.Control
@@ -728,7 +743,7 @@ const ProfileForm = () => {
           <Row className="d-block d-md-flex">
             <Col md={4}>
               <Form.Group>
-                <Form.Label>1 hour</Form.Label>
+                <Form.Label className="h6">1 hour</Form.Label>
                 <InputGroup>
                   <InputGroup.Text>€</InputGroup.Text>
                   <Form.Control
@@ -741,7 +756,7 @@ const ProfileForm = () => {
             </Col>
             <Col md={4}>
               <Form.Group>
-                <Form.Label>1 hour and 30 minutes</Form.Label>
+                <Form.Label className="h6">1 hour and 30 minutes</Form.Label>
                 <InputGroup>
                   <InputGroup.Text>€</InputGroup.Text>
                   <Form.Control
@@ -754,7 +769,7 @@ const ProfileForm = () => {
             </Col>
             <Col md={4}>
               <Form.Group>
-                <Form.Label>2 hours</Form.Label>
+                <Form.Label className="h6">2 hours</Form.Label>
                 <InputGroup>
                   <InputGroup.Text>€</InputGroup.Text>
                   <Form.Control
@@ -774,27 +789,27 @@ const ProfileForm = () => {
                 style={theme.main}
                 className=" mt-2"
               >
-                <Form.Label>Upload Photos</Form.Label>
+                <Form.Label className="h6">Upload Photos</Form.Label>
                 <Form.Control
                   type="file"
                   multiple
-                  name="selectedFileNames"
+                  name="selectedImageFiles"
                   onChange={handleFileChange}
                 />
-                {selectedFileNames.length > 0 && (
+                {selectedImageFiles.length > 0 && (
                   <div className="mt-2">
                     <strong>Selected Photos:</strong>
                     <ul>
-                      {selectedFileNames.map((fileName, index) => (
+                      {selectedImageFiles.map((fileName, index) => (
                         <li key={index}>
                           {fileName.name}{" "}
                           <span
                             style={{ cursor: "pointer" }}
                             onClick={() => {
-                              const updatedFileNames = selectedFileNames.filter(
+                              const updatedFileNames = selectedImageFiles.filter(
                                 (_, i) => i !== index
                               );
-                              setSelectedFileNames(updatedFileNames);
+                              setSelectedImageFiles(updatedFileNames);
                             }}
                           >
                             <RxCross2 style={theme.font} />
@@ -813,7 +828,7 @@ const ProfileForm = () => {
                 style={theme.main}
                 className="mt-2"
               >
-                <Form.Label>Upload Video</Form.Label>
+                <Form.Label className="h6">Upload Video</Form.Label>
                 <Form.Control
                   type="file"
                   accept="video/*"
@@ -877,9 +892,12 @@ const ProfileForm = () => {
           </Card.Body>
         </div>
       </div>
+      </div>
+      </ProtectedRoute>
     </>
+  
 
-    // </ProtectedProfileRoute>
+  
   );
 };
 
