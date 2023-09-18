@@ -6,11 +6,13 @@ import { BsEnvelopeFill, BsFillTelephoneFill } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
 import { ImBooks } from "react-icons/im";
+import { API_URLS } from "../apiConfig";
 import { FcCheckmark } from "react-icons/fc";
 import {
   viewProfileAction,
-  resetProfileAction,
+
 } from "../store/Actions/profileAction";
+import { useRouter } from "next/router";
 
 const Profile2 = () => {
   const bg = {
@@ -18,7 +20,7 @@ const Profile2 = () => {
     border: "none",
     marginBottom: "20px",
   };
- 
+
   const profileData = useSelector((state) => state.viewProfile.userInfo);
   const isLoading = profileData === null;
 
@@ -28,11 +30,13 @@ const Profile2 = () => {
     setShowAllImages(!showAllImages);
   };
 
-const imagesToDisplay = showAllImages
-  ? profileData?.selectedImageFiles  || [] 
-  : (profileData?.selectedImageFiles  || []).slice(0, 4);
+  const imagesToDisplay = showAllImages
+    ? profileData?.selectedImageFiles || []
+    : (profileData?.selectedImageFiles || []).slice(0, 4);
 
   const dispatch = useDispatch();
+  const router=useRouter()
+
 
   useEffect(() => {
     const authUserString = localStorage.getItem("auth-user");
@@ -112,9 +116,13 @@ const imagesToDisplay = showAllImages
       marginBottom: "10px",
     },
     icn: {
-      color: " #31A551",
+      color: "#31A551",
     },
   };
+
+  const handleEdit =()=>{
+    router.push("/profileform"); 
+  }
 
   return (
     <div className="px-2 py-2">
@@ -122,11 +130,16 @@ const imagesToDisplay = showAllImages
         <h6>
           {profileData.name} | <span>Now Available</span>{" "}
         </h6>
+        
       )}
+           <div className="d-flex justify-content-end">
+           <Button style={bg} onClick={handleEdit}>Edit Your profile</Button>
+           </div>
 
       <p>
         <FaLocationDot /> <span>Amsterdem</span>{" "}
       </p>
+
 
       <div className="d-flex">
         <p>
@@ -140,29 +153,28 @@ const imagesToDisplay = showAllImages
       </div>
 
       <div style={theme.img}>
-      <div style={theme.video}>
-  {Array.isArray(profileData.selectedvideoFile) &&
-    profileData.selectedvideoFile.map((videoPath, index) => (
-      <video style={theme.vid} key={index} controls>
-        <source
-          src={`${API_URLS}${videoPath}`}
-          alt={`video ${index}`}
-          type="video/mp4"
-        />
-        Your browser does not support the video tag.
-      </video>
-    ))}
-</div>
-
+        <div style={theme.video}>
+          {Array.isArray(profileData.selectedVideoFile) &&
+            profileData.selectedVideoFile.map((videoPath, index) => (
+              <video style={theme.vid} key={index} controls>
+                <source
+                  src={`${API_URLS}${videoPath}`}
+                  alt={`video ${index}`}
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
+            ))}
+        </div>
 
         <div style={theme.pic}>
-          {Array.isArray(profileData.selectedFileNames) &&
-            profileData.selectedFileNames.map((imagePath, index) => (
+          {Array.isArray(imagesToDisplay) &&
+            imagesToDisplay.map((imagePath, index) => (
               <div style={theme.photo} key={index}>
                 <img
-                style={theme.image}
-                src={`${API_URLS}${imagePath}`}
-                alt={`Image ${index}`}
+                  style={theme.image}
+                  src={`${API_URLS}${imagePath}`}
+                  alt={`Image ${index}`}
                 />
               </div>
             ))}

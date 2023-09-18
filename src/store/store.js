@@ -8,7 +8,7 @@ import {
   verifyEmailReducer,
  
 } from "../store/Reducers/userReducer"; 
-import {profileFormReducer , viewProfileReducer ,  agencyProfileReducer} from "../store/Reducers/profileReducer"
+import {profileFormReducer , viewProfileReducer ,  agencyProfileReducer, viewAllProfilesReducer} from "../store/Reducers/profileReducer"
 
 
 const initialState = {
@@ -23,8 +23,8 @@ const reducer = combineReducers({
   verifyEmail:verifyEmailReducer,
   createProfile:profileFormReducer,
   viewProfile:viewProfileReducer,
-  agencyProfile:agencyProfileReducer
-
+  agencyProfile:agencyProfileReducer,
+  allProfiles:viewAllProfilesReducer
 });
 
 const middleware = [thunk];

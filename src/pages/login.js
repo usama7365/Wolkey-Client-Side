@@ -66,20 +66,20 @@ const Login = () => {
           })
         )
         setLoading(false);
-
         if (typeof window !== "undefined") {
           const storedResponse = localStorage.getItem("auth-user");
           if (storedResponse) {
             const parsedResponse = JSON.parse(storedResponse);
-            setResponse(parsedResponse);  
-            
-            if (parsedResponse.role === "teacher") {
+            if (parsedResponse && parsedResponse.profileId && parsedResponse.role === "teacher" ) {
+              router.push('/viewProfile');
+            } else if (parsedResponse.role === "teacher") {
               router.push("/profileform");
-            }else if ( parsedResponse.role === "agency") {
+            } else if (parsedResponse.role === "agency") {
               router.push("/agencyProfile");
+            }
           }
         }
-      }
+        
     
        
        

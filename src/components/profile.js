@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Spinner } from "react-bootstrap";
+import { Container, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { FaLocationDot } from "react-icons/fa6";
 import { ImBooks } from "react-icons/im";
 import Button from "react-bootstrap/Button";
-import {
-  viewProfileAction,
-  resetProfileAction,
-} from "../store/Actions/profileAction";
+import {viewProfileAction,} from "../store/Actions/profileAction";
 import { BsEnvelopeFill, BsFillTelephoneFill } from "react-icons/bs";
 import styles from "../styles/profile.module.css";
 import { token } from "morgan";
 import { FcCheckmark } from "react-icons/fc";
 import { API_URLS } from "../apiConfig";
+import { useRouter } from "next/router";
+
 const Profile = () => {
   const bg = {
     backgroundColor: "rgb(245, 93, 2)",
@@ -20,6 +19,7 @@ const Profile = () => {
   };
 
   const [showAllImages, setShowAllImages] = useState(false);
+  const router=useRouter()
 
   const toggleImages = () => {
     setShowAllImages(!showAllImages);
@@ -30,22 +30,17 @@ const Profile = () => {
 
   console.log(profileData, "vieww");
 
-  // Rest of the code for mapping and rendering images
 
   const dispatch = useDispatch();
-  // const token = response ? response : null;
 
   useEffect(() => {
     const authUserString = localStorage.getItem("auth-user");
-    // console.log(authUserString, "tokennn");
     if (authUserString) {
-      // You can parse the data if it's JSON
       const authUser = JSON.parse(authUserString);
       const token = authUser ? authUser.token : null;
       console.log(token, "tok");
       const fetchData = async () => {
         if (token) {
-          // Dispatch the action to fetch profile data
           await dispatch(viewProfileAction(token));
         }
       };
@@ -65,13 +60,24 @@ const Profile = () => {
     );
   }
 
+  const handleEdit =()=>{
+    router.push("/profileform"); 
+  }
+
+
   const imagesToDisplay = showAllImages
     ? profileData.selectedImageFiles || []
     : (profileData.selectedImageFiles  || []).slice(0, 4);
 
   return (
     <>
+   
+  <Container  className="d-flex justify-content-start mt-2">
+  <Button style={bg}  onClick={handleEdit}>Edit Your profile</Button>
+  </Container>
       <div className={styles.parent}>
+   
+ 
         <div className={styles.city}>
           <div className={styles.top}>
             <h5>Top Cities</h5>
@@ -122,8 +128,8 @@ const Profile = () => {
                   </div>
                 ))}
 
-              {Array.isArray(profileData.selectedImageFiles) &&
-                profileData.selectedImageFiles.map((imagePath, index) => (
+              {Array.isArray(imagesToDisplay) &&
+                imagesToDisplay.map((imagePath, index) => (
                   <div className="mb-2" key={index}>
                     <img
                       src={`${API_URLS}${imagePath}`}
