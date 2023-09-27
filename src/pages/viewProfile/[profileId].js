@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Profile from "../components/profile";
-import Profile2 from "../components/profile2";
+import Profile from "../../components/profile";
+import Profile2 from "../../components/profile2";
+// import Filter from "../../components/filter";
+
 
 
 const ViewProfile = () => {
@@ -20,7 +22,7 @@ const ViewProfile = () => {
 
   return (
     <div>
-     
+   
         {windowWidth < 650 ? <Profile2 /> : <Profile />}
     </div>
    

@@ -70,6 +70,7 @@ export const profileFormAction = (formData, token) => async (dispatch) => {
       formDataObject,
       config
     );
+
     console.log(response, "response from backend");
     dispatch({
       type: PROFILE_FORM_SUCCESS,
@@ -97,9 +98,10 @@ export const profileFormAction = (formData, token) => async (dispatch) => {
   }
 };
 
-export const viewProfileAction = (token) => async (dispatch) => {
-  console.log(token, "tokenInaction");
 
+
+
+export const viewProfileAction = ({token ,profileId = null}) => async (dispatch) => {
   try {
     dispatch({
       type: VIEW_PROFILE_REQUEST,
@@ -110,17 +112,21 @@ export const viewProfileAction = (token) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.get(`${API_URLS}/view-profile`, config);
 
+    let url = `${API_URLS}/view-profile`;
+    if (profileId) {
+      url += `/${profileId}`;
+    }
+
+    const response = await axios.get(url, config);
     console.log(response, "viewProfileResponse");
+    
     if (response.status === 200) {
-      // Dispatch VIEW_PROFILE_SUCCESS with the data from the response
       dispatch({
         type: VIEW_PROFILE_SUCCESS,
-        payload: response.data, // Assuming the response contains data
+        payload: response.data, 
       });
     } else {
-      // Dispatch VIEW_PROFILE_FAIL with an error message
       dispatch({
         type: VIEW_PROFILE_FAIL,
         payload: "Failed to fetch profile data.",
@@ -139,9 +145,6 @@ export const viewProfileAction = (token) => async (dispatch) => {
 };
 
 export const agencyProfileAction = (agencyData, token) => async (dispatch) => {
-  console.log(token);
-  console.log(agencyData);
-  console.log(agencyData, token, "action");
 
   try {
     dispatch({
@@ -154,12 +157,12 @@ export const agencyProfileAction = (agencyData, token) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
+    
 
-    // Corrected axios.post call
     const response = await axios.post(
       `${API_URLS}/createOrUpdateAgencyProfile`,
-      agencyData, // Move agencyData to this position
-      config // Move config to this position
+      agencyData, 
+      config 
     );
 
     dispatch({

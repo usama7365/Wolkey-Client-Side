@@ -8,10 +8,7 @@ import Button from "react-bootstrap/Button";
 import { ImBooks } from "react-icons/im";
 import { API_URLS } from "../apiConfig";
 import { FcCheckmark } from "react-icons/fc";
-import {
-  viewProfileAction,
-
-} from "../store/Actions/profileAction";
+import { viewProfileAction } from "../store/Actions/profileAction";
 import { useRouter } from "next/router";
 
 const Profile2 = () => {
@@ -21,7 +18,7 @@ const Profile2 = () => {
     marginBottom: "20px",
   };
 
-  const profileData = useSelector((state) => state.viewProfile.userInfo);
+  const profileData = useSelector((state) => state.viewProfile?.userInfo);
   const isLoading = profileData === null;
 
   console.log(profileData, "vieww");
@@ -35,25 +32,31 @@ const Profile2 = () => {
     : (profileData?.selectedImageFiles || []).slice(0, 4);
 
   const dispatch = useDispatch();
-  const router=useRouter()
+  const router = useRouter();
+  const { profileId } = router.query;
+  console.log(profileId, "homeId");
 
+  const authUserString = typeof window !== "undefined" && localStorage.getItem("auth-user") ? JSON.parse(localStorage.getItem("auth-user")):null
+  const _id = authUserString ? authUserString.profileId : null;
+  console.log(_id, "localIdd");
 
   useEffect(() => {
-    const authUserString = localStorage.getItem("auth-user");
-    console.log(authUserString, "tokennn");
     if (authUserString) {
-      const authUser = JSON.parse(authUserString);
-      const token = authUser ? authUser.token : null;
+      const token = authUserString ? authUserString.token : null;
       console.log(token, "tok");
       const fetchData = async () => {
-        if (token) {
-          await dispatch(viewProfileAction(token));
+        if (token || profileId) {
+          await dispatch(viewProfileAction({ token, profileId }));
         }
       };
 
       fetchData();
     }
   }, [dispatch]);
+
+  if (profileId === _id) {
+    localStorage.setItem("profile", JSON.stringify(profileData));
+  }  
 
   if (isLoading) {
     return (
@@ -80,12 +83,14 @@ const Profile2 = () => {
       position: "relative",
     },
     btn1: {
-      borderRadius: "10px",
+      backgroundColor:"white",
+      color:"grey",
+      border:"1px solid grey",
     },
     btn2: {
       backgroundColor: "#31A551",
-      borderRadius: "10px",
       color: "white",
+      border:"none"
     },
     video: {
       width: "100%",
@@ -120,9 +125,9 @@ const Profile2 = () => {
     },
   };
 
-  const handleEdit =()=>{
-    router.push("/profileform"); 
-  }
+  const handleEdit = () => {
+    router.push("/profileform");
+  };
 
   return (
     <div className="px-2 py-2">
@@ -130,16 +135,22 @@ const Profile2 = () => {
         <h6>
           {profileData.name} | <span>Now Available</span>{" "}
         </h6>
-        
       )}
-           <div className="d-flex justify-content-end">
-           <Button style={bg} onClick={handleEdit}>Edit Your profile</Button>
-           </div>
+      <div className="d-flex justify-content-end">
+        <Button
+          style={{
+            ...bg,
+            display: profileId === _id ? "block" : "none",
+          }}
+          onClick={handleEdit}
+        >
+          Edit Your profile
+        </Button>
+      </div>
 
       <p>
         <FaLocationDot /> <span>Amsterdem</span>{" "}
       </p>
-
 
       <div className="d-flex">
         <p>
@@ -189,29 +200,32 @@ const Profile2 = () => {
         </div>
       )}
 
-      <div style={{ position: "fixed", bottom: 0, width: "100%" }}>
-        <div className="bg-white w-100">
+      <div className="w-100 bg-white" style={{ position: "fixed", bottom: 0,  }}>
+        
           <div className="d-flex justify-content-around align-items-center text-nowrap">
-            <button
-              style={theme.btn1}
-              className="py-2 px-2 d-flex align-items-center bg-white"
-            >
-              <span className="px-2">
-                <BsEnvelopeFill />
-              </span>
-              Send Message
-            </button>
-            <button
+            {profileId !== _id && (
+              <Button
+                style={theme.btn1}
+                className=" d-flex align-items-center "
+              >
+                <span className="px-1">
+                  <BsEnvelopeFill />
+                </span>
+                Send Message
+              </Button>
+            )}
+
+            <Button
               style={theme.btn2}
-              className="px-2 py-2 d-flex align-items-center"
+              className=" d-flex align-items-center"
             >
-              <span className="px-2">
+              <span className="px-1">
                 <BsFillTelephoneFill className="text-white" />
               </span>
-              Send Message
-            </button>
+              Show Number
+            </Button>
           </div>
-        </div>
+       
       </div>
 
       <div className="py-2 px-3" style={theme.main}>
@@ -249,39 +263,41 @@ const Profile2 = () => {
       </div>
 
       <div className="py-2 px-3" style={theme.main}>
-        <h4>Prices</h4>
-        <div className="d-flex justify-content-between  ">
-          {profileData.prices.map((pricesString, index) => {
-            try {
-              const pricesArray = JSON.parse(pricesString);
-              return (
-                <div key={index} className=" w-100">
-                  {Object.entries(pricesArray).map(([time, cost]) => (
-                    <div
-                      key={time}
-                      className="d-flex justify-content-between col-12  mb-3"
-                    >
-                      <p
-                        style={{
-                          fontWeight: 700,
-                          fontSize: "13px",
-                          color: "#4E4C4C",
-                        }}
-                      >
-                        {time}
-                      </p>
-                      <p>{cost}$</p>
-                    </div>
-                  ))}
-                </div>
-              );
-            } catch (error) {
-              // Handle parsing error if needed
-              return null;
-            }
-          })}
-        </div>
-      </div>
+  <h4>Prices</h4>
+  <div className="d-flex justify-content-between  ">
+    {profileData.prices.map((pricesString, index) => {
+      try {
+        const pricesArray = JSON.parse(pricesString);
+        // Filter out the "0" key from pricesArray
+        const filteredPrices = Object.entries(pricesArray).filter(([time]) => time !== "0");
+
+        return (
+          <div key={index} className="w-100 h6">
+            {filteredPrices.map(([time, cost]) => (
+              <div key={time} className="d-flex justify-content-between col-12  mb-3">
+                <p
+                  style={{
+                
+                    fontSize: "15px",
+                   
+                  }}
+                >
+                  {time.replace(/_/g, ' ')} {/* Replace underscore with space */}
+                </p>
+                <p>{cost}$</p>
+              </div>
+            ))}
+          </div>
+        );
+      } catch (error) {
+        // Handle parsing error if needed
+        return null;
+      }
+    })}
+  </div>
+</div>
+
+
 
       <div className="py-2 px-3" style={theme.main}>
         <h4>About me</h4>
@@ -289,7 +305,7 @@ const Profile2 = () => {
           <p>{profileData.aboutUs}</p>
         </div>
       </div>
-      <div className="py-2 px-3" style={theme.main}>
+      <div className="py-2 px-3 h6" style={theme.main}>
         <h4>Services</h4>
         <div className="d-flex flex-wrap">
           {profileData.serviceNames.map((serviceString, index) => {
@@ -328,7 +344,7 @@ const Profile2 = () => {
         </div>
       </div>
 
-      <div className="py-2 px-3" style={theme.main}>
+      <div className="py-2 px-3 h6" style={theme.main}>
         <h4>Availability</h4>
         <div>
           {profileData.selectedTimes.map((timesString, index) => {

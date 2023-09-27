@@ -1,7 +1,7 @@
 import React from "react";
 import Link from 'next/link'
 import { Container, Row, Col } from "react-bootstrap";
-
+import styles from '../styles/footer.module.css'
 function Footer({children}) {
   return (
     <>
@@ -14,7 +14,7 @@ function Footer({children}) {
         color: "#FFFFFF",
       }}
     >
-      <Container className="py-5" style={{ width: "90%" }}>
+      <Container className={`py-5 ${styles.main}`} style={{ width: "90%" }}>
         <Row className="flex-wrap">
           <Col md={2} style={{ borderRight: "1px solid #FFFFFF" }}>
             <p
@@ -27,7 +27,6 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
                   href="/"
                 >
                   About us
@@ -36,7 +35,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Security and information
@@ -45,7 +44,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Advertising possibilities
@@ -54,7 +53,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Contact Us
@@ -73,7 +72,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Get in touch
@@ -82,7 +81,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Customer service
@@ -91,7 +90,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Report
@@ -110,7 +109,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Privacy statement
@@ -119,7 +118,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Cookie statement
@@ -128,7 +127,7 @@ function Footer({children}) {
               <li>
 
                 <Link
-                  style={{ color: "#FFFFFF", textDecoration: "none" }}
+    
                   href="/"
                 >
                   Terms and Conditions
@@ -152,7 +151,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Course syllabus
@@ -161,7 +160,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Lecture recordings
@@ -170,7 +169,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Discussion forum
@@ -179,7 +178,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Assignment submissions
@@ -188,7 +187,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Grading rubric
@@ -197,7 +196,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Online textbook
@@ -210,7 +209,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Office hours schedule
@@ -219,7 +218,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Course calendar
@@ -228,7 +227,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Student progress report
@@ -237,7 +236,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Peer review assignments
@@ -246,7 +245,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Group project collaboration space
@@ -255,7 +254,7 @@ function Footer({children}) {
                 <li>
 
                   <Link
-                    style={{ color: "#FFFFFF", textDecoration: "none" }}
+      
                     href="/"
                   >
                     Videos

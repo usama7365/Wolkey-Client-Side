@@ -21,14 +21,13 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPasswordResetModal, setShowPasswordResetModal] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false); // Added loading state
-  const [resetPasswordLoading, setResetPasswordLoading] = useState(false); // Added loading state for password reset
+  const [loading, setLoading] = useState(false);
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+  const [showInactiveUserModal, setShowInactiveUserModal] = useState(false); // Initialize the state variable
 
- 
   const dispatch = useDispatch();
   const router = useRouter();
   const [response, setResponse] = useState(null);
-
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -42,9 +41,7 @@ const Login = () => {
     setShowPasswordResetModal(!showPasswordResetModal);
   };
 
- 
-
-  const handleLogin =async () => {
+  const handleLogin = async () => {
     if (email === "" || password === "") {
       toast.error("All inputs must be filled", {
         position: "top-right",
@@ -59,38 +56,40 @@ const Login = () => {
     } else {
       setLoading(true);
       try {
-        const loginResponse= await dispatch(
+        const loginResponse = await dispatch(
           userLoginAction({
             email: email,
             password: password,
           })
-        )
+        );
         setLoading(false);
         if (typeof window !== "undefined") {
           const storedResponse = localStorage.getItem("auth-user");
           if (storedResponse) {
             const parsedResponse = JSON.parse(storedResponse);
-            if (parsedResponse && parsedResponse.profileId && parsedResponse.role === "teacher" ) {
-              router.push('/viewProfile');
-            } else if (parsedResponse.role === "teacher") {
+            console.log(parsedResponse , "res")
+            if (parsedResponse.isActive !== true) {
+              setShowInactiveUserModal(true); 
+            }
+            else if (
+              parsedResponse &&
+              parsedResponse.profileId &&
+              parsedResponse.isActive === true &&
+              parsedResponse.role === "teacher"
+            ) {
+              router.push(`/viewProfile/${parsedResponse.profileId}`);
+            } else if (parsedResponse.role === "teacher" &&   parsedResponse.isActive === true) {
               router.push("/profileform");
-            } else if (parsedResponse.role === "agency") {
+            } else if (parsedResponse.role === "agency" &&    parsedResponse.isActive === true) {
               router.push("/agencyProfile");
             }
           }
         }
-        
-    
-       
-       
       } catch (error) {
         setLoading(false);
-        // Handle error here
-       
       }
     }
   };
-
 
   const handleResetPassword = async () => {
     if (email === "") {
@@ -105,13 +104,13 @@ const Login = () => {
         theme: "light",
       });
     } else {
-      setResetPasswordLoading(true); // Set loading state to true for password reset
+      setResetPasswordLoading(true);
       try {
         await dispatch(forgetPasswordAction(email));
-        setResetPasswordLoading(false); // Set loading state back to false after password reset attempt
-        handleTogglePasswordResetModal(); // Close the password reset modal after successful reset
+        setResetPasswordLoading(false);
+        handleTogglePasswordResetModal();
       } catch (error) {
-        setResetPasswordLoading(false); // Set loading state back to false if password reset fails
+        setResetPasswordLoading(false);
         toast.error("Password reset failed. Please try again.", {
           position: "top-right",
           autoClose: 1000,
@@ -132,9 +131,8 @@ const Login = () => {
     },
     bg: {
       backgroundColor: "rgb(245, 93, 2)",
-    border: "none",
-    height:"40px",
-    
+      border: "none",
+      height: "40px",
     },
   };
 
@@ -168,14 +166,11 @@ const Login = () => {
           </Form>
           <Form.Group as={Row} className="mb-3" controlId="formHorizontalCheck">
             <Col>
-              <Form.Check label="Remember me"  />
+              <Form.Check label="Remember me" />
             </Col>
           </Form.Group>
           <div className="d-flex justify-content-between">
-            <a
-              className="cursor-pointer"
-              onClick={handleTogglePasswordResetModal}
-            >
+            <a className="cursor-pointer" onClick={handleTogglePasswordResetModal}>
               Forgot your Password
             </a>
             <Link href="/banner" passHref>
@@ -188,58 +183,48 @@ const Login = () => {
               variant="primary"
               className="mt-3 px-5"
               active
-           
-             
               onClick={handleLogin}
+              disabled={loading}
             >
-              {loading ? <Spinner animation="border" role="status" /> : "Login"}
+              {loading ? (
+                <Spinner animation="border" role="status" size="sm" />
+              ) : (
+                "Login"
+              )}
             </Button>
           </div>
         </div>
         <div className="col-12 col-md-6 ">
-        <div className="d-flex  justify-content-center  flex-column px-3 align-items-center mt-4  align-self-start align-items-md-start">
-          <h3>Register as an adviser</h3>
-          <p className="text-center text-md-start">
-            Create an account as a teacher or teacher association and bring
-            yourself to the attention of thousands of “Company name” visitors
-            every day.
-          </p>
-          <Button
-          style={theme.bg}
-          
-        >
-          <Link href="/advisorSignup" passHref>
-              <p>Register as a adviser</p>
-            </Link>
-         
-        </Button>
+          <div className="d-flex  justify-content-center  flex-column px-3 align-items-center mt-4  align-self-start align-items-md-start">
+            <h3>Register as an adviser</h3>
+            <p className="text-center text-md-start">
+              Create an account as a teacher or teacher association and bring
+              yourself to the attention of thousands of “Company name” visitors
+              every day.
+            </p>
+            <Button style={theme.bg}>
+              <Link href="/advisorSignup" passHref>
+                <p>Register as an adviser</p>
+              </Link>
+            </Button>
+          </div>
+          <div className="d-flex  justify-content-center  flex-column px-3 align-items-center mt-4  align-self-start align-items-md-start">
+            <h3>Register as an Agency </h3>
+            <p className="text-center text-md-start">
+              Create an account as a teacher or teacher association and bring
+              yourself to the attention of thousands of “Company name” visitors
+              every day.
+            </p>
+            <Button style={theme.bg}>
+              <Link href="/banner" passHref>
+                <p>Register as an agency</p>
+              </Link>
+            </Button>
+          </div>
         </div>
-        <div className="d-flex  justify-content-center  flex-column px-3 align-items-center mt-4  align-self-start align-items-md-start">
-          <h3>Register as an Agency </h3>
-          <p className="text-center text-md-start">
-            Create an account as a teacher or teacher association and bring
-            yourself to the attention of thousands of “Company name” visitors
-            every day.
-          </p>
-          <Button
-          style={theme.bg}
-          
-        >
-          <Link href="/banner" passHref>
-              <p>Register as a agency</p>
-            </Link>
-         
-        </Button>
-        </div>
-        </div>
-        
       </div>
-      
 
-      <Modal
-        show={showPasswordResetModal}
-        onHide={handleTogglePasswordResetModal}
-      >
+      <Modal show={showPasswordResetModal} onHide={handleTogglePasswordResetModal}>
         <Modal.Header closeButton>
           <Modal.Title>Forgot Password</Modal.Title>
         </Modal.Header>
@@ -263,13 +248,26 @@ const Login = () => {
             style={theme.bg}
             onClick={handleResetPassword}
             variant="primary"
-            disabled={resetPasswordLoading} // Disable the button while password reset is in progress
+            disabled={resetPasswordLoading}
           >
             {resetPasswordLoading ? (
-              <Spinner animation="border" size="sm" /> // Show spinner while reset password is in progress
+              <Spinner animation="border" size="sm" />
             ) : (
               "Reset Password"
             )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showInactiveUserModal} onHide={() => setShowInactiveUserModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Inactive User</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Your account is not active. Please contact support for assistance.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowInactiveUserModal(false)}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

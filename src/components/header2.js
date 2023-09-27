@@ -5,35 +5,31 @@ import { RiCustomerService2Fill } from "react-icons/ri";
 import { useRouter } from "next/router";
 import { FaUserCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import Link from "next/link";
 
 
-const Header = ({ width }) => {
-  const headerStyle = {
-    width: width || "100%",
-    backgroundColor: "#F55D02",
-  };
-
-
-
+const Header2 = () => {
+ 
   const name = useSelector((state) => state.userLogin?.userInfo?.name);
+
+  const navStyle = {
+    backgroundColor: "#F55D02",
+    position:"absolute",
+    right:"0"
+  };
 
   const [response, setResponse] = useState(null);
 
   const router = useRouter();
-  const {profileId} = router.query
-  console.log(profileId , "pro")
-
-  const storedResponse =
-    typeof window !== "undefined" ? localStorage.getItem("auth-user") : null;
-  console.log(storedResponse, "res");
 
   const checkAuthStatus = () => {
-    if (storedResponse) {
-      const parsedResponse = JSON.parse(storedResponse);
-      setResponse(parsedResponse);
-    } else {
-      setResponse(null);
+    if (typeof window !== "undefined") {
+      const storedResponse = localStorage.getItem("auth-user");
+      if (storedResponse) {
+        const parsedResponse = JSON.parse(storedResponse);
+        setResponse(parsedResponse);
+      } else {
+        setResponse(null);
+      }
     }
   };
 
@@ -43,22 +39,18 @@ const Header = ({ width }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("auth-user");
-    localStorage.removeItem("profile");
     setResponse(null);
     router.push("/home");
   };
 
-  const profile =()=>{
-    router.push('/ViewProfile')
-  }
-
   return (
     <Navbar
       expand="xl"
-      // style={{ ...navStyle, width: customWidth || "100%" }}
-      style={headerStyle} // Use customWidth prop
+      style={navStyle}
+      className="w-75 d-flex "
+      
     >
-      <div className="container ">
+      <div className="container">
         <Nav className="mr-auto col-2">
           <Navbar.Brand>LOGO</Navbar.Brand>
         </Nav>
@@ -102,11 +94,6 @@ const Header = ({ width }) => {
                   }
                   id="user-dropdown"
                 >
-                  {response.profileId ? (
-                    
-                      <NavDropdown.Item onClick={profile}>My Profile</NavDropdown.Item>
-                    
-                  ) : null}
                   <NavDropdown.Item>Settings</NavDropdown.Item>
                   <NavDropdown.Item>Messages</NavDropdown.Item>
                   <NavDropdown.Item>Notifications</NavDropdown.Item>
@@ -131,4 +118,4 @@ const Header = ({ width }) => {
   );
 };
 
-export default Header;
+export default Header2;

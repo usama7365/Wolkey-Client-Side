@@ -40,7 +40,7 @@
     "src/pages/login.js",
     "src/pages/banner.js",
     "src/pages/profileform.js"
-, "src/layout.js"  ],
+, "src/components/layout.js"  ],
   "exclude": [
     "node_modules"
   ]

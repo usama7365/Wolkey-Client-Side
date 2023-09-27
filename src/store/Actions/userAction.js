@@ -103,14 +103,14 @@ export const userLoginAction =
         type: USER_LOGIN_SUCCESS,
         payload:res.data
       });
-      if(res.data.token){
+      if(res.data.token && res.data.isActive === true){
         toast.success("You have Login Successfully", {
           position: "top-right",
           autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
-          draggable: true,
+          draggable: true, 
           progress: undefined,
           theme: "light",
         });
@@ -124,7 +124,7 @@ export const userLoginAction =
             ? error.response.data.message
             : error.message,
       });
-      toast.error(error.response && error.response.data?.error, {
+      toast.error( error.response && error.response.data?.error, {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: false,

@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { FaLocationDot } from "react-icons/fa6";
 import { ImBooks } from "react-icons/im";
 import Button from "react-bootstrap/Button";
-import {viewProfileAction,} from "../store/Actions/profileAction";
-import { BsEnvelopeFill, BsFillTelephoneFill } from "react-icons/bs";
+import { viewProfileAction } from "../store/Actions/profileAction";
+import { BsCurrencyEuro, BsEnvelopeFill, BsFillTelephoneFill } from "react-icons/bs";
 import styles from "../styles/profile.module.css";
 import { token } from "morgan";
 import { FcCheckmark } from "react-icons/fc";
@@ -19,35 +19,42 @@ const Profile = () => {
   };
 
   const [showAllImages, setShowAllImages] = useState(false);
-  const router=useRouter()
+  const [isEditing, setIsEditing] = useState(false);
+  const router = useRouter();
+  const { profileId } = router.query;
+  console.log(profileId, "homeId");
 
   const toggleImages = () => {
     setShowAllImages(!showAllImages);
   };
 
-  const profileData = useSelector((state) => state.viewProfile.userInfo);
+  const profileData = useSelector((state) => state.viewProfile?.userInfo);
+  console.log(profileData , "dat")
   const isLoading = profileData === null;
-
-  console.log(profileData, "vieww");
 
 
   const dispatch = useDispatch();
+  const authUserString = typeof window !== "undefined" && localStorage.getItem("auth-user") ? JSON.parse(localStorage.getItem("auth-user")):null
+  const _id = profileData ? profileData._id : null;
+  console.log(_id, "localIdd");
 
   useEffect(() => {
-    const authUserString = localStorage.getItem("auth-user");
     if (authUserString) {
-      const authUser = JSON.parse(authUserString);
-      const token = authUser ? authUser.token : null;
+      const token = authUserString ? authUserString.token : null;
       console.log(token, "tok");
       const fetchData = async () => {
-        if (token) {
-          await dispatch(viewProfileAction(token));
+        if (token || profileId) {
+          await dispatch(viewProfileAction({ token, profileId }));
         }
       };
-
       fetchData();
     }
   }, [dispatch, token]);
+
+  if (profileId === _id) {
+    localStorage.setItem("profile", JSON.stringify(profileData));
+  } 
+  
 
   if (isLoading) {
     return (
@@ -60,24 +67,28 @@ const Profile = () => {
     );
   }
 
-  const handleEdit =()=>{
-    router.push("/profileform"); 
-  }
-
+  const handleEdit = () => {
+    router.push("/profileform");
+    setIsEditing(true);
+  };
 
   const imagesToDisplay = showAllImages
     ? profileData.selectedImageFiles || []
-    : (profileData.selectedImageFiles  || []).slice(0, 4);
+    : (profileData.selectedImageFiles || []).slice(0, 4);
 
   return (
     <>
-   
-  <Container  className="d-flex justify-content-start mt-2">
-  <Button style={bg}  onClick={handleEdit}>Edit Your profile</Button>
-  </Container>
+      <Container className="d-flex justify-content-end mt-2">
+        <p
+          style={{
+            display: profileId === _id ? "block" : "none",
+          }}
+          onClick={handleEdit}
+        >
+          Edit Your profile
+        </p>
+      </Container>
       <div className={styles.parent}>
-   
- 
         <div className={styles.city}>
           <div className={styles.top}>
             <h5>Top Cities</h5>
@@ -181,13 +192,15 @@ const Profile = () => {
                 </span>
                 Show Number{" "}
               </button>
-              <button>
-                {" "}
+              <button
+                style={{
+                  display: profileId !== _id ? "block" : "none",
+                }}
+              >
                 <span>
-                  {" "}
-                  <BsEnvelopeFill />{" "}
+                  <BsEnvelopeFill />
                 </span>
-                Send Message{" "}
+                Send Message
               </button>
             </div>
           </div>
@@ -220,53 +233,58 @@ const Profile = () => {
                     Teaching style <span>{profileData.TeachingStyle}</span>{" "}
                   </h6>
                   <h6>
-                    Availability <span>{profileData.availabilityStatus}</span>{" "}
+                    Availability <span>Busy</span>{" "}
                   </h6>
                 </div>
               </div>
             </>
           </div>
-          <div className={styles.third}>
-            <h3>Prices</h3>
-            <div className="d-flex flex-wrap">
-              {profileData.prices.map((pricesString, index) => {
-                try {
-                  const pricesArray = JSON.parse(pricesString);
-                  return (
-                    <div key={index} className="col-md-6">
-                      {Object.entries(pricesArray).map(([time, cost]) => (
-                        <div
-                          key={time}
-                          className="d-flex justify-content-between mb-3"
-                        >
-                          <p
-                            style={{
-                              fontWeight: 700,
-                              fontSize: "13px",
-                              color: "#4E4C4C",
-                            }}
-                          >
-                            {time}
-                          </p>
-                          <p>{cost}$</p>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                } catch (error) {
-                  // Handle parsing error if needed
-                  return null;
-                }
-              })}
-            </div>
+          
+          <div className={`${styles.third} h6`}>
+  <h3>Prices</h3>
+  <div className="d-flex flex-wrap">
+    {profileData.prices.map((pricesString, index) => {
+      try {
+        const pricesArray = JSON.parse(pricesString);
+        // Filter out the "0" key from pricesArray
+        const filteredPrices = Object.entries(pricesArray).filter(([time]) => time !== "0");
+        
+        return (
+          <div key={index} className="col-md-6">
+            {filteredPrices.map(([time, cost]) => (
+              <div
+                key={time}
+                className="d-flex justify-content-between mb-3"
+              >
+                <p
+                  style={{
+                    fontWeight: 500,
+                    fontSize: "15px",
+                   
+                  }}
+                >
+                  {time.replace(/_/g, ' ')} {/* Replace underscore with space */}
+                </p>
+                <p className="d-flex align-items-center">{cost} <BsCurrencyEuro/> </p>
+              </div>
+            ))}
           </div>
+        );
+      } catch (error) {
+        // Handle parsing error if needed
+        return null;
+      }
+    })}
+  </div>
+</div>
+
 
           <div className={styles.forth}>
             <h3>About Me</h3>
             <p>{profileData.aboutUs}</p>
           </div>
           <div>
-            <div className={styles.fifth}>
+            <div className={`${styles.fifth} h6`}>
               <h3>Services</h3>
               <div className="d-flex flex-wrap">
                 {profileData.serviceNames.map((serviceString, index) => {
@@ -283,9 +301,9 @@ const Profile = () => {
                             <p
                               className="mb-2"
                               style={{
-                                fontWeight: 700,
-                                fontSize: "13px",
-                                color: "#4E4C4C",
+                                fontWeight: 500,
+                                fontSize: "15px",
+                               
                               }}
                             >
                               <span style={{ color: "#B80909" }}>
@@ -305,7 +323,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div className={styles.fifth}>
+          <div className={`${styles.fifth} h6`}>
             <h3>My Availability</h3>
             <div>
               {profileData.selectedTimes.map((timesString, index) => {
@@ -333,22 +351,26 @@ const Profile = () => {
           </div>
 
           <div className={styles.last}>
-            <button className={styles.btn1}>
+            <Button className={styles.btn1}>
               {" "}
               <span>
                 {" "}
                 <BsFillTelephoneFill />{" "}
               </span>
-              Send Number{" "}
-            </button>
-            <button>
-              {" "}
-              <span>
-                {" "}
-                <BsEnvelopeFill />{" "}
+              Show Number{" "}
+            </Button>
+            <Button
+           
+              style={{
+                display: profileId !== _id ? "block" : "none",
+                marginLeft:"10px"
+              }}
+            >
+              <span  className="px-2">
+                <BsEnvelopeFill />
               </span>
-              Send Message{" "}
-            </button>
+              Send Message
+            </Button>
           </div>
         </div>
       </div>
