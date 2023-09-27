@@ -186,7 +186,7 @@ const Settings = () => {
         <div className="px-3 py-3" style={theme.right}>
           <h4>Change e-mail address</h4>
           <p>
-            Enter your email address and click on 'Modify'. At your new address
+            Enter your email address and click on &apos;Modify&apos;. At your new address
             you will receive an email with a link and code to make your final
             change{" "}
           </p>
