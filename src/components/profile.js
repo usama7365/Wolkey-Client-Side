@@ -197,7 +197,7 @@ const Profile = () => {
                   display: profileId !== _id ? "block" : "none",
                 }}
               >
-                <span>
+                <span className="px-1">
                   <BsEnvelopeFill />
                 </span>
                 Send Message
@@ -350,7 +350,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className={styles.last}>
+          {/* <div className={styles.last}>
             <Button className={styles.btn1}>
               {" "}
               <span>
@@ -371,7 +371,7 @@ const Profile = () => {
               </span>
               Send Message
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

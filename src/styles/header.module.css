@@ -1,23 +1,12 @@
-.main {
-    background-color: aqua;
-    width: 100%;
-    display: flex;
-   
-    justify-content: space-between !important;
-    padding: 10px; 
-    /* Add padding to create space around the elements */
+.main{
+  font-size: 12px;
+  font-weight: 500;
+  background-color: #F55D02;
+}
+
+@media screen and (min-width: 1200px) {
+  .main{
+    font-size: 15px;
+    font-weight: 500;
   }
-  
-  .right {
-    white-space: nowrap;
-    display: flex;
-    gap: 10px;
-    background-color: blue; /* Add gap to create space between child elements */
-  }
-  
-  .mid {
-    background-color: yellow;
-    display: flex;
-    gap: 10px; /* Add gap to create space between child elements */
-  }
-  
+}

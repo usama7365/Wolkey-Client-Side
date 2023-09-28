@@ -27,6 +27,10 @@ const Banner = () => {
     height:"40px",
     marginTop:'20px'
   };
+  const link={
+    textDecoration:"none",
+    color:"white"
+  }
 
   const [loggingIn, setLoggingIn] = useState(false); 
   const router = useRouter();
@@ -70,7 +74,7 @@ const Banner = () => {
           style={bg}
           
         >
-          <Link href="/teacherSignup" passHref>
+          <Link style={link} href="/teacherSignup" passHref>
               <p>Register as a teacher</p>
             </Link>
          
@@ -104,7 +108,7 @@ const Banner = () => {
           style={bg}
           
         >
-          <Link href="/agencySignup" passHref>
+          <Link style={link} href="/agencySignup" passHref>
               <p>Register as a agency</p>
             </Link>
          

@@ -5,15 +5,30 @@ import { RiCustomerService2Fill } from "react-icons/ri";
 import { useRouter } from "next/router";
 import { FaUserCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import Link from "next/link";
+// import Link from "next/link";
+import styles from '../styles/header.module.css'
+import axios from 'axios'
+import { API_URLS } from "../../../Wolkey-Admin-Pannel/src/apiConfig";
 
 
-const Header = ({ width }) => {
-  const headerStyle = {
-    width: width || "100%",
-    backgroundColor: "#F55D02",
+
+const Header = () => {
+  const [data, setData] = useState([]);
+
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${API_URLS}/admin/orange-menu`);
+      console.log(response , "nav");
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
 
 
   const name = useSelector((state) => state.userLogin?.userInfo?.name);
@@ -52,28 +67,53 @@ const Header = ({ width }) => {
     router.push('/ViewProfile')
   }
 
+  const settings=()=>{
+    router.push('/settings')
+  }
+
+  const balance=()=>{
+    router.push('/balance')
+  }
+
+  const messages=()=>{
+    router.push('/messages')
+  }
+
+  const invoice=()=>{
+    router.push('/invoice')
+  }
+
+  const handleNavItemClick = (item) => {
+    // Use the useRouter hook to access the router
+ 
+  
+    // Push the selected item's title as a query parameter to the home page URL
+    router.push({
+      pathname: "/home", // Update with your home page URL
+      query: { selectedItem: item },
+    });
+  };
+
+
   return (
     <Navbar
-      expand="xl"
-      // style={{ ...navStyle, width: customWidth || "100%" }}
-      style={headerStyle} // Use customWidth prop
+      expand="lg"
+      className={styles.main} 
     >
       <div className="container ">
-        <Nav className="mr-auto col-2">
+        <Nav className="mr-auto col-1">
           <Navbar.Brand>LOGO</Navbar.Brand>
         </Nav>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mx-auto col-xl-7  justify-content-between">
+          <Nav className="mx-auto col-lg-8  col-xl-7  justify-content-between">
             <Nav.Link href="/home">Home</Nav.Link>
-            <Nav.Link>My Blogs</Nav.Link>
-            <Nav.Link>Create Blogs</Nav.Link>
-            <Nav.Link>About</Nav.Link>
-            <Nav.Link>Contact</Nav.Link>
-            <Nav.Link>About</Nav.Link>
-            <Nav.Link>Contact</Nav.Link>
+            {data.slice(0, 6).map((item, index) => (
+              <Nav.Link key={index}  onClick={() => handleNavItemClick(item.title)} >{item.title}</Nav.Link>
+            ))}
           </Nav>
+         
 
           <Nav className="ml-auto  d-xl-flex align-items-xl-center text-nowrap ">
             <Nav.Link href="#customer-service">
@@ -107,11 +147,11 @@ const Header = ({ width }) => {
                       <NavDropdown.Item onClick={profile}>My Profile</NavDropdown.Item>
                     
                   ) : null}
-                  <NavDropdown.Item>Settings</NavDropdown.Item>
-                  <NavDropdown.Item>Messages</NavDropdown.Item>
+                  <NavDropdown.Item onClick={settings} >Settings</NavDropdown.Item>
+                  <NavDropdown.Item onClick={messages} >Messages</NavDropdown.Item>
                   <NavDropdown.Item>Notifications</NavDropdown.Item>
-                  <NavDropdown.Item>Invoice</NavDropdown.Item>
-                  <NavDropdown.Item>Balance Expenses</NavDropdown.Item>
+                  <NavDropdown.Item  onClick={invoice}>Invoice</NavDropdown.Item>
+                  <NavDropdown.Item  onClick={balance}>Balance Expenses</NavDropdown.Item>
                   <NavDropdown.Item onClick={handleLogout}>
                     Log out
                   </NavDropdown.Item>

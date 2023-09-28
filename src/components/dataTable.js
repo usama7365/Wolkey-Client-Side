@@ -1,69 +1,51 @@
-import React from "react";
-// import BootstrapTable from "react-bootstrap-table-next";
-// import cellEditFactory from "react-bootstrap-table2-editor";
-// import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
-// import paginationFactory from "react-bootstrap-table2-paginator";
-
-
-const data = [
-  { products: "Product A", price: 50, date: "2023-09-20" },
-  { products: "Product B", price: 75, date: "2023-09-21" },
-  { products: "Product A", price: 50, date: "2023-09-20" },
-  { products: "Product B", price: 75, date: "2023-09-21" },
-  { products: "Product A", price: 50, date: "2023-09-20" },
-  { products: "Product B", price: 75, date: "2023-09-21" },
-  { products: "Product A", price: 50, date: "2023-09-20" },
-  { products: "Product B", price: 75, date: "2023-09-21" },
-  { products: "Product A", price: 50, date: "2023-09-20" },
-  { products: "Product B", price: 75, date: "2023-09-21" },
-  { products: "Product A", price: 50, date: "2023-09-20" },
-  { products: "Product B", price: 75, date: "2023-09-21" },
-];
-
-// const columns = [
-//   {
-//     dataField: "id",
-//   },
-//   {
-//     dataField: "products",
-//     filter: textFilter({
-//       placeholder: "", // Remove the label for this column
-//     }),
-//   },
-//   {
-//     dataField: "price",
-//     text: "Price",
-//     editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => {
-//  // Remove the label for this column
-//       return <input type="number" {...editorProps} />;
-//     },
-//   },
-//   {
-//     dataField: "date",
-//     text: "Date",
-//   },
-// ];
+import React, { useState } from "react";
+import { Box, TextField, Typography } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 
 const DataTable = () => {
-  const paginationOptions = {
-    sizePerPage: 10,
+  const [data, setData] = useState([
+    { id: 1, product: "Product A", balance: "55$", date: "9/28/2023", isActive: true },
+    { id: 2, product: "Product B", balance: "50$", date: "1/28/2023", isActive: false },
+    // Add more static data here
+  ]);
+
+  const [filterText, setFilterText] = useState("");
+  const [filteredData, setFilteredData] = useState(data);
+
+  const handleFilterChange = (event) => {
+    const searchText = event.target.value.toLowerCase();
+    setFilterText(searchText);
+    const filteredRows = data.filter((row) =>
+      Object.values(row).some(
+        (value) => typeof value === "string" && value.toLowerCase().includes(searchText)
+      )
+    );
+    setFilteredData(filteredRows);
   };
 
+  const columns = [
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "product", headerName: "Product", flex: 1 },
+    { field: "balance", headerName: "Balance", flex: 1 },
+    { field: "date", headerName: "Date", flex: 1 },
+  ];
+
   return (
-<>hello</>
+    <Box m={"20px"}>
+      
+      <TextField
+        label="Filter"
+        variant="outlined"
+        value={filterText}
+        onChange={handleFilterChange}
+        fullWidth
+        margin="normal"
+      />
+      <Box height={"70vh"} sx={{ width: "100%" }}>
+        <DataGrid rows={filteredData} columns={columns} pageSize={10} />
+      </Box>
+    </Box>
   );
 };
 
 export default DataTable;
-
-
-{/* <div>
-<BootstrapTable
-  keyField="id"
-  data={data}
-  columns={columns}
-  cellEdit={cellEditFactory({ mode: "click", blurToSave: true })}
-  filter={filterFactory()}
-  pagination={paginationFactory(paginationOptions)}
-/>
-</div> */}

@@ -4,7 +4,7 @@ import DataTable from "../components/dataTable";
 import SideDiv from "../components/sideDiv";
 import styles from '../styles/settings.module.css'
 
-const Balance = () => {
+const Invoice = () => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const months = [
@@ -64,8 +64,8 @@ const Balance = () => {
    <SideDiv/>
  
  <div  className={'col-lg-9'}>
-   <h4>Balance Expenses</h4>
-   <p>Here you can view all your balances mutations</p>
+   <h4>Invoices</h4>
+   <p>Here you can download all your invoices individually or per year</p>
    <div className="d-flex flex-column " style={theme.div}>
      <div className="d-sm-flex px-2 ">
      <div className="d-flex py-3 justify-content-around">
@@ -117,7 +117,7 @@ const Balance = () => {
   );
 };
 
-export default Balance;
+export default Invoice;
 
 
 

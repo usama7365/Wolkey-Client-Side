@@ -134,6 +134,10 @@ const Login = () => {
       border: "none",
       height: "40px",
     },
+    link:{
+      textDecoration:"none",
+      color:"white"
+    }
   };
 
   return (
@@ -203,8 +207,8 @@ const Login = () => {
               every day.
             </p>
             <Button style={theme.bg}>
-              <Link href="/advisorSignup" passHref>
-                <p>Register as an adviser</p>
+              <Link style={theme.link} href="/advisorSignup" passHref>
+                <p >Register as an adviser</p>
               </Link>
             </Button>
           </div>
@@ -216,7 +220,7 @@ const Login = () => {
               every day.
             </p>
             <Button style={theme.bg}>
-              <Link href="/banner" passHref>
+              <Link style={theme.link} href="/banner" passHref>
                 <p>Register as an agency</p>
               </Link>
             </Button>

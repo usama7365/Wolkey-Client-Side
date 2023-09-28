@@ -44,11 +44,15 @@ const Home = () => {
       day: "2 days ago",
     },
   ];
-  const profiles = useSelector((state) => state.allProfiles?.allProfiles);
 
   useEffect(() => {
     dispatch(viewAllProfilesAction());
   }, []);
+
+  const profiles = useSelector((state) => state.allProfiles?.allProfiles);
+
+  // Call the filterProfiles function with the profiles from the Redux store
+
   console.log(profiles, "homeProfile");
 
   const router = useRouter();
@@ -64,11 +68,10 @@ const Home = () => {
   };
 
   const authUserString =
-    typeof window !== "undefined" &&
-    localStorage.getItem("auth-user")
+    typeof window !== "undefined" && localStorage.getItem("auth-user")
       ? JSON.parse(localStorage.getItem("auth-user"))
       : null;
-  console.log(authUserString, "auth");
+  // console.log(authUserString, "auth");
   const getDetailProfile = (_id) => {
     if (authUserString && authUserString.token) {
       dispatch(viewProfileAction(_id));
@@ -130,6 +133,41 @@ const Home = () => {
   const [windowWidth, setWindowWidth] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [showAdvanceSearch, setShowAdvanceSearch] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState({});
+  const [filteredProfiles, setFilteredProfiles] = useState([]);
+
+  const filterProfiles = (profiles, selectedFilters) => {
+    console.log(profiles, selectedFilters, "././.");
+    return profiles.filter((profile) => {
+      for (const filterKey in selectedFilters) {
+        if (Array.isArray(selectedFilters[filterKey])) {
+          if (
+            !selectedFilters[filterKey].every((value) =>
+              profile[filterKey].includes(value)
+            )
+          ) {
+            return false;
+          }
+        } else {
+          if (profile[filterKey] !== selectedFilters[filterKey]) {
+            return false;
+          }
+        }
+      }
+      return true;
+    });
+  };
+
+  const handleFilterChange = (filterValues) => {
+    setSelectedFilters(filterValues);
+  };
+
+  useEffect(() => {
+    const filteredProfiles = filterProfiles(profiles, selectedFilters);
+    setFilteredProfiles(filteredProfiles);
+  }, [profiles, selectedFilters]);
+
+  filterProfiles(profiles);
 
   const dispatch = useDispatch();
 
@@ -165,7 +203,10 @@ const Home = () => {
   return (
     <>
       <Container>
-        <p onClick={toggleAdvanceSearch}> <Filter/> </p>
+        <p onClick={toggleAdvanceSearch} className="col-1">
+          {" "}
+          <Filter />{" "}
+        </p>
         {/* Use the inline style for the transition */}
         <div
           style={{
@@ -175,7 +216,12 @@ const Home = () => {
             overflow: showAdvanceSearch ? "visible" : "hidden",
           }}
         >
-          {showAdvanceSearch && <AdvanceSearch />}
+          {showAdvanceSearch && (
+            <AdvanceSearch
+              onFilterChange={handleFilterChange}
+              selectedFilters={selectedFilters}
+            />
+          )}
         </div>
         <Container
           style={theme.main}
@@ -323,7 +369,7 @@ const Home = () => {
               </div>
             ) : (
               <div style={theme.pointer} className="col-lg-9 pe-auto">
-                {profiles.slice(startIndex, endIndex).map((data, index) => (
+                {filteredProfiles.map((data, index) => (
                   <div
                     onClick={() => {
                       getDetailProfile(data._id);
@@ -332,16 +378,19 @@ const Home = () => {
                     className={styles.profile}
                   >
                     <div className="d-flex flex-column" key={index}>
-                      <img
-                        style={theme.image}
-                        className="rounded"
-                        src={`${API_URLS}${data.selectedImageFiles[0]}`}
-                        alt="Profile Image"
-                        onError={(e) =>
-                          console.error("Image load error:", e.message)
-                        }
-                      ></img>
-
+                      {data.selectedImageFiles[0] ? (
+                        <img
+                          style={theme.image}
+                          className="rounded"
+                          src={`${API_URLS}${data.selectedImageFiles[0]}`}
+                          alt="User Icon"
+                          onError={(e) =>
+                            console.error("Image load error:", e.message)
+                          }
+                        />
+                      ) : (
+                        <div className="user-icon">User Icon</div>
+                      )}
                       <div className={styles.view}>
                         <p>
                           <GrGallery /> <span>4</span>{" "}
@@ -381,7 +430,6 @@ const Home = () => {
                     </div>
                   </div>
                 ))}
-
                 <div className="d-flex justify-content-center mt-3">
                   {pageNumber > 1 && (
                     <Button
@@ -402,9 +450,7 @@ const Home = () => {
                             ? "#31A551"
                             : theme.btn.backgroundColor,
                         color:
-                          pageNumber === index + 1
-                            ? "white"
-                            : theme.btn.color,
+                          pageNumber === index + 1 ? "white" : theme.btn.color,
                       }}
                       key={index}
                       onClick={() => {
