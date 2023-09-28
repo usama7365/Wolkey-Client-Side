@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 // import Link from "next/link";
 import styles from '../styles/header.module.css'
 import axios from 'axios'
-import { API_URLS } from "../../../Wolkey-Admin-Pannel/src/apiConfig";
+import { API_URLS } from "../apiConfig";
 
 
 
