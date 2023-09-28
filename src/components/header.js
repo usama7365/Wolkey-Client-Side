@@ -89,7 +89,7 @@ const Header = () => {
   
     // Push the selected item's title as a query parameter to the home page URL
     router.push({
-      pathname: "/home", // Update with your home page URL
+      pathname:"/teachersList", // Update with your home page URL
       query: { selectedItem: item },
     });
   };
@@ -112,6 +112,7 @@ const Header = () => {
             {data.slice(0, 6).map((item, index) => (
               <Nav.Link key={index}  onClick={() => handleNavItemClick(item.title)} >{item.title}</Nav.Link>
             ))}
+              <Nav.Link href="/videos">Videos</Nav.Link>
           </Nav>
          
 
