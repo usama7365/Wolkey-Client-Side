@@ -81,7 +81,7 @@ const Login = () => {
             } else if (parsedResponse.role === "teacher" &&   parsedResponse.isActive === true) {
               router.push("/profileform");
             } else if (parsedResponse.role === "agency" &&    parsedResponse.isActive === true) {
-              router.push("/agencyProfile");
+              router.push("/agencyProfileForm");
             }
           }
         }

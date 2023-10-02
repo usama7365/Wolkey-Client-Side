@@ -5,7 +5,6 @@ import { PiVideoFill } from "react-icons/pi";
 import { ImBooks } from "react-icons/im";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { Spinner } from "react-bootstrap";
-
 import { AiFillEye, AiFillClockCircle } from "react-icons/ai";
 import { FaLocationDot, FaUser } from "react-icons/fa6";
 import styles from "../styles/home.module.css";
@@ -19,6 +18,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import AdvanceSearch from "../components/advanceSearch";
 import Filter from "../components/filter";
+import axios from "axios";
+
 
 const Home = () => {
   const Data = [
@@ -51,14 +52,16 @@ const Home = () => {
 
   const profiles = useSelector((state) => state.allProfiles?.allProfiles);
 
-  // Call the filterProfiles function with the profiles from the Redux store
-
   console.log(profiles, "homeProfile");
 
   const router = useRouter();
   const { _id } = router.query;
 
   const [showModal, setShowModal] = useState(false);
+  const [metaData, setMetaData] = useState({ title: "", description: "", keywords: "" });
+
+
+
   const handleCloseModal = () => {
     setShowModal(false);
   };
@@ -71,7 +74,8 @@ const Home = () => {
     typeof window !== "undefined" && localStorage.getItem("auth-user")
       ? JSON.parse(localStorage.getItem("auth-user"))
       : null;
-  // console.log(authUserString, "auth");
+
+      
   const getDetailProfile = (_id) => {
     if (authUserString && authUserString.token) {
       dispatch(viewProfileAction(_id));
@@ -192,6 +196,55 @@ const Home = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${API_URLS}/admin/view-meta-tags`);
+        console.log(response.data[0].title, "meta");
+  
+        // Update the metaData state with data from the API response
+        setMetaData({
+          title: response.data[0].title,
+          description: response.data[0].description,
+          keywords: response.data[0].keywords,
+        });
+  
+        // Check if metaData.title is not empty before setting the document title
+        if (response.data.title) {
+          document.title = response.data.title;
+        }
+      } catch (error) {
+        console.error("Error fetching meta tags:", error);
+      }
+    };
+  
+    fetchData(); // Invoke the fetchData function here
+  }, []);
+  
+
+  useEffect(() => {
+    // Update page title
+    document.title = metaData.title;
+    
+    // Function to add or update a meta element in the <head> section
+    const updateMetaTag = (name, content) => {
+      let metaTag = document.querySelector(`meta[name="${name}"]`);
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute('name', name);
+        document.head.appendChild(metaTag);
+      } 
+      metaTag.setAttribute('content', content);
+    };
+
+    // Update meta description and keywords
+    updateMetaTag('description', metaData.description);
+    updateMetaTag('keywords', metaData.keywords);
+  }, [metaData.title, metaData.description, metaData.keywords]);
+
+  
+
   const startIndex = (pageNumber - 1) * itemsPerPage;
   const endIndex = pageNumber * itemsPerPage;
   const totalPages = Math.ceil(profiles.length / itemsPerPage);
@@ -200,9 +253,17 @@ const Home = () => {
     transition: "opacity 0.3s ease-in-out, height 0.3s ease-in-out",
   };
 
+
+
+
+
   return (
     <>
+
+
+
       <Container>
+        
         <p onClick={toggleAdvanceSearch} className="col-1">
           {" "}
           <Filter />{" "}

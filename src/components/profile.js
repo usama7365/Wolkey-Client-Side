@@ -38,6 +38,12 @@ const Profile = () => {
   const _id = profileData ? profileData._id : null;
   console.log(_id, "localIdd");
 
+  const authUserProfile = typeof window !== "undefined" && localStorage.getItem("profile") ? JSON.parse(localStorage.getItem("profile")):null
+  console.log(authUserProfile  , "auth")
+
+  const authUserProfile2 = typeof window !== "undefined" && localStorage.getItem("Profile") ? JSON.parse(localStorage.getItem("Profile")):null
+  console.log(authUserProfile  , "auth")
+
   useEffect(() => {
     if (authUserString) {
       const token = authUserString ? authUserString.token : null;
@@ -80,9 +86,10 @@ const Profile = () => {
     <>
       <Container className="d-flex justify-content-end mt-2">
         <p
-          style={{
-            display: profileId === _id ? "block" : "none",
-          }}
+         style={{
+          display: (authUserProfile && authUserProfile._id === _id)  ? "block" : "none",
+        }}
+        
           onClick={handleEdit}
         >
           Edit Your profile
@@ -193,8 +200,8 @@ const Profile = () => {
                 Show Number{" "}
               </button>
               <button
-                style={{
-                  display: profileId !== _id ? "block" : "none",
+                 style={{
+                  display: authUserProfile && authUserProfile._id !== _id ? "block" : "none",
                 }}
               >
                 <span className="px-1">
@@ -222,7 +229,7 @@ const Profile = () => {
                     Experience <span>{profileData.Experience}</span>{" "}
                   </h6>
                   <h6>
-                    Nationality <span>hhh</span>{" "}
+                    Nationality <span>{profileData.Nationality}</span>{" "}
                   </h6>
                 </div>
                 <div className=" w-100 mt-2">

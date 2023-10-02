@@ -74,20 +74,61 @@ const ProfileForm = () => {
   console.log(response, "tokk");
 
   useEffect(() => {
-    try {
-      const storedProfileData = JSON.parse(localStorage.getItem("profile"));
-      console.log(storedProfileData, "data");
-      if (storedProfileData) {
-        setFormData((prevData) => ({
-          ...prevData,
-          ...storedProfileData,
-        }));
+    const storedProfileData = JSON.parse(localStorage.getItem("profile"));
+    console.log(storedProfileData, "data");
+
+    if (storedProfileData) {
+      const parsedSubjectName = JSON.parse(
+        storedProfileData.subjectName || "[]"
+      );
+      const parsedserviceNames = JSON.parse(
+        storedProfileData.serviceNames || "[]"
+      );
+      const parsedselectedTimes = JSON.parse(
+        storedProfileData.selectedTimes || "[]"
+      );
+      const parsedprices = JSON.parse(storedProfileData.prices || "{}");
+      console.log(parsedselectedTimes, "time");
+
+      let parsedImageFileNames = [];
+      if (Array.isArray(storedProfileData.selectedImageFiles)) {
+        parsedImageFileNames = storedProfileData.selectedImageFiles.map(
+          (imageUrl) => {
+            const segments = imageUrl.split("/");
+            const fileNameWithExtension = segments[segments.length - 1];
+            const fileName = fileNameWithExtension.split(".")[0];
+            return fileName;
+          }
+        );
       }
-    } catch (err) {
-      console.log(err, "error");
+
+      if (Array.isArray(storedProfileData.selectedVideoFile)) {
+        const videoUrl = storedProfileData.selectedVideoFile[0] || null;
+        if (typeof videoUrl === "string") {
+          const segments = videoUrl.split("/");
+          const fileNameWithExtension = segments[segments.length - 1];
+          const fileName = fileNameWithExtension.split(".")[0];
+          setSelectedVideoFile(fileName);
+        } else {
+          console.error("videoUrl is not a string:", videoUrl);
+        }
+      }
+
+      console.log(parsedImageFileNames, "file");
+
+      setFormData((prevData) => ({
+        ...prevData,
+        ...storedProfileData,
+        subjectName: parsedSubjectName,
+      }));
+      setSubjectName(parsedSubjectName);
+      setServiceNames(parsedserviceNames);
+      setSelectedTimes(parsedselectedTimes);
+      setPrices(parsedprices);
+      setSelectedImageFiles(parsedImageFileNames);
+      console.log("Selected Image Files:", selectedImageFiles);
     }
   }, []);
-
   const router = useRouter();
   const { profileId } = router.query;
 
@@ -170,16 +211,14 @@ const ProfileForm = () => {
     }));
   };
 
-  const handleSubjectChange = (e) => {
-    const { value } = e.target;
-    setSubject(value);
-    console.log(subject);
+  const handleSubjectChange = (event) => {
+    setSubject(event.target.value);
   };
 
   const handleSubjectClick = () => {
     if (subject.trim() !== "") {
-      setSubjectName([...subjectName, subject]);
       setSubject("");
+      setSubjectName([...subjectName, subject]);
       setFormData((prevData) => ({
         ...prevData,
         subjectName: [...prevData.subjectName, subject],
@@ -324,7 +363,8 @@ const ProfileForm = () => {
       console.log(token, "tokennn");
 
       await dispatch(profileFormAction(formData, token));
-      router.push("/ViewProfile");
+      localStorage.setItem("Profile", JSON.stringify(formData));
+      router.push("/ViewProfile/");
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -560,6 +600,7 @@ const ProfileForm = () => {
                         onChange={handleSubjectChange}
                         placeholder="Subject's names"
                         name="subjectName"
+                        value={subject}
                       />
                       <FcPlus
                         style={theme.icn}
@@ -676,9 +717,9 @@ const ProfileForm = () => {
 
                       {/* <p>Selected Days: {selectedDays.join(", ")}</p> */}
                       <p className="mt-3">Selected Times:</p>
-                      <ul>
+                      <ul className=" d-flex flex-column">
                         {Object.entries(selectedTimes).map(([day, time]) => (
-                          <li key={day}>
+                          <li className="d-flex" key={day}>
                             {day} : {formData[`${day.toLowerCase()}AMPM`]}
                           </li>
                         ))}
@@ -798,6 +839,7 @@ const ProfileForm = () => {
                             {selectedImageFiles.map((fileName, index) => (
                               <li key={index}>
                                 {fileName.name}{" "}
+                                {/* Use .name to display the file name */}
                                 <span
                                   style={{ cursor: "pointer" }}
                                   onClick={() => {

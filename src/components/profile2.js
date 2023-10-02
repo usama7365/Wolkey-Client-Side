@@ -37,7 +37,7 @@ const Profile2 = () => {
   console.log(profileId, "homeId");
 
   const authUserString = typeof window !== "undefined" && localStorage.getItem("auth-user") ? JSON.parse(localStorage.getItem("auth-user")):null
-  const _id = authUserString ? authUserString.profileId : null;
+  const _id = profileData ? profileData._id : null;
   console.log(_id, "localIdd");
 
   useEffect(() => {
@@ -54,9 +54,13 @@ const Profile2 = () => {
     }
   }, [dispatch]);
 
+  const authUserProfile = typeof window !== "undefined" && localStorage.getItem("profile") ? JSON.parse(localStorage.getItem("profile")):null
+  const authUserProfile2 = typeof window !== "undefined" && localStorage.getItem("Profile") ? JSON.parse(localStorage.getItem("Profile")):null
+  console.log(authUserProfile2  , "auth")
+
   if (profileId === _id) {
     localStorage.setItem("profile", JSON.stringify(profileData));
-  }  
+  }   
 
   if (isLoading) {
     return (
@@ -137,15 +141,15 @@ const Profile2 = () => {
         </h6>
       )}
       <div className="d-flex justify-content-end">
-        <Button
+        <p
           style={{
-            ...bg,
-            display: profileId === _id ? "block" : "none",
+            
+            display: authUserProfile && authUserProfile._id === _id ? "block" : "none",
           }}
           onClick={handleEdit}
         >
           Edit Your profile
-        </Button>
+        </p>
       </div>
 
       <p>
@@ -203,7 +207,7 @@ const Profile2 = () => {
       <div className="w-100 bg-white" style={{ position: "fixed", bottom: 0,  }}>
         
           <div className="d-flex justify-content-around align-items-center text-nowrap">
-            {profileId !== _id && (
+            {(authUserProfile && authUserProfile._id !== _id) && (
               <Button
                 style={theme.btn1}
                 className=" d-flex align-items-center "

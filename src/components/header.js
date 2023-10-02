@@ -6,20 +6,17 @@ import { useRouter } from "next/router";
 import { FaUserCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
 // import Link from "next/link";
-import styles from '../styles/header.module.css'
-import axios from 'axios'
+import styles from "../styles/header.module.css";
+import axios from "axios";
 import { API_URLS } from "../apiConfig";
-
-
 
 const Header = () => {
   const [data, setData] = useState([]);
 
-
   const fetchData = async () => {
     try {
       const response = await axios.get(`${API_URLS}/admin/orange-menu`);
-      console.log(response , "nav");
+      console.log(response, "nav");
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -30,18 +27,20 @@ const Header = () => {
     fetchData();
   }, []);
 
-
   const name = useSelector((state) => state.userLogin?.userInfo?.name);
 
   const [response, setResponse] = useState(null);
 
   const router = useRouter();
-  const {profileId} = router.query
-  console.log(profileId , "pro")
+  const { profileId } = router.query;
+  console.log(profileId, "pro");
 
   const storedResponse =
     typeof window !== "undefined" ? localStorage.getItem("auth-user") : null;
   console.log(storedResponse, "res");
+
+  const storedProfile =
+    typeof window !== "undefined" ? localStorage.getItem("profile") : null;
 
   const checkAuthStatus = () => {
     if (storedResponse) {
@@ -63,43 +62,35 @@ const Header = () => {
     router.push("/home");
   };
 
-  const profile =()=>{
-    router.push('/ViewProfile')
-  }
+  const getDetailProfile = (_id) => {
+    router.push(`/viewProfile/${_id}`);
+  };
 
-  const settings=()=>{
-    router.push('/settings')
-  }
+  const settings = () => {
+    router.push("/settings");
+  };
 
-  const balance=()=>{
-    router.push('/balance')
-  }
+  const balance = () => {
+    router.push("/balance");
+  };
 
-  const messages=()=>{
-    router.push('/messages')
-  }
+  const messages = () => {
+    router.push("/messages");
+  };
 
-  const invoice=()=>{
-    router.push('/invoice')
-  }
+  const invoice = () => {
+    router.push("/invoice");
+  };
 
   const handleNavItemClick = (item) => {
-    // Use the useRouter hook to access the router
- 
-  
-    // Push the selected item's title as a query parameter to the home page URL
     router.push({
-      pathname:"/teachersList", // Update with your home page URL
+      pathname: "/teachersList",
       query: { selectedItem: item },
     });
   };
 
-
   return (
-    <Navbar
-      expand="lg"
-      className={styles.main} 
-    >
+    <Navbar expand="lg" className={styles.main}>
       <div className="container ">
         <Nav className="mr-auto col-1">
           <Navbar.Brand>LOGO</Navbar.Brand>
@@ -110,11 +101,15 @@ const Header = () => {
           <Nav className="mx-auto col-lg-8  col-xl-7  justify-content-between">
             <Nav.Link href="/home">Home</Nav.Link>
             {data.slice(0, 6).map((item, index) => (
-              <Nav.Link key={index}  onClick={() => handleNavItemClick(item.title)} >{item.title}</Nav.Link>
+              <Nav.Link
+                key={index}
+                onClick={() => handleNavItemClick(item.title)}
+              >
+                {item.title}
+              </Nav.Link>
             ))}
-              <Nav.Link href="/videos">Videos</Nav.Link>
+            <Nav.Link href="/videos">Videos</Nav.Link>
           </Nav>
-         
 
           <Nav className="ml-auto  d-xl-flex align-items-xl-center text-nowrap ">
             <Nav.Link href="#customer-service">
@@ -143,16 +138,27 @@ const Header = () => {
                   }
                   id="user-dropdown"
                 >
-                  {response.profileId ? (
-                    
-                      <NavDropdown.Item onClick={profile}>My Profile</NavDropdown.Item>
-                    
+                  {response ? (
+                    <NavDropdown.Item
+                      onClick={() => {
+                        const parsedProfile = JSON.parse(storedProfile); // Define parsedProfile here
+                        getDetailProfile(parsedProfile?._id);
+                      }}
+                    >
+                      My Profile
+                    </NavDropdown.Item>
                   ) : null}
-                  <NavDropdown.Item onClick={settings} >Settings</NavDropdown.Item>
-                  <NavDropdown.Item onClick={messages} >Messages</NavDropdown.Item>
+                  <NavDropdown.Item onClick={settings}>
+                    Settings
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={messages}>
+                    Messages
+                  </NavDropdown.Item>
                   <NavDropdown.Item>Notifications</NavDropdown.Item>
-                  <NavDropdown.Item  onClick={invoice}>Invoice</NavDropdown.Item>
-                  <NavDropdown.Item  onClick={balance}>Balance Expenses</NavDropdown.Item>
+                  <NavDropdown.Item onClick={invoice}>Invoice</NavDropdown.Item>
+                  <NavDropdown.Item onClick={balance}>
+                    Balance Expenses
+                  </NavDropdown.Item>
                   <NavDropdown.Item onClick={handleLogout}>
                     Log out
                   </NavDropdown.Item>
@@ -160,7 +166,12 @@ const Header = () => {
               )}
             </Nav.Link>
 
-            {response ? null : <Nav.Link href="#register">Register</Nav.Link>}
+            {response ? null : <Nav.Link href="#login"  onClick={(e) => {
+                if (!response) {
+                  e.preventDefault();
+                  router.push("/login");
+                }
+              }} >Register</Nav.Link>}
             <NavDropdown title="Country" id="country-dropdown">
               <NavDropdown.Item>United States</NavDropdown.Item>
               <NavDropdown.Item>United Kingdom</NavDropdown.Item>
