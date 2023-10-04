@@ -1,25 +1,19 @@
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-
-const ProtectedRoute = ({ children }) => {
+export function useAuthentication() {
   const router = useRouter();
+  const authUser = typeof window !== 'undefined' && localStorage.getItem('auth-user')
+    ? JSON.parse(localStorage.getItem('auth-user'))
+    : null;
 
-  const isAuthenticated = () => {
-    if (typeof window !== 'undefined') {
-      const storedResponse = localStorage.getItem('auth-user');
-      return !!storedResponse; 
-    }
-    return false;
-  };
+  const isAuthenticated = authUser ? authUser.token : null;
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push('/home');
-    }  
-  }, [router]);
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     router.push('/home');
+  //   }
+  // }, [isAuthenticated, router]);
 
-  return isAuthenticated() ? children : null;
-};
-
-export default ProtectedRoute;
+  return isAuthenticated;
+}

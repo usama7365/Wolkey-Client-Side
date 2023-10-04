@@ -1,10 +1,20 @@
 import React ,  { useState , useEffect } from 'react';
 import { Form, Row, Col, Container, Button } from 'react-bootstrap';
 import { agencyProfileAction } from '../store/Actions/profileAction';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import { useAuthentication } from '../components/ProtectedRoute';
+
 
 const AgencyProfileForm = () => {
-
+  const isAuthenticated = useAuthentication();
+  console.log(isAuthenticated , "issss")
+  const router = useRouter();
+  useEffect(() => {
+    if (isAuthenticated === null) {
+      router.push('/login');
+    }
+  }, [isAuthenticated]);
     const [agencyData, setAgencyData] = useState({
         kvkNumber: '',
         companyName: '',
@@ -19,13 +29,18 @@ const AgencyProfileForm = () => {
 
       const [response, setResponse] = useState(null);
       const dispatch = useDispatch()
-     
+
+
+    
+
+    const agencyProfileId = typeof window !== "undefined" && localStorage.getItem("agencyProfileId") ? JSON.parse(localStorage.getItem("agencyProfileId")) : null
+
+    
+    console.log(agencyProfileId , "aggg")
       useEffect(() => {
-        // Check if localStorage is available (client-side)
         if (typeof window !== "undefined") {
           const storedResponse = localStorage.getItem("auth-user");
           if (storedResponse) {
-            // Parse the stored response as JSON
             const parsedResponse = JSON.parse(storedResponse);
             setResponse(parsedResponse);
           }
@@ -42,10 +57,10 @@ const AgencyProfileForm = () => {
         });
       };
 
-      const handleAgencySubmit=async(e)=>{
+
+      const handleAgencySubmit = async (e) => {
         e.preventDefault();
       
-        // Set form submission status to true
         try {
           const token = response ? response.token : null;
           if (!token) {
@@ -53,19 +68,23 @@ const AgencyProfileForm = () => {
             return;
           }
           console.log(token, "tokennn");
-    
-          await dispatch(agencyProfileAction(agencyData, token));
-          
+      
+          const apiresponse = await dispatch(agencyProfileAction(agencyData, token));
+            router.push(`/getAgencyProfile/${agencyProfileId}`);
+         
         } catch (error) {
           console.error("Error submitting form:", error);
-        } finally {
-         
         }
-      }
+      };
+      
+      
+      
 
 
 
   return (
+    <>
+    {isAuthenticated ? (
     <Container className='mt-2 py-5'>
     <Form>
       <Row>
@@ -142,6 +161,8 @@ const AgencyProfileForm = () => {
       Submit
     </Button>
     </Container>
+    ) : null}
+    </>
   );
 };
 

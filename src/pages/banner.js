@@ -5,8 +5,10 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner"; // Import Spinner component
 import { useRouter } from "next/router"; // Import useRouter
 import Link from "next/link";
+import { useAuthentication } from "@/components/ProtectedRoute";
 
 const Banner = () => {
+  const isAuthenticated = useAuthentication();
   const maindiv = {
     height: "auto",
     width: "100%",
@@ -43,6 +45,8 @@ const Banner = () => {
   };
 
   return (
+    <>
+    {(!isAuthenticated) ? (
     <div
       className=" flex-column d-flex flex-md-row align-items-md-center px-lg-5 "
       style={maindiv}
@@ -115,6 +119,8 @@ const Banner = () => {
         </Button>
       </div>
     </div>
+    ) : null}
+    </>
   );
 };
 

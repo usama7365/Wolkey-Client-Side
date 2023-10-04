@@ -15,11 +15,20 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Spinner } from "react-bootstrap";
 import "react-time-picker/dist/TimePicker.css";
-import ProtectedRoute from "../components/ProtectedRoute";
 import SideDiv from "../components/sideDiv";
+import { useAuthentication } from "../components/ProtectedRoute";
 
 const ProfileForm = () => {
   const profile = useSelector((state) => state.createProfile);
+  const isAuthenticated = useAuthentication();
+  console.log(isAuthenticated , "issss")
+  const router = useRouter();
+  useEffect(() => {
+    if (isAuthenticated === null) {
+      router.push('/login');
+    }
+  }, [isAuthenticated]);
+
   const [response, setResponse] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -129,8 +138,8 @@ const ProfileForm = () => {
       console.log("Selected Image Files:", selectedImageFiles);
     }
   }, []);
-  const router = useRouter();
-  const { profileId } = router.query;
+ 
+  // const { profileId } = router.query;
 
   const theme = {
     icn: {
@@ -374,8 +383,9 @@ const ProfileForm = () => {
 
   return (
     <>
-      <ProtectedRoute>
+      
         <ToastContainer />
+        {isAuthenticated ? (
         <div className="py-5">
           <div className="d-flex justify-content-around px-5">
             <SideDiv />
@@ -937,8 +947,9 @@ const ProfileForm = () => {
             </div>
           </div>
         </div>
-      </ProtectedRoute>
+     ) : null}
     </>
+   
   );
 };
 

@@ -11,8 +11,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from 'react-bootstrap/Spinner';
 import { BsCheck } from "react-icons/bs";
+import { useAuthentication } from "@/components/ProtectedRoute";
 
 const AdvisorSignup = () => {
+  const isAuthenticated = useAuthentication();
   const [loading, setLoading] = useState(false);
 
   const msg = useSelector((state) => state.userSignup);
@@ -117,6 +119,7 @@ const AdvisorSignup = () => {
       <div>
         <ToastContainer />
       </div>
+      {(!isAuthenticated )? (
       <div className="d-flex flex-column flex-md-row py-5 mt-md-3 px-lg-5 justify-content-md-around ">
         <div className="login px-3 py-3 col-md-5 d-flex flex-column d-md-block  ">
           <h3>Create an Account</h3>
@@ -189,6 +192,7 @@ const AdvisorSignup = () => {
          
         </div>
       </div>
+      ) : null}
     </>
   );
 };

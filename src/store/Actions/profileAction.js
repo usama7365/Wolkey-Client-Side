@@ -8,6 +8,9 @@ import {
   CREATE_AGENCY_PROFILE_FAIL,
   CREATE_AGENCY_PROFILE_REQUEST,
   CREATE_AGENCY_PROFILE_SUCCESS,
+  VIEW_AGENCY_PROFILE_FAIL,
+  VIEW_AGENCY_PROFILE_REQUEST,
+  VIEW_AGENCY_PROFILE_SUCCESS,
   VIEW_ALL_PROFILES_REQUEST,
   VIEW_ALL_PROFILES_SUCCESS,
   VIEW_ALL_PROFILES_FAIL,
@@ -71,11 +74,13 @@ export const profileFormAction = (formData, token) => async (dispatch) => {
       config
     );
 
-    console.log(response, "response from backend");
+    console.log(response.data.profileId, "response from backend");
+    localStorage.setItem("storedProfileId" , JSON.stringify(response.data.profileId))
     dispatch({
       type: PROFILE_FORM_SUCCESS,
       payload: response,
     });
+
     toast.success(response.data.message, {
       position: "top-right",
       autoClose: 1000,
@@ -171,10 +176,49 @@ export const agencyProfileAction = (agencyData, token) => async (dispatch) => {
     });
 
     console.log(response.data, "agencyProfileApi");
+    localStorage.setItem("agencyProfileId" , JSON.stringify(response.data.profileId))
   } catch (error) {
     console.log(error, "agencyProfileError");
     dispatch({
       type: CREATE_AGENCY_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const viewAgencyProfileAction = (token , agencyProfileId) => async (dispatch) => {
+  console.log(token , "agencytoken")
+  console.log(agencyProfileId , "proo")
+  try {
+    dispatch({
+      type: VIEW_AGENCY_PROFILE_REQUEST,
+    });
+
+    const config = {
+      headers: {
+        "x-auth-token": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      `${API_URLS}/getAgencyProfile/${agencyProfileId}`, 
+      config 
+    );
+
+    dispatch({
+      type: VIEW_AGENCY_PROFILE_SUCCESS,
+      payload: response.data
+    });
+
+    console.log(response.data
+      , "agencyProfileVIew");
+  } catch (error) {
+    console.log(error, "agencyProfileError");
+    dispatch({
+      type: VIEW_AGENCY_PROFILE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

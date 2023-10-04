@@ -16,10 +16,9 @@ const Header = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(`${API_URLS}/admin/orange-menu`);
-      console.log(response, "nav");
       setData(response.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      
     }
   };
 
@@ -29,18 +28,21 @@ const Header = () => {
 
   const name = useSelector((state) => state.userLogin?.userInfo?.name);
 
+
   const [response, setResponse] = useState(null);
 
   const router = useRouter();
   const { profileId } = router.query;
-  console.log(profileId, "pro");
+
 
   const storedResponse =
     typeof window !== "undefined" ? localStorage.getItem("auth-user") : null;
-  console.log(storedResponse, "res");
+    
 
   const storedProfile =
     typeof window !== "undefined" ? localStorage.getItem("profile") : null;
+    const agencyProfileId=typeof window !== "undefined" ? localStorage.getItem("agencyProfileId") : null;
+    console.log(agencyProfileId , "agencyyyyy")
 
   const checkAuthStatus = () => {
     if (storedResponse) {
@@ -53,17 +55,19 @@ const Header = () => {
 
   useEffect(() => {
     checkAuthStatus();
-  }, [name]);
+  }, [storedResponse]);
 
   const handleLogout = () => {
     localStorage.removeItem("auth-user");
     localStorage.removeItem("profile");
+    localStorage.removeItem("agencyProfileId");
     setResponse(null);
     router.push("/home");
   };
 
   const getDetailProfile = (_id) => {
-    router.push(`/viewProfile/${_id}`);
+    console.log(_id , agencyProfileId)
+    router.push(`/viewProfile/${_id}`)
   };
 
   const settings = () => {

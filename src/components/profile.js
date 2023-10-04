@@ -34,15 +34,18 @@ const Profile = () => {
 
 
   const dispatch = useDispatch();
+
   const authUserString = typeof window !== "undefined" && localStorage.getItem("auth-user") ? JSON.parse(localStorage.getItem("auth-user")):null
-  const _id = profileData ? profileData._id : null;
+  const _id = authUserString ? authUserString.profileId : null;
   console.log(_id, "localIdd");
 
-  const authUserProfile = typeof window !== "undefined" && localStorage.getItem("profile") ? JSON.parse(localStorage.getItem("profile")):null
-  console.log(authUserProfile  , "auth")
+ const storedProfileId = localStorage.getItem("storedProfileId") ? JSON.parse( localStorage.getItem("storedProfileId")):null
+ console.log(storedProfileId , "stored")
 
-  const authUserProfile2 = typeof window !== "undefined" && localStorage.getItem("Profile") ? JSON.parse(localStorage.getItem("Profile")):null
-  console.log(authUserProfile  , "auth")
+
+  if(profileId === _id){
+    localStorage.setItem("profile", JSON.stringify(profileData));
+  }
 
   useEffect(() => {
     if (authUserString) {
@@ -57,10 +60,6 @@ const Profile = () => {
     }
   }, [dispatch, token]);
 
-  if (profileId === _id) {
-    localStorage.setItem("profile", JSON.stringify(profileData));
-  } 
-  
 
   if (isLoading) {
     return (
@@ -86,9 +85,10 @@ const Profile = () => {
     <>
       <Container className="d-flex justify-content-end mt-2">
         <p
-         style={{
-          display: (authUserProfile && authUserProfile._id === _id)  ? "block" : "none",
-        }}
+       style={{
+        display:( storedProfileId  === _id || profileId === _id) ? "block" : "none",
+      }}
+
         
           onClick={handleEdit}
         >
@@ -200,9 +200,10 @@ const Profile = () => {
                 Show Number{" "}
               </button>
               <button
-                 style={{
-                  display: authUserProfile && authUserProfile._id !== _id ? "block" : "none",
+                style={{
+                  display: (storedProfileId  === _id || profileId === _id) ? "none" : "block",
                 }}
+
               >
                 <span className="px-1">
                   <BsEnvelopeFill />

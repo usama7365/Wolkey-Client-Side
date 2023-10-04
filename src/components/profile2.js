@@ -36,9 +36,16 @@ const Profile2 = () => {
   const { profileId } = router.query;
   console.log(profileId, "homeId");
 
-  const authUserString = typeof window !== "undefined" && localStorage.getItem("auth-user") ? JSON.parse(localStorage.getItem("auth-user")):null
-  const _id = profileData ? profileData._id : null;
+  const authUserString =
+    typeof window !== "undefined" && localStorage.getItem("auth-user")
+      ? JSON.parse(localStorage.getItem("auth-user"))
+      : null;
+  const _id = authUserString ? authUserString.profileId : null;
   console.log(_id, "localIdd");
+
+  if (profileId === _id) {
+    localStorage.setItem("profileData", JSON.stringify(profileData));
+  }
 
   useEffect(() => {
     if (authUserString) {
@@ -54,13 +61,15 @@ const Profile2 = () => {
     }
   }, [dispatch]);
 
-  const authUserProfile = typeof window !== "undefined" && localStorage.getItem("profile") ? JSON.parse(localStorage.getItem("profile")):null
-  const authUserProfile2 = typeof window !== "undefined" && localStorage.getItem("Profile") ? JSON.parse(localStorage.getItem("Profile")):null
-  console.log(authUserProfile2  , "auth")
-
-  if (profileId === _id) {
-    localStorage.setItem("profile", JSON.stringify(profileData));
-  }   
+  const authUserProfile =
+    typeof window !== "undefined" && localStorage.getItem("profile")
+      ? JSON.parse(localStorage.getItem("profile"))
+      : null;
+  const authUserProfile2 =
+    typeof window !== "undefined" && localStorage.getItem("Profile")
+      ? JSON.parse(localStorage.getItem("Profile"))
+      : null;
+  console.log(authUserProfile2, "auth");
 
   if (isLoading) {
     return (
@@ -87,14 +96,14 @@ const Profile2 = () => {
       position: "relative",
     },
     btn1: {
-      backgroundColor:"white",
-      color:"grey",
-      border:"1px solid grey",
+      backgroundColor: "white",
+      color: "grey",
+      border: "1px solid grey",
     },
     btn2: {
       backgroundColor: "#31A551",
       color: "white",
-      border:"none"
+      border: "none",
     },
     video: {
       width: "100%",
@@ -133,6 +142,11 @@ const Profile2 = () => {
     router.push("/profileform");
   };
 
+  const storedProfileId = localStorage.getItem("storedProfileId")
+    ? JSON.parse(localStorage.getItem("storedProfileId"))
+    : null;
+  console.log(storedProfileId, "stored");
+
   return (
     <div className="px-2 py-2">
       {profileData && (
@@ -143,8 +157,8 @@ const Profile2 = () => {
       <div className="d-flex justify-content-end">
         <p
           style={{
-            
-            display: authUserProfile && authUserProfile._id === _id ? "block" : "none",
+            display:
+              storedProfileId === _id || profileId === _id ? "block" : "none",
           }}
           onClick={handleEdit}
         >
@@ -204,32 +218,29 @@ const Profile2 = () => {
         </div>
       )}
 
-      <div className="w-100 bg-white" style={{ position: "fixed", bottom: 0,  }}>
-        
-          <div className="d-flex justify-content-around align-items-center text-nowrap">
-            {(authUserProfile && authUserProfile._id !== _id) && (
-              <Button
-                style={theme.btn1}
-                className=" d-flex align-items-center "
-              >
-                <span className="px-1">
-                  <BsEnvelopeFill />
-                </span>
-                Send Message
-              </Button>
-            )}
+      <div className="w-100 bg-white" style={{ position: "fixed", bottom: 0 }}>
+        <div className="d-flex justify-content-around align-items-center text-nowrap">
+          <Button
+            style={{
+              display:
+                storedProfileId === _id || profileId === _id ? "none" : "block",
+              ...theme.btn1, 
+            }}
+            className="d-flex align-items-center"
+          >
+            <span className="px-1">
+              <BsEnvelopeFill />
+            </span>
+            Send Message
+          </Button>
 
-            <Button
-              style={theme.btn2}
-              className=" d-flex align-items-center"
-            >
-              <span className="px-1">
-                <BsFillTelephoneFill className="text-white" />
-              </span>
-              Show Number
-            </Button>
-          </div>
-       
+          <Button style={theme.btn2} className=" d-flex align-items-center">
+            <span className="px-1">
+              <BsFillTelephoneFill className="text-white" />
+            </span>
+            Show Number
+          </Button>
+        </div>
       </div>
 
       <div className="py-2 px-3" style={theme.main}>
@@ -267,41 +278,43 @@ const Profile2 = () => {
       </div>
 
       <div className="py-2 px-3" style={theme.main}>
-  <h4>Prices</h4>
-  <div className="d-flex justify-content-between  ">
-    {profileData.prices.map((pricesString, index) => {
-      try {
-        const pricesArray = JSON.parse(pricesString);
-        // Filter out the "0" key from pricesArray
-        const filteredPrices = Object.entries(pricesArray).filter(([time]) => time !== "0");
+        <h4>Prices</h4>
+        <div className="d-flex justify-content-between  ">
+          {profileData.prices.map((pricesString, index) => {
+            try {
+              const pricesArray = JSON.parse(pricesString);
+              // Filter out the "0" key from pricesArray
+              const filteredPrices = Object.entries(pricesArray).filter(
+                ([time]) => time !== "0"
+              );
 
-        return (
-          <div key={index} className="w-100 h6">
-            {filteredPrices.map(([time, cost]) => (
-              <div key={time} className="d-flex justify-content-between col-12  mb-3">
-                <p
-                  style={{
-                
-                    fontSize: "15px",
-                   
-                  }}
-                >
-                  {time.replace(/_/g, ' ')} {/* Replace underscore with space */}
-                </p>
-                <p>{cost}$</p>
-              </div>
-            ))}
-          </div>
-        );
-      } catch (error) {
-        // Handle parsing error if needed
-        return null;
-      }
-    })}
-  </div>
-</div>
-
-
+              return (
+                <div key={index} className="w-100 h6">
+                  {filteredPrices.map(([time, cost]) => (
+                    <div
+                      key={time}
+                      className="d-flex justify-content-between col-12  mb-3"
+                    >
+                      <p
+                        style={{
+                          fontSize: "15px",
+                        }}
+                      >
+                        {time.replace(/_/g, " ")}{" "}
+                        {/* Replace underscore with space */}
+                      </p>
+                      <p>{cost}$</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            } catch (error) {
+              // Handle parsing error if needed
+              return null;
+            }
+          })}
+        </div>
+      </div>
 
       <div className="py-2 px-3" style={theme.main}>
         <h4>About me</h4>
