@@ -5,12 +5,17 @@ import { FaLocationDot } from "react-icons/fa6";
 import { ImBooks } from "react-icons/im";
 import Button from "react-bootstrap/Button";
 import { viewProfileAction } from "../store/Actions/profileAction";
-import { BsCurrencyEuro, BsEnvelopeFill, BsFillTelephoneFill } from "react-icons/bs";
+import {
+  BsCurrencyEuro,
+  BsEnvelopeFill,
+  BsFillTelephoneFill,
+} from "react-icons/bs";
 import styles from "../styles/profile.module.css";
 import { token } from "morgan";
 import { FcCheckmark } from "react-icons/fc";
 import { API_URLS } from "../apiConfig";
 import { useRouter } from "next/router";
+import TabDiv from "./Tabs";
 
 const Profile = () => {
   const bg = {
@@ -29,14 +34,26 @@ const Profile = () => {
   };
 
   const profileData = useSelector((state) => state.viewProfile?.userInfo);
-  console.log(profileData , "dat")
+  console.log(profileData, "dat");
   const isLoading = profileData === null;
 
-
   const dispatch = useDispatch();
-  const authUserString = typeof window !== "undefined" && localStorage.getItem("auth-user") ? JSON.parse(localStorage.getItem("auth-user")):null
-  const _id = profileData ? profileData._id : null;
+
+  const authUserString =
+    typeof window !== "undefined" && localStorage.getItem("auth-user")
+      ? JSON.parse(localStorage.getItem("auth-user"))
+      : null;
+  const _id = authUserString ? authUserString.profileId : null;
   console.log(_id, "localIdd");
+
+  const storedProfileId = localStorage.getItem("storedProfileId")
+    ? JSON.parse(localStorage.getItem("storedProfileId"))
+    : null;
+  console.log(storedProfileId, "stored");
+
+  if (profileId === _id) {
+    localStorage.setItem("profile", JSON.stringify(profileData));
+  }
 
   useEffect(() => {
     if (authUserString) {
@@ -50,11 +67,6 @@ const Profile = () => {
       fetchData();
     }
   }, [dispatch, token]);
-
-  if (profileId === _id) {
-    localStorage.setItem("profile", JSON.stringify(profileData));
-  } 
-  
 
   if (isLoading) {
     return (
@@ -77,17 +89,19 @@ const Profile = () => {
     : (profileData.selectedImageFiles || []).slice(0, 4);
 
   return (
-    <>
+    <div>
       <Container className="d-flex justify-content-end mt-2">
         <p
           style={{
-            display: profileId === _id ? "block" : "none",
+            display:
+              storedProfileId === _id || profileId === _id ? "block" : "none",
           }}
           onClick={handleEdit}
         >
-          Edit Your profile
+          {/* Edit Your profile */}
         </p>
       </Container>
+      <TabDiv />
       <div className={styles.parent}>
         <div className={styles.city}>
           <div className={styles.top}>
@@ -194,10 +208,13 @@ const Profile = () => {
               </button>
               <button
                 style={{
-                  display: profileId !== _id ? "block" : "none",
+                  display:
+                    storedProfileId === _id || profileId === _id
+                      ? "none"
+                      : "block",
                 }}
               >
-                <span>
+                <span className="px-1">
                   <BsEnvelopeFill />
                 </span>
                 Send Message
@@ -222,7 +239,7 @@ const Profile = () => {
                     Experience <span>{profileData.Experience}</span>{" "}
                   </h6>
                   <h6>
-                    Nationality <span>hhh</span>{" "}
+                    Nationality <span>{profileData.Nationality}</span>{" "}
                   </h6>
                 </div>
                 <div className=" w-100 mt-2">
@@ -239,45 +256,48 @@ const Profile = () => {
               </div>
             </>
           </div>
-          
-          <div className={`${styles.third} h6`}>
-  <h3>Prices</h3>
-  <div className="d-flex flex-wrap">
-    {profileData.prices.map((pricesString, index) => {
-      try {
-        const pricesArray = JSON.parse(pricesString);
-        // Filter out the "0" key from pricesArray
-        const filteredPrices = Object.entries(pricesArray).filter(([time]) => time !== "0");
-        
-        return (
-          <div key={index} className="col-md-6">
-            {filteredPrices.map(([time, cost]) => (
-              <div
-                key={time}
-                className="d-flex justify-content-between mb-3"
-              >
-                <p
-                  style={{
-                    fontWeight: 500,
-                    fontSize: "15px",
-                   
-                  }}
-                >
-                  {time.replace(/_/g, ' ')} {/* Replace underscore with space */}
-                </p>
-                <p className="d-flex align-items-center">{cost} <BsCurrencyEuro/> </p>
-              </div>
-            ))}
-          </div>
-        );
-      } catch (error) {
-        // Handle parsing error if needed
-        return null;
-      }
-    })}
-  </div>
-</div>
 
+          <div className={`${styles.third} h6`}>
+            <h3>Prices</h3>
+            <div className="d-flex flex-wrap">
+              {profileData.prices.map((pricesString, index) => {
+                try {
+                  const pricesArray = JSON.parse(pricesString);
+                  // Filter out the "0" key from pricesArray
+                  const filteredPrices = Object.entries(pricesArray).filter(
+                    ([time]) => time !== "0"
+                  );
+
+                  return (
+                    <div key={index} className="col-md-6">
+                      {filteredPrices.map(([time, cost]) => (
+                        <div
+                          key={time}
+                          className="d-flex justify-content-between mb-3"
+                        >
+                          <p
+                            style={{
+                              fontWeight: 500,
+                              fontSize: "15px",
+                            }}
+                          >
+                            {time.replace(/_/g, " ")}{" "}
+                            {/* Replace underscore with space */}
+                          </p>
+                          <p className="d-flex align-items-center">
+                            {cost} <BsCurrencyEuro />{" "}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                } catch (error) {
+                  // Handle parsing error if needed
+                  return null;
+                }
+              })}
+            </div>
+          </div>
 
           <div className={styles.forth}>
             <h3>About Me</h3>
@@ -303,7 +323,6 @@ const Profile = () => {
                               style={{
                                 fontWeight: 500,
                                 fontSize: "15px",
-                               
                               }}
                             >
                               <span style={{ color: "#B80909" }}>
@@ -350,7 +369,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className={styles.last}>
+          {/* <div className={styles.last}>
             <Button className={styles.btn1}>
               {" "}
               <span>
@@ -371,10 +390,10 @@ const Profile = () => {
               </span>
               Send Message
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

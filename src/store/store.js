@@ -8,7 +8,8 @@ import {
   verifyEmailReducer,
  
 } from "../store/Reducers/userReducer"; 
-import {profileFormReducer , viewProfileReducer ,  agencyProfileReducer, viewAllProfilesReducer} from "../store/Reducers/profileReducer"
+import {profileFormReducer , viewProfileReducer ,  agencyProfileReducer, viewAllProfilesReducer , viewAgencyProfileReducer} from "../store/Reducers/profileReducer"
+import { teacherPhotoReducer, viewteacherPhotoReducer } from "./Reducers/photoReducer";
 
 
 const initialState = {
@@ -24,7 +25,10 @@ const reducer = combineReducers({
   createProfile:profileFormReducer,
   viewProfile:viewProfileReducer,
   agencyProfile:agencyProfileReducer,
-  allProfiles:viewAllProfilesReducer
+  allProfiles:viewAllProfilesReducer,
+  viewAgencyProfile:viewAgencyProfileReducer,
+  uploadTeacherPhoto:teacherPhotoReducer,
+  viewTeacherPhoto:viewteacherPhotoReducer
 });
 
 const middleware = [thunk];

@@ -99,6 +99,10 @@ export const userLoginAction =
       );
       console.log("API Response Data:", res);
       localStorage.setItem("auth-user",JSON.stringify(res.data))
+      
+      const token = res.data.token;
+      Cookies.set('auth-token', token);
+       
       dispatch({
         type: USER_LOGIN_SUCCESS,
         payload:res.data

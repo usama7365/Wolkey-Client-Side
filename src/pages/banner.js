@@ -5,8 +5,10 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner"; // Import Spinner component
 import { useRouter } from "next/router"; // Import useRouter
 import Link from "next/link";
+import { useAuthentication } from "@/components/ProtectedRoute";
 
 const Banner = () => {
+  const isAuthenticated = useAuthentication();
   const maindiv = {
     height: "auto",
     width: "100%",
@@ -27,6 +29,10 @@ const Banner = () => {
     height:"40px",
     marginTop:'20px'
   };
+  const link={
+    textDecoration:"none",
+    color:"white"
+  }
 
   const [loggingIn, setLoggingIn] = useState(false); 
   const router = useRouter();
@@ -39,6 +45,8 @@ const Banner = () => {
   };
 
   return (
+    <>
+    {(!isAuthenticated) ? (
     <div
       className=" flex-column d-flex flex-md-row align-items-md-center px-lg-5 "
       style={maindiv}
@@ -70,7 +78,7 @@ const Banner = () => {
           style={bg}
           
         >
-          <Link href="/teacherSignup" passHref>
+          <Link style={link} href="/teacherSignup" passHref>
               <p>Register as a teacher</p>
             </Link>
          
@@ -104,13 +112,15 @@ const Banner = () => {
           style={bg}
           
         >
-          <Link href="/agencySignup" passHref>
+          <Link style={link} href="/agencySignup" passHref>
               <p>Register as a agency</p>
             </Link>
          
         </Button>
       </div>
     </div>
+    ) : null}
+    </>
   );
 };
 

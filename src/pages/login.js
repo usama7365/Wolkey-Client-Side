@@ -15,6 +15,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import Spinner from "react-bootstrap/Spinner";
+import { useAuthentication } from "@/components/ProtectedRoute";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -27,6 +28,15 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const router = useRouter();
+  const isAuthenticated = useAuthentication() || false;
+
+  // useEffect(() => {
+  //   if (isAuthenticated !== null) {
+  //     router.push('/home');
+  //   }
+  // }, [isAuthenticated]);
+
+  console.log('IsAuthenticated:', isAuthenticated);
   const [response, setResponse] = useState(null);
 
   const handleEmail = (e) => {
@@ -81,7 +91,7 @@ const Login = () => {
             } else if (parsedResponse.role === "teacher" &&   parsedResponse.isActive === true) {
               router.push("/profileform");
             } else if (parsedResponse.role === "agency" &&    parsedResponse.isActive === true) {
-              router.push("/agencyProfile");
+              router.push("/agencyProfileForm");
             }
           }
         }
@@ -134,13 +144,19 @@ const Login = () => {
       border: "none",
       height: "40px",
     },
+    link:{
+      textDecoration:"none",
+      color:"white"
+    }
   };
 
   return (
     <>
+   
       <div>
         <ToastContainer />
       </div>
+      {!(isAuthenticated) ? (
       <div className="d-flex flex-column flex-md-row py-5  mt-md-3 px-lg-5 justify-content-md-around ">
         <div className="login px-3 py-3 col-md-5 d-flex flex-column d-md-block  ">
           <h3>Login</h3>
@@ -203,8 +219,8 @@ const Login = () => {
               every day.
             </p>
             <Button style={theme.bg}>
-              <Link href="/advisorSignup" passHref>
-                <p>Register as an adviser</p>
+              <Link style={theme.link} href="/advisorSignup" passHref>
+                <p >Register as an adviser</p>
               </Link>
             </Button>
           </div>
@@ -216,13 +232,14 @@ const Login = () => {
               every day.
             </p>
             <Button style={theme.bg}>
-              <Link href="/banner" passHref>
+              <Link style={theme.link} href="/banner" passHref>
                 <p>Register as an agency</p>
               </Link>
             </Button>
           </div>
         </div>
       </div>
+      ) : null}
 
       <Modal show={showPasswordResetModal} onHide={handleTogglePasswordResetModal}>
         <Modal.Header closeButton>

@@ -1,5 +1,8 @@
+
 import React from "react";
 import { RxDashboard } from "react-icons/rx";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const theme = {
   bar: {
@@ -13,7 +16,12 @@ const theme = {
     borderRadius: "5px",
     border: "none",
   },
+  link:{
+    textDecoration:"none",
+    color:"black"
+  }
 };
+
 
 const SideDiv = () => {
   return (
@@ -25,15 +33,25 @@ const SideDiv = () => {
         </p>
         <h5>Management</h5>
         <p>Advertisement</p>
+        <Link style={theme.link} href='/photos'>
         <p>Photos</p>
+        </Link>
         <p>Reviews</p>
         <p>Videos</p>
         <h5>Account</h5>
+        <Link style={theme.link} href='/settings'>
         <p>Settings</p>
+        </Link>
+        <Link style={theme.link} href='/messages'>
         <p>Messages</p>
+        </Link>
         <p>Notifications</p>
-        <p>Invoice</p>
-        <p>Balance expenses</p>
+       <Link style={theme.link} href='/invoice'>
+       <p>Invoice</p>
+       </Link>
+       <Link style={theme.link} href='/balance'>
+       <p>Balance</p>
+       </Link>
         <p>Log out</p>
       </div>
     </div>

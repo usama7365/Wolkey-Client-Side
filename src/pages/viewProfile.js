@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Profile from "../components/profile";
 import Profile2 from "../components/profile2";
+import { useAuthentication } from "../components/ProtectedRoute";
 
 
 const ViewProfile = () => {
+  const isAuthenticated = useAuthentication();
   const [windowWidth, setWindowWidth] = useState(0);
  
 
@@ -20,8 +22,11 @@ const ViewProfile = () => {
 
   return (
     <div>
-     
-        {windowWidth < 650 ? <Profile2 /> : <Profile />}
+      {isAuthenticated ? (
+        <>
+          {windowWidth < 650 ? <Profile2 /> : <Profile />}
+        </>
+      ) : null}
     </div>
    
     

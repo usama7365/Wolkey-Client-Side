@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Form, Row, Col } from "react-bootstrap";
+import { Form, Row, Col, Button } from "react-bootstrap";
 import { API_URLS } from "../apiConfig";
 import axios from "axios";
 
-const AdvanceSearch = () => {
+const AdvanceSearch = ({ onFilterChange  }) => {
   const [data, setData] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({});
 
-  const handleChange = (e, filterKey) => {
+  const handleChange = (e, filterId) => {
     setSelectedFilters({
       ...selectedFilters,
-      [filterKey]: e.target.value,
+      [filterId]: e.target.value,
     });
   };
 
+  
   const fetchData = async () => {
     try {
       const response = await axios.get(`${API_URLS}/admin/filters`);
@@ -28,53 +29,69 @@ const AdvanceSearch = () => {
     fetchData();
   }, []);
 
-  // Split the data into chunks of 2 items each
-  const chunkedData = data.reduce((resultArray, item, index) => { 
-    const chunkIndex = Math.floor(index / 2);
-    if (!resultArray[chunkIndex]) {
-      resultArray[chunkIndex] = [];
-    }
-    resultArray[chunkIndex].push(item);
-    return resultArray;
-  }, []);
+  const getDropdownValue = (filterId) => {
+    return selectedFilters[filterId] || "";
+  };
+
+  const getInputValue = (filterId) => {
+    return selectedFilters[filterId] || "";
+  };
+
+  const handleGetValue = () => {
+    console.log("Selected Filter Values:");
+    const selectedValues = {};
+    Object.keys(selectedFilters).forEach((filterId) => {
+      const filter = data.find((item) => item._id === filterId);
+      if (filter) {
+        const filterTitle = filter.title;
+        const filterValue = selectedFilters[filterId];
+        console.log(`${filterTitle}: ${filterValue}`);
+        selectedValues[filterId] = filterValue;
+      }
+      onFilterChange(selectedFilters);
+    });
+  };
+  
 
   return (
-    <Form>
-      {chunkedData.map((row, rowIndex) => (
-        <Row className="mt-3" key={rowIndex}>
-          {row.map((filter) => (
-            <Col md={6} key={filter._id}>
-              {filter.inputType === "dropdown" ? (
-                <Form.Group controlId={filter.Items}>
-                  <Form.Control
-                    as="select"
-                    custom
-                    value={selectedFilters[filter.Items] || ""}
-                    onChange={(e) => handleChange(e, filter.Items)}
-                  >
-                    <option value="">{filter.title}</option>
-                    {filter.dropdownValues.map((option, index) => (
-                      <option key={index} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </Form.Group>
-              ) : (
-                <Form.Group controlId={filter.Items}>
-                  <Form.Control
-                    type="text"
-                    placeholder={filter.title}
-                   
-                    onChange={(e) => handleChange(e, filter.Items)}
-                  />
-                </Form.Group>
-              )}
-            </Col>
-          ))}
+    <>
+    <Form className="d-flex flex-wrap justify-content-between">
+      {data.map((filter) => (
+        <Row className="mt-3 col-5" key={filter._id}>
+          <Col className="col-12">
+            {filter.inputType === "dropdown" ? (
+              <Form.Group controlId={filter._id}>
+                <Form.Control
+                  as="select"
+                  custom
+                  value={getDropdownValue(filter._id)}
+                  onChange={(e) => handleChange(e, filter._id)}
+                >
+                  <option value="">{filter.title}</option>
+                  {filter.dropdownValues.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            ) : (
+              <Form.Group controlId={filter._id}>
+                <Form.Control
+                  type="text"
+                  placeholder={filter.title}
+                  value={getInputValue(filter._id)}
+                  onChange={(e) => handleChange(e, filter._id)}
+                />
+              </Form.Group>
+            )}
+          </Col>
         </Row>
       ))}
+    
     </Form>
+      <Button onClick={handleGetValue}>Get Values</Button>
+      </>
   );
 };
 

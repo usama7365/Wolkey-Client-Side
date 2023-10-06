@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }) {
       <div>
         <ReduxProvider>
           <GreenNav />
-          <Header  width={headerWidth} />
+          <Header/>
           <SearchNav/>
 
           <Component {...pageProps} />

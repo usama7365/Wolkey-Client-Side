@@ -2,6 +2,7 @@ import React from "react";
 import styles from "../styles/home.module.css";
 import { AiFillEye, AiFillClockCircle } from "react-icons/ai";
 import { FaLocationDot, FaUser } from "react-icons/fa6";
+import TabDiv from "../components/Tabs";
 
 const Videos = () => {
   const Data = [
@@ -75,6 +76,8 @@ const Videos = () => {
   };
 
   return (
+    <>
+      <TabDiv/>
     <div className="d-flex overflow-hidden">
       <div className="col-md-4 d-none d-lg-block col-lg-2 px-3 py-4 ">
         <div style={theme.left} className="px-3 py-3 mb-4">
@@ -172,6 +175,7 @@ const Videos = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

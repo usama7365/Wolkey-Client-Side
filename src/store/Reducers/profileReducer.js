@@ -7,6 +7,9 @@ import {
   CREATE_AGENCY_PROFILE_FAIL,
   CREATE_AGENCY_PROFILE_REQUEST,
   CREATE_AGENCY_PROFILE_SUCCESS,
+  VIEW_AGENCY_PROFILE_FAIL,
+  VIEW_AGENCY_PROFILE_REQUEST,
+  VIEW_AGENCY_PROFILE_SUCCESS,
   VIEW_ALL_PROFILES_REQUEST,
   VIEW_ALL_PROFILES_SUCCESS,
   VIEW_ALL_PROFILES_FAIL,
@@ -27,7 +30,7 @@ export const profileFormReducer = (state = {}, action) => {
         ...state,
         loading: false,
         success: true,
-       
+        profileId: profileId,
       };
     case PROFILE_FORM_FAIL:
       return {
@@ -42,6 +45,7 @@ export const profileFormReducer = (state = {}, action) => {
 
 const initialState = {
   userInfo: null,
+  profileId: null,
   // ...other state properties
 };
 
@@ -54,6 +58,7 @@ export const viewProfileReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         userInfo: action.payload,
+        profileId: action.profileId,
         error: null,
       };
     case "VIEW_PROFILE_FAIL":
@@ -72,9 +77,28 @@ export const agencyProfileReducer = (state = {}, action) => {
         ...state,
         loading: false,
         userInfo: action.payload,
+
         error: null,
       };
     case "CREATE_AGENCY_PROFILE_FAIL ":
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const viewAgencyProfileReducer = (state = {}, action) => {
+  switch (action.type) {
+    case " VIEW_AGENCY_PROFILE_REQUEST":
+      return { ...state, loading: true };
+    case "VIEW_AGENCY_PROFILE_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        userInfo: action.payload,
+        error: null,
+      };
+    case "VIEW_AGENCY_PROFILE_FAIL ":
       return { ...state, loading: false, error: action.payload };
     default:
       return state;
