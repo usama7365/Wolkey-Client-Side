@@ -67,7 +67,7 @@ const Header = () => {
 
   const getDetailProfile = (_id) => {
     console.log(_id , agencyProfileId)
-    router.push(`/viewProfile/${_id}`)
+    router.push(`/viewProfile`)
   };
 
   const settings = () => {
