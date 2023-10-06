@@ -22,8 +22,8 @@ const TabDiv = () => {
         <Nav variant="pills">
           <Nav.Item>
             <Nav.Link
-              eventKey="/ViewProfile"
-              href="/ViewProfile"
+              eventKey="/viewProfile"
+              href="/viewProfile"
               className={`custom-tab ${activeTab("/viewProfile") ? "active" : ""}`}
             >
               Profile
