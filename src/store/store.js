@@ -10,6 +10,7 @@ import {
 } from "../store/Reducers/userReducer"; 
 import {profileFormReducer , viewProfileReducer ,  agencyProfileReducer, viewAllProfilesReducer , viewAgencyProfileReducer} from "../store/Reducers/profileReducer"
 import { teacherPhotoReducer, viewteacherPhotoReducer } from "./Reducers/photoReducer";
+import { teacherVideoReducer, viewteacherVideoReducer } from "./Reducers/videoReducer";
 
 
 const initialState = {
@@ -28,7 +29,9 @@ const reducer = combineReducers({
   allProfiles:viewAllProfilesReducer,
   viewAgencyProfile:viewAgencyProfileReducer,
   uploadTeacherPhoto:teacherPhotoReducer,
-  viewTeacherPhoto:viewteacherPhotoReducer
+  viewTeacherPhoto:viewteacherPhotoReducer,
+  uploadTeacherVideo:teacherVideoReducer,
+  viewTeacherVideo:viewteacherVideoReducer
 });
 
 const middleware = [thunk];

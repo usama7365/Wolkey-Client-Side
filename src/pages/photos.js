@@ -24,12 +24,12 @@ const Photos = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [imagePath, setImagePath] = useState([]);
   const [response, setResponse] = useState(null);
-  const [existingImages, setExistingImages] = useState([]); // Define existingImages
+  const [existingImages, setExistingImages] = useState([]); 
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false); // Add isLoading state
-  const [selectedPhoto, setSelectedPhoto] = useState(null); // Track selected photo
-  const [selectedImageUrl, setSelectedImageUrl] = useState(null); // Store the URL of the selected image
+  const [isLoading, setIsLoading] = useState(false); 
+  const [selectedPhoto, setSelectedPhoto] = useState(null); 
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null); 
 
 
   const storedResponse =
