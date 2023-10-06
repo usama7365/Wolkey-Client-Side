@@ -39,7 +39,6 @@ const Profile = () => {
 
   const dispatch = useDispatch();
 
-<<<<<<< HEAD
   const authUserString =
     typeof window !== "undefined" && localStorage.getItem("auth-user")
       ? JSON.parse(localStorage.getItem("auth-user"))
@@ -53,17 +52,6 @@ const Profile = () => {
   console.log(storedProfileId, "stored");
 
   if (profileId === _id) {
-=======
-  const authUserString = typeof window !== "undefined" && localStorage.getItem("auth-user") ? JSON.parse(localStorage.getItem("auth-user")):null
-  const _id = authUserString ? authUserString.profileId : null;
-  console.log(_id, "localIdd");
-
- const storedProfileId = localStorage.getItem("storedProfileId") ? JSON.parse( localStorage.getItem("storedProfileId")):null
- console.log(storedProfileId , "stored")
-
-
-  if(profileId === _id){
->>>>>>> e5520372c4c4e90538cb4b47332a70d1dd7e7749
     localStorage.setItem("profile", JSON.stringify(profileData));
   }
 
@@ -80,10 +68,6 @@ const Profile = () => {
     }
   }, [dispatch, token]);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e5520372c4c4e90538cb4b47332a70d1dd7e7749
   if (isLoading) {
     return (
       <div
@@ -108,18 +92,10 @@ const Profile = () => {
     <div>
       <Container className="d-flex justify-content-end mt-2">
         <p
-<<<<<<< HEAD
           style={{
             display:
               storedProfileId === _id || profileId === _id ? "block" : "none",
           }}
-=======
-       style={{
-        display:( storedProfileId  === _id || profileId === _id) ? "block" : "none",
-      }}
-
-        
->>>>>>> e5520372c4c4e90538cb4b47332a70d1dd7e7749
           onClick={handleEdit}
         >
           {/* Edit Your profile */}
@@ -232,14 +208,10 @@ const Profile = () => {
               </button>
               <button
                 style={{
-<<<<<<< HEAD
                   display:
                     storedProfileId === _id || profileId === _id
                       ? "none"
                       : "block",
-=======
-                  display: (storedProfileId  === _id || profileId === _id) ? "none" : "block",
->>>>>>> e5520372c4c4e90538cb4b47332a70d1dd7e7749
                 }}
 
               >
