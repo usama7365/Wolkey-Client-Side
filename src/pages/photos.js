@@ -24,12 +24,12 @@ const Photos = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [imagePath, setImagePath] = useState([]);
   const [response, setResponse] = useState(null);
-  const [existingImages, setExistingImages] = useState([]); 
+  const [existingImages, setExistingImages] = useState([]); // Define existingImages
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false); 
-  const [selectedPhoto, setSelectedPhoto] = useState(null); 
-  const [selectedImageUrl, setSelectedImageUrl] = useState(null); 
+  const [isLoading, setIsLoading] = useState(false); // Add isLoading state
+  const [selectedPhoto, setSelectedPhoto] = useState(null); // Track selected photo
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null); // Store the URL of the selected image
 
 
   const storedResponse =
@@ -83,32 +83,32 @@ const Photos = () => {
       console.error("Token is missing.");
       return;
     }
-  
+
     if (imagePath.length === 0) {
 
       toast.error('Please upload at least one image', toastConfig);
 
       return;
     }
-  
+
     setIsLoading(true); // Set isLoading to true when the API call starts
-  
+
     try {
       await dispatch(teacherPhotoAction(imagePath, token));
       fetchExistingImages();
-  
+
       // Reset the file input
       if (fileInputRef.current) {
         fileInputRef.current.value = null;
       }
-  
+
       // Show success toast
       toast.success('Photos submitted successfully!', toastConfig);
-   
- 
+
+
     } catch (error) {
       console.error("Error submitting photos: ", error);
-  
+
       // Show error toast
       toast.error('Failed to submit photos. Please try again.', toastConfig);
 
@@ -116,10 +116,12 @@ const Photos = () => {
       setIsLoading(false); // Set isLoading to false when the API call completes (success or error)
     }
   };
-  
+
   const openModal = (photo) => {
     setSelectedPhoto(photo);
-    setSelectedImageUrl(`${API_URLS}/${photo.imagePath.replace(/\\/g, '').replace('public/', '')}`); 
+    const imageUrl = `${API_URLS}/${photo.imagePath.replace(/\\/g, '/').replace('public/', '')}`;
+
+    setSelectedImageUrl(imageUrl);
     setModalOpen(true);
   };
 
@@ -156,10 +158,9 @@ const Photos = () => {
   {photos?.map((photo, index) => (
     <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-3" key={index}>
       <img
-        src={`${API_URLS}/${photo.imagePath.replace(/\\/g, '').replace('public/', '')}`}
+        src={`${API_URLS}/${photo.imagePath}`}
         alt={`Image ${index}`}
         style={{
-          border: "2px solid #333",
           borderRadius: "8px",
           maxWidth: "100%",
           height: "200px",
