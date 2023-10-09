@@ -13,6 +13,7 @@ import { API_URLS } from "../apiConfig";
 const Header = () => {
   const [data, setData] = useState([]);
 
+
   const fetchData = async () => {
     try {
       const response = await axios.get(`${API_URLS}/admin/orange-menu`);
@@ -27,22 +28,36 @@ const Header = () => {
   }, []);
 
   const name = useSelector((state) => state.userLogin?.userInfo?.name);
+  useSelector((state)=>console.log(state))
+
+  const agencyProfileId = useSelector((state)=>state.agencyProfile?.userInfo?.profileId)
+  console.log(agencyProfileId , "idddd")
+
+  const profileId = useSelector((state)=>state.viewProfile?.userInfo?._id)
+  console.log(profileId  , "iddddpro")
+
+  const storedProfileId = typeof window !== "undefined" && localStorage.getItem("storedProfileId") ? JSON.parse(localStorage.getItem("storedProfileId")):null
+ console.log(storedProfileId , "storee")
 
 
   const [response, setResponse] = useState(null);
 
   const router = useRouter();
-  const { profileId } = router.query;
-
 
   const storedResponse =
     typeof window !== "undefined" ? localStorage.getItem("auth-user") : null;
-    
+
+    const id = storedResponse && JSON.parse(localStorage.getItem("auth-user"))
+    const _id = id && id._id
 
   const storedProfile =
-    typeof window !== "undefined" ? localStorage.getItem("profile") : null;
-    const agencyProfileId=typeof window !== "undefined" ? localStorage.getItem("agencyProfileId") : null;
-    console.log(agencyProfileId , "agencyyyyy")
+    typeof window !== "undefined" && localStorage.getItem("profile") ? JSON.parse(localStorage.getItem("profile")) : null;
+
+    // console.log(storedProfile.userId , "useriddd")
+
+
+    
+    
 
   const checkAuthStatus = () => {
     if (storedResponse) {
@@ -60,14 +75,20 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("auth-user");
     localStorage.removeItem("profile");
+    localStorage.removeItem("Profile");
     localStorage.removeItem("agencyProfileId");
     setResponse(null);
     router.push("/home");
   };
 
-  const getDetailProfile = (_id) => {
-    console.log(_id , agencyProfileId)
-    router.push(`/viewProfile`)
+
+
+  const getDetailProfile = () => {
+    if (agencyProfileId) {
+      router.push(`/getAgencyProfile/${agencyProfileId}`);
+    } else if (_id) {
+      router.push(`/viewProfile/${_id}`);
+    }
   };
 
   const settings = () => {
@@ -142,11 +163,10 @@ const Header = () => {
                   }
                   id="user-dropdown"
                 >
-                  {response ? (
+                  {storedProfile?._id  || agencyProfileId ? (
                     <NavDropdown.Item
                       onClick={() => {
-                        const parsedProfile = JSON.parse(storedProfile); // Define parsedProfile here
-                        getDetailProfile(parsedProfile?._id);
+                        getDetailProfile();
                       }}
                     >
                       My Profile

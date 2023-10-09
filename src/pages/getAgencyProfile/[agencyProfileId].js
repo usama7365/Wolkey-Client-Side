@@ -11,6 +11,7 @@ const AgencyProfile = () => {
     },
   };
 
+
   const dispatch = useDispatch();
   const agencyData = useSelector(
     (state) => state?.viewAgencyProfile?.userInfo?.agencyProfile
@@ -21,11 +22,16 @@ const AgencyProfile = () => {
       ? JSON.parse(localStorage.getItem("auth-user"))
       : null;
 
-  const agencyProfileId =
-    typeof window !== "undefined" && localStorage.getItem("agencyProfileId")
-      ? JSON.parse(localStorage.getItem("agencyProfileId"))
-      : null;
+const agencyProfileIdString =
+  typeof window !== "undefined" && localStorage.getItem("agencyProfileId");
 
+const agencyProfileId = agencyProfileIdString
+  ? JSON.parse(agencyProfileIdString)
+  : null;
+
+  console.log(agencyProfileId , "agg")
+
+ 
   useEffect(() => {
     if (authUserString) {
       const token = authUserString ? authUserString.token : null;

@@ -106,7 +106,7 @@ export const profileFormAction = (formData, token) => async (dispatch) => {
 
 
 
-export const viewProfileAction = ({token ,profileId = null}) => async (dispatch) => {
+export const viewProfileAction = ({token ,userId = null}) => async (dispatch) => {
   try {
     dispatch({
       type: VIEW_PROFILE_REQUEST,
@@ -119,8 +119,8 @@ export const viewProfileAction = ({token ,profileId = null}) => async (dispatch)
     };
 
     let url = `${API_URLS}/view-profile`;
-    if (profileId) {
-      url += `/${profileId}`;
+    if (userId) {
+      url += `/${userId}`;
     }
 
     const response = await axios.get(url, config);

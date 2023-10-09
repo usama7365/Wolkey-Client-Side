@@ -1,5 +1,6 @@
 import axios from "axios"; 
 import { API_URLS } from "../../apiConfig";
+import { toast } from "react-toastify";
 
 import {
   UPLOAD_TEACHER_PHOTO_REQUEST,
@@ -10,15 +11,39 @@ import {
   VIEW_TEACHER_PHOTO_SUCCESS,
 } from "../Constants/photoConstants";
 
+const toastConfig = {
+  position: "top-right",
+  autoClose: 3000, // Adjust the duration as needed
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  // Add more options as needed
+};
+
 export const teacherPhotoAction = (imagePath, token) => async (dispatch) => {
   console.log(imagePath, "formm");
   console.log(token, "actionToken");
 
   const formDataObject = new FormData();
 
-  for (let i = 0; i < imagePath.length; i++) {
-    console.log(imagePath[i], "selected file");
-    formDataObject.append("imagePath", imagePath[i]);
+  if (imagePath && imagePath.length > 0) {
+    // Loop through the selected files and append each file to the FormData
+    for (let i = 0; i < imagePath.length; i++) {
+      const file = imagePath[i];
+      // Check if the selected file is an image
+      if (file.type.startsWith("image/")) {
+        formDataObject.append(`imagePath[${i}]`, file, file.name);
+      } else {
+        // Show an error message if any of the selected files is not an image
+        toast.error("Please select valid image files", toastConfig);
+        return;
+      }
+    }
+  } else {
+    // Show an error message if no images are selected
+    toast.error("Please select at least one image to upload", toastConfig);
+    return;
   }
 
   console.log(formDataObject, "formDataa");
@@ -43,19 +68,11 @@ export const teacherPhotoAction = (imagePath, token) => async (dispatch) => {
 
     dispatch({
       type: UPLOAD_TEACHER_PHOTO_SUCCESS,
-      payload: response,
+      payload: response.data, // Send the response data as the payload
     });
 
-    //   toast.success(response.data.message, {
-    //     position: "top-right",
-    //     autoClose: 1000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "light",
-    //   });
+    // Show success toast if needed
+
   } catch (error) {
     console.log(error, "apiError");
     dispatch({
@@ -68,20 +85,19 @@ export const teacherPhotoAction = (imagePath, token) => async (dispatch) => {
   }
 };
 
-export const viewteacherPhotoAction = (token) => async (dispatch) => {
-  console.log(token, "agencytoken");
+
+
+
+export const viewteacherPhotoAction = (userId) => async (dispatch) => {
+  console.log(userId , "usrid in action")
+
   try {
     dispatch({
       type: VIEW_TEACHER_PHOTO_REQUEST,
     });
 
-    const config = {
-      headers: {
-        "x-auth-token": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await axios.get(`${API_URLS}/user-images`, config);
+ 
+    const response = await axios.get(`${API_URLS}/user-images/${userId}`);
 
     dispatch({
       type: VIEW_TEACHER_PHOTO_SUCCESS,

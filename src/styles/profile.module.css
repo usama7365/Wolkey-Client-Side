@@ -1,14 +1,16 @@
-
 .parent{
     height: auto;
     display: flex;
-    justify-content: space-evenly;
-    padding: 40px 20px;
-    margin-bottom: 100px;
+    width: 100%;
+    justify-content: space-between;
+
+    
 }
 
 .city{
-    width: 18%;
+    
+    margin-top: 95px;
+
 }
 .top{
     display: flex;
@@ -22,7 +24,8 @@
     padding: 0px 10px;
     display: flex;
     flex-direction: column;
-    
+   
+   
     object-fit: contain;
 }
 .images img , .images video{
@@ -35,9 +38,10 @@
     height: 250px;
 }
 .right{
-    width: 53%;
+    width: 70%;
     padding: 0 10px;
-    
+ 
+   
    
 }
 .first{
@@ -46,6 +50,7 @@
     flex-direction: column;
     justify-content: space-between;
     margin-bottom: 20px;
+   
     
 }
 .first button{
@@ -125,7 +130,3 @@
     border: none;
     /* padding: 10px 10px; */
 }
-
-
-
-

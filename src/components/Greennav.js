@@ -9,7 +9,7 @@ const GreenNav = ({ children }) => {
   const fetchData = async () => {
     try {
       const response = await Axios.get(`${API_URLS}/admin/green-menu`);
-      console.log(response, "gr");
+      // console.log(response, "gr");
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -16,6 +16,7 @@ import { FcCheckmark } from "react-icons/fc";
 import { API_URLS } from "../apiConfig";
 import { useRouter } from "next/router";
 import TabDiv from "./Tabs";
+import City from "./city";
 
 const Profile = () => {
   const bg = {
@@ -26,8 +27,8 @@ const Profile = () => {
   const [showAllImages, setShowAllImages] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
-  const { profileId } = router.query;
-  console.log(profileId, "homeId");
+  const { userId} = router.query;
+  console.log(router.query, "param");
 
   const toggleImages = () => {
     setShowAllImages(!showAllImages);
@@ -35,6 +36,8 @@ const Profile = () => {
 
   const profileData = useSelector((state) => state.viewProfile?.userInfo);
   console.log(profileData, "dat");
+
+
   const isLoading = profileData === null;
 
   const dispatch = useDispatch();
@@ -43,30 +46,39 @@ const Profile = () => {
     typeof window !== "undefined" && localStorage.getItem("auth-user")
       ? JSON.parse(localStorage.getItem("auth-user"))
       : null;
+
+      console.log(authUserString._id , "authid")
+
+     
+      console.log(userId)
+
+      console.log(authUserString , "authh")
+
   const _id = authUserString ? authUserString.profileId : null;
-  console.log(_id, "localIdd");
+  console.log(_id, "profileId");
 
   const storedProfileId = localStorage.getItem("storedProfileId")
     ? JSON.parse(localStorage.getItem("storedProfileId"))
     : null;
   console.log(storedProfileId, "stored");
 
-  if (profileId === _id) {
-    localStorage.setItem("profile", JSON.stringify(profileData));
-  }
 
   useEffect(() => {
     if (authUserString) {
       const token = authUserString ? authUserString.token : null;
       console.log(token, "tok");
       const fetchData = async () => {
-        if (token || profileId) {
-          await dispatch(viewProfileAction({ token, profileId }));
+        if (token || userId) {
+          await dispatch(viewProfileAction({ token, userId }));
         }
       };
       fetchData();
     }
   }, [dispatch, token]);
+
+  if(userId === authUserString?._id){
+localStorage.setItem("profile" , JSON.stringify(profileData))
+  }
 
   if (isLoading) {
     return (
@@ -89,53 +101,23 @@ const Profile = () => {
     : (profileData.selectedImageFiles || []).slice(0, 4);
 
   return (
-    <div>
+    <div >
       <Container className="d-flex justify-content-end mt-2">
         <p
           style={{
             display:
-              storedProfileId === _id || profileId === _id ? "block" : "none",
+            userId  !== authUserString?._id
+                ? "none"
+                : "block",
           }}
           onClick={handleEdit}
         >
-          {/* Edit Your profile */}
+          Edit Your profile
         </p>
       </Container>
-      <TabDiv />
+    
       <div className={styles.parent}>
-        <div className={styles.city}>
-          <div className={styles.top}>
-            <h5>Top Cities</h5>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-          </div>
-          <div className={styles.top}>
-            <h4>All Cities</h4>
-
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-            <p>lahore</p>
-          </div>
-        </div>
+      
 
         <div className={styles.images}>
           <div className="d-flex flex-wrap">
@@ -209,7 +191,7 @@ const Profile = () => {
               <button
                 style={{
                   display:
-                    storedProfileId === _id || profileId === _id
+                  userId  === authUserString?._id
                       ? "none"
                       : "block",
                 }}
@@ -270,11 +252,11 @@ const Profile = () => {
                   );
 
                   return (
-                    <div key={index} className="col-md-6">
+                    <div key={index} className="col-12">
                       {filteredPrices.map(([time, cost]) => (
                         <div
                           key={time}
-                          className="d-flex justify-content-between mb-3"
+                          className="d-flex  justify-content-between mb-3"
                         >
                           <p
                             style={{

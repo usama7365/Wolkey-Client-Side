@@ -20,6 +20,7 @@ import { useAuthentication } from "../components/ProtectedRoute";
 
 const ProfileForm = () => {
   const profile = useSelector((state) => state.createProfile);
+  useSelector((state)=>console.log(state))
   const isAuthenticated = useAuthentication();
   console.log(isAuthenticated , "issss")
   const router = useRouter();
@@ -80,7 +81,9 @@ const ProfileForm = () => {
       }
     }
   }, []);
-  console.log(response, "tokk");
+ 
+  const userId = response && response._id
+  console.log(userId , "usrrrr")
 
   useEffect(() => {
     const storedProfileData = JSON.parse(localStorage.getItem("profile"));
@@ -373,7 +376,7 @@ const ProfileForm = () => {
 
       await dispatch(profileFormAction(formData, token));
       localStorage.setItem("Profile", JSON.stringify(formData));
-      router.push("/ViewProfile/");
+      router.push(`/viewProfile/${userId}`);
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

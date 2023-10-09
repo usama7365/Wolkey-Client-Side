@@ -20,7 +20,6 @@ import AdvanceSearch from "../components/advanceSearch";
 import Filter from "../components/filter";
 import axios from "axios";
 
-
 const Home = () => {
   const Data = [
     {
@@ -55,12 +54,13 @@ const Home = () => {
   console.log(profiles, "homeProfile");
 
   const router = useRouter();
-  const { _id } = router.query;
 
   const [showModal, setShowModal] = useState(false);
-  const [metaData, setMetaData] = useState({ title: "", description: "", keywords: "" });
-
-
+  const [metaData, setMetaData] = useState({
+    title: "",
+    description: "",
+    keywords: "",
+  });
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -75,11 +75,11 @@ const Home = () => {
       ? JSON.parse(localStorage.getItem("auth-user"))
       : null;
 
-      
-  const getDetailProfile = (_id) => {
+  const getDetailProfile = (userId) => {
+    console.log(userId , "userId")
     if (authUserString && authUserString.token) {
-      dispatch(viewProfileAction(_id));
-      router.push(`/viewProfile/${_id}`);
+      dispatch(viewProfileAction(userId));
+      router.push(`/viewProfile/${userId}`);
     } else {
       handleShowModal();
     }
@@ -202,14 +202,14 @@ const Home = () => {
       try {
         const response = await axios.get(`${API_URLS}/admin/view-meta-tags`);
         console.log(response.data[0].title, "meta");
-  
+
         // Update the metaData state with data from the API response
         setMetaData({
           title: response.data[0].title,
           description: response.data[0].description,
           keywords: response.data[0].keywords,
         });
-  
+
         // Check if metaData.title is not empty before setting the document title
         if (response.data.title) {
           document.title = response.data.title;
@@ -218,32 +218,29 @@ const Home = () => {
         console.error("Error fetching meta tags:", error);
       }
     };
-  
+
     fetchData(); // Invoke the fetchData function here
   }, []);
-  
 
   useEffect(() => {
     // Update page title
     document.title = metaData.title;
-    
+
     // Function to add or update a meta element in the <head> section
     const updateMetaTag = (name, content) => {
       let metaTag = document.querySelector(`meta[name="${name}"]`);
       if (!metaTag) {
-        metaTag = document.createElement('meta');
-        metaTag.setAttribute('name', name);
+        metaTag = document.createElement("meta");
+        metaTag.setAttribute("name", name);
         document.head.appendChild(metaTag);
-      } 
-      metaTag.setAttribute('content', content);
+      }
+      metaTag.setAttribute("content", content);
     };
 
     // Update meta description and keywords
-    updateMetaTag('description', metaData.description);
-    updateMetaTag('keywords', metaData.keywords);
+    updateMetaTag("description", metaData.description);
+    updateMetaTag("keywords", metaData.keywords);
   }, [metaData.title, metaData.description, metaData.keywords]);
-
-  
 
   const startIndex = (pageNumber - 1) * itemsPerPage;
   const endIndex = pageNumber * itemsPerPage;
@@ -253,17 +250,9 @@ const Home = () => {
     transition: "opacity 0.3s ease-in-out, height 0.3s ease-in-out",
   };
 
-
-
-
-
   return (
     <>
-
-
-
       <Container>
-        
         <p onClick={toggleAdvanceSearch} className="col-1">
           {" "}
           <Filter />{" "}
@@ -433,7 +422,7 @@ const Home = () => {
                 {filteredProfiles.map((data, index) => (
                   <div
                     onClick={() => {
-                      getDetailProfile(data._id);
+                      getDetailProfile(data.userId);
                     }}
                     key={index}
                     className={styles.profile}

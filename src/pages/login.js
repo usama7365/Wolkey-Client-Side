@@ -36,6 +36,9 @@ const Login = () => {
   //   }
   // }, [isAuthenticated]);
 
+  const agencyProfileId = useSelector((state)=>state.agencyProfile?.userInfo?.profileId)
+  console.log(agencyProfileId , "idddd")
+
   console.log('IsAuthenticated:', isAuthenticated);
   const [response, setResponse] = useState(null);
 
@@ -77,20 +80,20 @@ const Login = () => {
           const storedResponse = localStorage.getItem("auth-user");
           if (storedResponse) {
             const parsedResponse = JSON.parse(storedResponse);
-            console.log(parsedResponse , "res")
             if (parsedResponse.isActive !== true) {
               setShowInactiveUserModal(true); 
-            }
-            else if (
+            } else if (
               parsedResponse &&
               parsedResponse.profileId &&
               parsedResponse.isActive === true &&
               parsedResponse.role === "teacher"
             ) {
-              router.push(`/viewProfile/${parsedResponse.profileId}`);
-            } else if (parsedResponse.role === "teacher" &&   parsedResponse.isActive === true) {
+              router.push(`/viewProfile/${parsedResponse._id}`);
+            } else if (parsedResponse.role === "teacher" && parsedResponse.isActive === true) {
               router.push("/profileform");
-            } else if (parsedResponse.role === "agency" &&    parsedResponse.isActive === true) {
+            } else if (parsedResponse && parsedResponse.role === "agency" && agencyProfileId && parsedResponse.isActive === true) {
+              router.push(`/getAgencyProfile/${agencyProfileId}`);
+            } else if (parsedResponse.role === "agency" && parsedResponse.isActive === true) {
               router.push("/agencyProfileForm");
             }
           }
@@ -100,6 +103,7 @@ const Login = () => {
       }
     }
   };
+
 
   const handleResetPassword = async () => {
     if (email === "") {

@@ -33,7 +33,7 @@ const AgencyProfileForm = () => {
 
     
 
-    const agencyProfileId = typeof window !== "undefined" && localStorage.getItem("agencyProfileId") ? JSON.parse(localStorage.getItem("agencyProfileId")) : null
+    const agencyProfileId = typeof window !== "undefined" ? localStorage.getItem("agencyProfileId") : null
 
     
     console.log(agencyProfileId , "aggg")

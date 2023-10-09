@@ -68,20 +68,20 @@ import {
   };
 
   export const viewteacherVideoAction = (userId) => async (dispatch) => {
-    console.log(userId, "agencytoken");
+    // console.log(userId, "agencytoken");
     try {
       dispatch({
         type: VIEW_TEACHER_VIDEO_REQUEST ,
       });
   
-      const response = await axios.get(`${API_URLS}/user-video-gallery/${userId}`);
+      const response = await axios.get(`${API_URLS}/user-videos/${userId}`);
   
       dispatch({
         type: VIEW_TEACHER_VIDEO_SUCCESS,
         payload: response.data,
       });
   
-      console.log(response.data, "VIEW_TEACHER_VIDEO_SUCCESS");
+      // console.log(response.data, "VIEW_TEACHER_VIDEO_SUCCESS");
     } catch (error) {
       console.log(error, "VIEW_TEACHER_VIDEO_FAIL");
       dispatch({

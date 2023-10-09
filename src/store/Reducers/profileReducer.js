@@ -30,7 +30,7 @@ export const profileFormReducer = (state = {}, action) => {
         ...state,
         loading: false,
         success: true,
-        profileId: profileId,
+        userInfo:action.payload
       };
     case PROFILE_FORM_FAIL:
       return {
