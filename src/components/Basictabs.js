@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Profile from "../components/profile"
+import Profile2 from "../components/profile2"
 import CustomTabPanel from "../components/CustomTabPanel"; // Import the CustomTabPanel component
 
 export default function BasicTabs() {
